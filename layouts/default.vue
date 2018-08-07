@@ -73,7 +73,9 @@
         </main>
       </div>
     </div>
-    <script>feather.replace()</script>
+    <script>
+      window.feather.replace()
+    </script>
   </div>
 </template>
 <script>
@@ -82,7 +84,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

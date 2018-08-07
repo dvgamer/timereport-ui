@@ -1,7 +1,4 @@
 module.exports = {
-  /*
-  ** Headers of the page
-  */
   head: {
     title: 'DevOps Realtime',
     meta: [
@@ -20,9 +17,6 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-  /*
-  ** Customize the progress bar color
-  */
   loading: { color: '#3B8070' },
   css: [
     './styles/index.scss',
@@ -33,11 +27,8 @@ module.exports = {
     '~/plugins/bootstrap-vue.js',
     '~/plugins/fontawesome.js'
   ],
-  vendor: ['axios','socket.io-client'],
+  vendor: ['axios', 'socket.io-client'],
   build: {
-    /*
-    ** Run ESLint on save
-    */
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {
         config.module.rules.push({
@@ -49,14 +40,11 @@ module.exports = {
       }
     }
   },
-  serverMiddleware: [
-    // API middleware
-    '~/api/index.js'
-  ],
+  serverMiddleware: [ '~/api/index.js' ],
   axios: {
-    baseURL: process.env.API_URL || 'http://localhost:3002/api'
+    baseURL: process.env.API_URL || 'http://localhost:3000/api'
   },
   env: {
-    SOCKET_HOST_URL: process.env.SOCKET_HOST_URL || 'http://localhost:3002'
+    SOCKET_HOST_URL: process.env.SOCKET_HOST_URL || 'http://localhost:3001'
   }
 }

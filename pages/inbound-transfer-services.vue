@@ -13,7 +13,13 @@
 </template>
 
 <script>
+import axios from '~/plugins/axios.js'
+
 export default {
+  async asyncData () {
+    let req = await axios({ url: '/inbound-transfer' })
+    return { req: (req.status === 200 ? req.data : {}) }
+  }
 }
 </script>
 
