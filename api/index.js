@@ -4,10 +4,10 @@ const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
 // Require API routes
-const users = require('./users')
+const inboundTransder = require('./inbound-transfer')
 
 // Import API Routes
-app.use(users)
+app.use(inboundTransder)
 
 io.on('connection', socket => {
   console.log('a user connected')
@@ -16,8 +16,8 @@ io.on('connection', socket => {
   })
 })
 
-http.listen(3002, function(){
-  console.log('listening socket.io on *:3002');
+http.listen(3001, () => {
+  console.log('listening socket.io on *:3001')
 })
 
 // Export the server middleware
