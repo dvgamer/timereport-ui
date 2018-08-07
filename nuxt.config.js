@@ -29,9 +29,11 @@ module.exports = {
     'bootstrap-vue/dist/bootstrap-vue.css'
   ],
   plugins: [
-    'plugins/bootstrap-vue.js',
-    'plugins/fontawesome.js'
+    '~/plugins/socket.io.js',
+    '~/plugins/bootstrap-vue.js',
+    '~/plugins/fontawesome.js'
   ],
+  vendor: ['axios','socket.io-client'],
   build: {
     /*
     ** Run ESLint on save
@@ -46,5 +48,15 @@ module.exports = {
         })
       }
     }
+  },
+  serverMiddleware: [
+    // API middleware
+    '~/api/index.js'
+  ],
+  axios: {
+    baseURL: process.env.API_URL || 'http://localhost:3002/api'
+  },
+  env: {
+    SOCKET_HOST_URL: process.env.SOCKET_HOST_URL || 'http://localhost:3002'
   }
 }
