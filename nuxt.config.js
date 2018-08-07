@@ -3,7 +3,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'RIS EMPLOYEE SERVICES',
+    title: 'DevOps Admin',
     meta: [
       { charset: 'utf-8' },
       { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
@@ -12,6 +12,9 @@ module.exports = {
       { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
       { name: 'MobileOptimized', content: 'width' },
       { name: 'HandheldFriendly', content: 'true' }
+    ],
+    script: [
+      { src: 'https://unpkg.com/feather-icons/dist/feather.min.js' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
