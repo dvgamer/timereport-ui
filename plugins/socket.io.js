@@ -1,5 +1,6 @@
-import io from 'socket.io-client'
+import Vue from 'vue'
+import VueSocketio from 'vue-socket.io'
 
-const socket = io(process.env.SOCKET_HOST_URL)
-
-export default socket
+export default ({ app }) => {
+  Vue.use(VueSocketio, 'http://localhost:5000', app.store)
+}

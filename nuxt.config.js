@@ -23,11 +23,12 @@ module.exports = {
     'bootstrap-vue/dist/bootstrap-vue.css'
   ],
   plugins: [
-    '~/plugins/socket.io.js',
-    '~/plugins/bootstrap-vue.js',
+    { src: '~/plugins/socket.io.js', ssr: false },
+    '~/plugins/vue-highcharts.js',
+    '~/plugins/vue-bootstrap.js',
     '~/plugins/fontawesome.js'
   ],
-  vendor: ['axios', 'socket.io-client'],
+  vendor: ['axios', '~/node_modules/vue-socket.io'],
   build: {
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {
