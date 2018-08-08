@@ -1,14 +1,13 @@
 const { Router } = require('express')
 const router = Router()
 
-const dataStatus = require('./ib-status.js')
 /* GET users listing. */
 router.get('/inbound-transfer/status', (req, res) => {
-  dataStatus().then(data => {
-    res.json(data)
-  }).catch(ex => {
-    res.json({ error: ex.message.replace(/\\/ig,'\\\"') })
-  })
+  // dataStatus().then(data => {
+  //   res.json(data)
+  // }).catch(ex => {
+    res.json({ error: '' })
+  // })
 })
 
 // /* GET user by ID. */
