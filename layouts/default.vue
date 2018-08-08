@@ -1,12 +1,7 @@
 <template>
   <div>
-   <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
       <a class="navbar-brand col-sm-9 col-md-9 col-lg-7 mr-0" href="#">DevOps</a>
-      <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#">Sign out</a>
-        </li>
-      </ul>
     </nav>
 
     <div class="container-fluid">
@@ -73,14 +68,17 @@
         </main>
       </div>
     </div>
-    <script>
-      window.feather.replace()
-    </script>
   </div>
 </template>
 <script>
 export default {
-  created () {
+  mounted () {
+    window.feather.replace()
   }
 }
 </script>
+
+<style>
+
+</style>
+
