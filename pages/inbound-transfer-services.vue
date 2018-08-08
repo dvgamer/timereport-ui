@@ -16,9 +16,29 @@
 import axios from '~/plugins/axios.js'
 
 export default {
-  async asyncData () {
-    let req = await axios({ url: '/inbound-transfer' })
-    return { req: (req.status === 200 ? req.data : {}) }
+  // async asyncData () {
+  //   let req = await axios({ url: '/inbound-transfer' })
+  //   return { req: (req.status === 200 ? req.data : {}) }
+  // }
+  data () {
+    return {
+      total: {
+        wait: 0,
+        fail: 0,
+        success: 0
+      },
+      zip: {
+        'SaleT1CAccum': 0,
+        'ActualSale': 0,
+        'T1CSaleMember': 0,
+        'Daily': 0,
+        'FullInvoice': 0,
+        'StaffPurchase': 0,
+        'Number': 0,
+        'Time': 0,
+        'Other': 0
+      }
+    }
   }
 }
 </script>
