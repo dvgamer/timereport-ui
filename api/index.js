@@ -23,39 +23,41 @@ http.listen(5000, () => {
     })
   })
 
-  setInterval(() => {
-    io.emit('inbound-realtime-graph', [])
-    io.emit('inbound-realtime-queue', [])
-    io.emit('inbound-realtime-status', { wait: 0, fail: 0, complete: 0 })
-  }, 1000)
+  // setInterval(() => {
+  //   io.emit('inbound-realtime-graph', [])
+  //   io.emit('inbound-realtime-queue', [])
+  //   io.emit('inbound-realtime-status', { wait: 0, fail: 0, complete: 0 })
+  // }, 1000)
 
-  consola.start('listening socket.io on *:5000')
-
-  // (async () => {
-  //   let pool = await sql.connect(prod)
+  let poolMain = async () => {
+    let pool = await sql.connect(prod)
   
-  //   await (async () => {
-  //     let results = await pool.request().query(query.graph)
-  //     io.emit('inbound-realtime-graph', results['recordsets'])
-  //     setTimeout(taskGraph, 1000)
-  //   })()
+    let taskGraph = async () => {
+      let results = await pool.request().query(query.graph)
+      io.emit('inbound-realtime-graph', results['recordsets'][0])
+      setTimeout(taskGraph, 1000)
+    }
   
-  //   await (async () => {
-  //     let results = await pool.request().query(query.queue)
-  //     io.emit('inbound-realtime-queue', results['recordsets'])
-  //     setTimeout(taskQueue, 500)
-  //   })()
+    let taskQueue = async () => {
+      let results = await pool.request().query(query.queue)
+      io.emit('inbound-realtime-queue', results['recordsets'][0])
+      setTimeout(taskQueue, 500)
+    }
   
-  //   await (async () => {
-  //     let results = await pool.request().query(query.status)
-  //     io.emit('inbound-realtime-status', {
-  //       wait: results['recordset'][0].nTotal,
-  //       fail: results['recordset'][1].nTotal,
-  //       complete: results['recordset'][2].nTotal
-  //     })
-  //     setTimeout(taskStatus, 1000)
-  //   })()
-  // })
+    let taskStatus = async () => {
+      let results = await pool.request().query(query.status)
+      io.emit('inbound-realtime-status', {
+        wait: results['recordset'][0].nTotal,
+        fail: results['recordset'][1].nTotal,
+        complete: results['recordset'][2].nTotal
+      })
+      setTimeout(taskStatus, 1000)
+    }
+    taskGraph()
+    taskQueue()
+    taskStatus()
+  }
+  poolMain()
 })
 
 // let exitHandler = (options, err) => {

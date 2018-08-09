@@ -63,7 +63,7 @@
             </ul>
           </div>
         </nav>
-        <main role="main" class="col-md-27 ml-sm-auto col-lg-29 pt-3 px-4">
+        <main role="main" class="col-md-27 ml-sm-auto col-lg-29 pt-3 px-4 mb-3">
           <nuxt/>
         </main>
       </div>

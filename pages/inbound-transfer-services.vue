@@ -17,26 +17,19 @@
         <table class="table table-sm">
           <thead>
             <tr>
-              <th scope="col">#</th>
+              <th class="text-center" scope="col">#</th>
               <th scope="col">Sequence</th>
-              <th scope="col">Total</th>
+              <th class="text-center" scope="col">Total</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
+            <tr v-for="(file, index) in zip" :key="index">
+              <th class="text-center" scope="row" v-text="index+1"></th>
+              <td v-text="file.sTable"></td>
+              <td class="text-center" v-text="file.nTotal"></td>
             </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Jacob</td>
-              <td>@twitter</td>
+            <tr v-if="zip.length == 0">
+              <th class="text-center" colspan="3"><b>Loading...</b></th>
             </tr>
           </tbody>
         </table>
@@ -56,7 +49,7 @@
         <div class="card bg-warning p-2 pl-4">
           <div class="counter counter-lg text-left pl-20">
             <span class="counter-number" v-text="total.wait">0</span>
-            <div class="counter-label text-uppercase">Waiting <small>(total)</small></div>
+            <div class="counter-label text-uppercase">Task Wait <small>(total)</small></div>
           </div>
         </div>
       </div>
@@ -80,6 +73,7 @@ export default {
     'inbound-realtime-graph' (data) {
     },
     'inbound-realtime-queue' (data) {
+      this.zip = data
     },
     'inbound-realtime-status' (data) {
       this.total.wait = data.wait
@@ -95,17 +89,7 @@ export default {
         fail: 0,
         complete: 0
       },
-      zip: {
-        'SaleT1CAccum': 0,
-        'ActualSale': 0,
-        'T1CSaleMember': 0,
-        'Daily': 0,
-        'FullInvoice': 0,
-        'StaffPurchase': 0,
-        'Number': 0,
-        'Time': 0,
-        'Others': 0
-      },
+      zip: [],
       minutes: {
         data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
         label: []
