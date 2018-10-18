@@ -1,5 +1,5 @@
 {
-  "name": "express",
+  "name": "devops-cmgpos-portal",
   "version": "1.0.0",
   "description": "Nuxt.js project",
   "author": "Kananek T. <info.dvgamer@gmail.com>",
@@ -12,13 +12,29 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
+    "@nuxtjs/pwa": "^2.6.0",
+    "nuxt": "^2.2.0",
+    "vue-meta": "^1.5.5"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free-brands": "^5.0.13",
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "admin-lte": "git+https://github.com/almasaeed2010/AdminLTE.git#v3.0.0-alpha.2",
     "axios": "^0.16.2",
+    "babel-eslint": "^10.0.1",
+    "bootstrap": "^4.1.3",
     "consola": "^1.4.1",
     "cross-env": "^5.0.1",
+    "eslint": "^4.19.1",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-loader": "^2.1.1",
+    "eslint-plugin-vue": "^4.0.0",
     "express": "^4.15.3",
     "highcharts": "^6.1.1",
     "mssql": "^4.1.0",
-    "nuxt": "latest",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.1.0",
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1",
     "source-map-support": "^0.4.15",
@@ -26,23 +42,14 @@
     "vue-highcharts": "0.0.10",
     "vue-socket.io": "^2.1.1-b"
   },
-  "devDependencies": {
-    "@fortawesome/fontawesome": "^1.1.8",
-    "@fortawesome/fontawesome-free-brands": "^5.0.13",
-    "@fortawesome/fontawesome-free-solid": "^5.0.13",
-    "babel-eslint": "^7.2.3",
-    "bootstrap": "^4.1.3",
-    "bootstrap-vue": "^2.0.0-rc.11",
-    "eslint": "^4.3.0",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-loader": "^1.9.0",
-    "eslint-plugin-html": "^3.1.1",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-node": "^5.1.1",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "eslint-plugin-vue": "^4.7.1",
-    "node-sass": "^4.9.2",
-    "sass-loader": "^7.1.0"
-  }
+  "main": "nuxt",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dvgamerr/DevOps-CMGPOSPortal.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dvgamerr/DevOps-CMGPOSPortal/issues"
+  },
+  "homepage": "https://github.com/dvgamerr/DevOps-CMGPOSPortal#readme"
 }
