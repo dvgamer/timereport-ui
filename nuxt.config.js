@@ -4,12 +4,12 @@ const config = {
     './assets/scss/index.scss'
   ],
   modules: [
+    '@nuxtjs/font-awesome',
     '@nuxtjs/pwa',
   ],
   plugins: [
     { src: '~/plugins/socket.io.js', ssr: false },
-    '~/plugins/vue-meta.js',
-    '~/plugins/vue-highcharts.js'
+    '~/plugins/vue-component.js'
   ],
   vendor: ['axios', '~/node_modules/vue-socket.io'],
   build: {
@@ -19,11 +19,6 @@ const config = {
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /(node_modules)/
-        })
-        config.module.rules.push({
-          test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-          loader: 'url-loader',
           exclude: /(node_modules)/
         })
       }

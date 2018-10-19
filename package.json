@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@nuxtjs/pwa": "^2.6.0",
+    "font-awesome": "^4.7.0",
     "nuxt": "^2.2.0",
     "vue-meta": "^1.5.5"
   },
@@ -20,6 +21,7 @@
     "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/fontawesome-free-brands": "^5.0.13",
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "@nuxtjs/font-awesome": "^1.0.3",
     "admin-lte": "git+https://github.com/almasaeed2010/AdminLTE.git#v3.0.0-alpha.2",
     "axios": "^0.16.2",
     "babel-eslint": "^10.0.1",
@@ -40,7 +42,8 @@
     "source-map-support": "^0.4.15",
     "tedious": "^2.2.4",
     "vue-highcharts": "0.0.10",
-    "vue-socket.io": "^2.1.1-b"
+    "vue-socket.io": "^2.1.1-b",
+    "vuebar": "0.0.20"
   },
   "main": "nuxt",
   "repository": {

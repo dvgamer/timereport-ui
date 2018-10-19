@@ -17,7 +17,7 @@
               </li>
               <li class="nav-item">
                 <nuxt-link class="nav-link" to="/inbound-transfer-services">
-                  <span data-feather="bar-chart-2"></span>
+                  <i class="fa fa-file-text-o" aria-hidden="true"></i>
                   Inbound2BTS Services
                 </nuxt-link>
               </li>
