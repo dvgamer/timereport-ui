@@ -3,7 +3,7 @@
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
       <nuxt-link class="navbar-brand col-md-9 col-lg-7 d-md-block mr-0" to="/">
         <img class="d-inline-block align-top" src="~assets/icon-devops-agile.png" alt="" width="32" height="32">
-        DevOps
+        <span class="ml-2">DevOps</span>
       </nuxt-link>
     </nav>
 

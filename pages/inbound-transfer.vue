@@ -81,6 +81,13 @@ export default {
       this.total.complete = data.complete
     }
   },
+  asyncData() {
+    return new Promise((resolve) => {
+      setTimeout(function () {
+        resolve({})
+      }, 1000)
+    })
+  },
   // components: { ChartUploadMinutes },
   data () {
     return {

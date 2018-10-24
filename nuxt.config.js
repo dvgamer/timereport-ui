@@ -2,19 +2,20 @@ const config = {
   head: {
     title: 'DevOps'
   },
-  loading: { color: '#3B8070' },
+  loading: '~/components/loading.vue',
   css: [
     './assets/scss/index.scss'
   ],
   modules: [
+    [ 'bootstrap-vue/nuxt', { css: false } ],
     '@nuxtjs/font-awesome',
-    '@nuxtjs/pwa',
+    '@nuxtjs/pwa'
   ],
   plugins: [
     { src: '~/plugins/socket.io.js', ssr: false },
     '~/plugins/vue-component.js'
   ],
-  vendor: ['axios', '~/node_modules/vue-socket.io'],
+  vendor: [ 'axios', '~/node_modules/vue-socket.io' ],
   build: {
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {

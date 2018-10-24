@@ -7,10 +7,15 @@ body {
   font-size: .875rem;
 }
 
-.feather {
-  width: 16px;
-  height: 16px;
-  vertical-align: text-bottom;
+.container {
+  transition: all .2s cubic-bezier(.55,0,.1,1);
+}
+
+.page-enter-active, .page-leave-active {
+  transition: opacity .2s
+}
+.page-enter, .page-leave-active {
+  opacity: 0
 }
 
 .navbar-brand img {
