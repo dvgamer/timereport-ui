@@ -1,6 +1,8 @@
 @import 'variables';
 @import '~bootstrap/scss/bootstrap.scss';
 
+@import '_vue-bar';
+
 body {
   font-size: .875rem;
 }
@@ -9,6 +11,11 @@ body {
   width: 16px;
   height: 16px;
   vertical-align: text-bottom;
+}
+
+.navbar-brand img {
+  margin-top: -2px;
+  margin-bottom: -5px;
 }
 
 /*
@@ -31,8 +38,7 @@ body {
   top: 48px; /* Height of navbar */
   height: calc(100vh - 48px);
   padding-top: .5rem;
-  overflow-x: hidden;
-  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  overflow: hidden;
 }
 
 .sidebar .nav-link {

@@ -1,4 +1,7 @@
 const config = {
+  head: {
+    title: 'DevOps'
+  },
   loading: { color: '#3B8070' },
   css: [
     './assets/scss/index.scss'

@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import ChartUploadMinutes from '../components/chartjs/upload-minutes'
+// import ChartUploadMinutes from '../components/chartjs/upload-minutes'
 
 export default {
   sockets: {
@@ -81,7 +81,7 @@ export default {
       this.total.complete = data.complete
     }
   },
-  components: { ChartUploadMinutes },
+  // components: { ChartUploadMinutes },
   data () {
     return {
       total: {
