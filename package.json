@@ -1,7 +1,7 @@
 {
   "name": "devops-ui",
-  "version": "1.0.0",
-  "description": "Nuxt.js project",
+  "version": "1.1.0",
+  "description": "DevOps project",
   "author": "Kananek T. <info.dvgamer@gmail.com>",
   "private": true,
   "scripts": {
@@ -14,9 +14,7 @@
   "dependencies": {
     "@nuxtjs/pwa": "^2.6.0",
     "font-awesome": "^4.7.0",
-    "nuxt": "^2.2.0",
-    "primer": "^10.9.0",
-    "vue-meta": "^1.5.5"
+    "nuxt": "^2.2.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome": "^1.1.8",

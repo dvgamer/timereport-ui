@@ -80,23 +80,19 @@ body {
   font-size: 1rem;
   background-color: rgba(0, 0, 0, .25);
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+  small.version {
+    font-size: 60%;
+    padding: 3px 0 0 7px;
+    position: absolute;
+  }
+}
+.navbar-brand a {
+  color: #eaeaea;
+  text-decoration: none;
 }
 
-.navbar .form-control {
-  padding: .75rem 1rem;
-  border-width: 0;
-  border-radius: 0;
-}
-
-.form-control-dark {
-  color: #fff;
-  background-color: rgba(255, 255, 255, .1);
-  border-color: rgba(255, 255, 255, .1);
-}
-
-.form-control-dark:focus {
-  border-color: transparent;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+.collapsing {
+  transition: none !important;
 }
 
 /*
@@ -105,3 +101,19 @@ body {
 
 .border-top { border-top: 1px solid #e5e5e5; }
 .border-bottom { border-bottom: 1px solid #e5e5e5; }
+
+.form-icon > i.fa {
+  position: relative;
+  margin: 0px 0 0 -17px;
+  color: #343a40;
+}
+
+.form-icon > .form-control {
+  padding-right: 18px;
+}
+
+.breadcrumb {
+  padding: 0px;
+  font-size: 11px;
+  background-color: transparent;
+}

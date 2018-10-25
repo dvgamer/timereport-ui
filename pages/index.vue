@@ -7,7 +7,7 @@
         <b-button class="btn-outline-secondary">Button 1</b-button>
         <b-button class="btn-outline-secondary">Button 2</b-button>
       </b-button-group>
-      <b-dropdown id="ddown1" text="Dropdown Button">
+      <b-dropdown id="ddown1" text="Dropdown Button" right>
         <b-dropdown-item>First Action</b-dropdown-item>
         <b-dropdown-item>Second Action</b-dropdown-item>
         <b-dropdown-item>Third Action</b-dropdown-item>
@@ -23,6 +23,9 @@
 <script>
 
 export default {
+  head: {
+    title: 'Dashboard',
+  },
   components: {
   }
 }

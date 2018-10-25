@@ -1,6 +1,6 @@
 const config = {
   head: {
-    title: 'DevOps'
+    titleTemplate: title => (title ? `${title} · ` : '') + 'DevOps'
   },
   loading: '~/components/loading.vue',
   css: [

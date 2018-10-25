@@ -69,6 +69,9 @@
 // import ChartUploadMinutes from '../components/chartjs/upload-minutes'
 
 export default {
+  head: {
+    title: 'InboundTransfer Service',
+  },
   sockets: {
     'inbound-realtime-graph' (data) {
     },
