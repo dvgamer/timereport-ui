@@ -1,4 +1,4 @@
-const config = {
+let config = {
   head: {
     titleTemplate: title => (title ? `${title} · ` : '') + 'DevOps'
   },
