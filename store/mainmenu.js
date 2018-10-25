@@ -1,9 +1,10 @@
 export const state = () => ({
   default: [
     { permission: 0, name: 'Dashboard', route: '/', icon: 'fa fa-home' },
+    { permission: 0, name: 'Inspection', route: '/inspect', menu: 'inspection', icon: 'fa fa-bug' },
     { permission: 1, name: 'Application', route: '/app', menu: 'application', icon: 'fa fa-tasks' },
     { permission: 2, name: 'Setting', route: '/setting/configuration', menu: 'setting', icon: 'fa fa-gear' },
-    { permission: 1, name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' },
+    { permission: 0, name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' },
   ],
   application: [
     { name: 'Dashboard', route: '/app', icon: 'fa fa-home' },
@@ -21,5 +22,8 @@ export const state = () => ({
   setting: [
     { name: 'Configuration', route: '/setting/configuration', icon: 'fa fa-tasks' },
     { name: 'Database', route: '/setting/database', icon: 'fa fa-file-text-o' }
+  ],
+  inspection: [
+    { name: 'Terminal', route: '/inspect/terminal', icon: 'fa fa-terminal' }
   ]
 })
