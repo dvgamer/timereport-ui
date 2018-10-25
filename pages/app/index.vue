@@ -16,7 +16,7 @@
 
 export default {
   head: {
-    title: 'SSIS Staging',
+    title: 'SSIS Staging'
   },
   components: {
   }
