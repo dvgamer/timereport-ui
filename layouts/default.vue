@@ -20,10 +20,16 @@
         <sidebar/>
         <main role="main" class="col-md-27 ml-sm-auto col-lg-29 pt-3 px-4 mb-3">
           <span v-if="online.socket === 2" class="badge badge-socket badge-light pull-right">
-            <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> loading...
+            <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Socket.io
           </span>
-          <a v-else href="#" class="badge pull-right" @click.prevent="onCheckStatus" :class="online.socket === 1 ? 'badge-success' : 'badge-danger'">
+          <a v-else href="#" class="badge pull-right" @click.prevent="onCheckStatus('socket')" :class="online.socket === 1 ? 'badge-success' : 'badge-danger'">
             <i class="fa" :class="online.socket === 1 ? 'fa-check' : 'fa-close'"></i> Socket.io
+          </a>
+          <span v-if="online.api === 2" class="badge badge-api badge-light pull-right mr-1">
+            <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> API
+          </span>
+          <a v-else href="#" class="badge pull-right mr-1" @click.prevent="onCheckStatus('api')" :class="online.api === 1 ? 'badge-success' : 'badge-danger'">
+            <i class="fa" :class="online.api === 1 ? 'fa-check' : 'fa-close'"></i> API
           </a>
           <b-breadcrumb :items="breadcrumb"/>
           <nuxt/>
@@ -47,6 +53,7 @@ export default {
     appName: 'DevOps',
     version: 'v1.1',
     online: {
+      api: 1,
       socket: 1 // 0=offline, 1=online, 2=wait
     },
     breadcrumb: [
@@ -57,11 +64,11 @@ export default {
     ]
   }),
   methods: {
-    onCheckStatus () {
+    onCheckStatus (name) {
       let vm = this
-      vm.online.socket = 2
+      vm.online[name] = 2
       setTimeout(() => {
-        vm.online.socket = 1
+        vm.online[name] = 0
       }, 2000)
     },
     onSearch () {
@@ -71,9 +78,24 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .navbar-brand {
   font-size: 1.1rem;
+  font-weight: bold;
+}
+.breadcrumb {
+  padding: 0px;
+  font-size: 11px;
+  background-color: transparent;
+}
+
+.badge {
+  text-align: left;
+  padding: 0.25em 0.6em;
+}
+
+.badge > i.fa.fa-circle-o-notch {
+  height: .9em;
   font-weight: bold;
 }
 </style>

@@ -29,15 +29,19 @@ export default {
     col_1: '#159756',
     col_2: '#da4733',
     col_3: '#3b78e7',
-    col_4: '#fdba2c',
-    loading: false
+    col_4: '#fdba2c'
   }),
+  computed: {
+    loading () {
+      return this.$store.state.loading
+    }
+  },
   methods: {
     start() {
-      this.loading = true
+      this.$store.commit('setWait', true)
     },
     finish() {
-      this.loading = false
+      this.$store.commit('setWait', false)
     }
   }
 }

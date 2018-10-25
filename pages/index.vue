@@ -1,20 +1,69 @@
 <template>
 <div>
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-    <h1 class="h2">Dashboard</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <b-button-group class="mr-2" size="sm">
-        <b-button class="btn-outline-secondary">Button 1</b-button>
-        <b-button class="btn-outline-secondary">Button 2</b-button>
-      </b-button-group>
-      <b-dropdown id="ddown1" text="Dropdown Button" right>
-        <b-dropdown-item>First Action</b-dropdown-item>
-        <b-dropdown-item>Second Action</b-dropdown-item>
-        <b-dropdown-item>Third Action</b-dropdown-item>
-        <b-dropdown-divider></b-dropdown-divider>
-        <b-dropdown-item>Something else here...</b-dropdown-item>
-        <b-dropdown-item disabled>Disabled action</b-dropdown-item>
-      </b-dropdown>
+    <div class="col-sm-18 col-md-9 mb-3">
+      <div class="card text-white bg-primary o-hidden h-100">
+        <div class="card-body">
+          <div class="card-body-icon">
+            <i class="fa fa-fw fa-comments"></i>
+          </div>
+          <div class="mr-5">26 New Messages!</div>
+        </div>
+        <a class="card-footer text-white clearfix small z-1" href="#">
+          <span class="float-left">View Details</span>
+          <span class="float-right">
+            <i class="fa fa-angle-right"></i>
+          </span>
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-18 col-md-9 mb-3">
+      <div class="card text-white bg-warning o-hidden h-100">
+        <div class="card-body">
+          <div class="card-body-icon">
+            <i class="fa fa-fw fa-list"></i>
+          </div>
+          <div class="mr-5">11 New Tasks!</div>
+        </div>
+        <a class="card-footer text-white clearfix small z-1" href="#">
+          <span class="float-left">View Details</span>
+          <span class="float-right">
+            <i class="fa fa-angle-right"></i>
+          </span>
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-18 col-md-9 mb-3">
+      <div class="card text-white bg-success o-hidden h-100">
+        <div class="card-body">
+          <div class="card-body-icon">
+            <i class="fa fa-fw fa-shopping-cart"></i>
+          </div>
+          <div class="mr-5">123 New Orders!</div>
+        </div>
+        <a class="card-footer text-white clearfix small z-1" href="#">
+          <span class="float-left">View Details</span>
+          <span class="float-right">
+            <i class="fa fa-angle-right"></i>
+          </span>
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-18 col-md-9 mb-3">
+      <div class="card text-white bg-danger o-hidden h-100">
+        <div class="card-body">
+          <div class="card-body-icon">
+            <i class="fa fa-fw fa-life-ring"></i>
+          </div>
+          <div class="mr-5">13 New Tickets!</div>
+        </div>
+        <a class="card-footer text-white clearfix small z-1" href="#">
+          <span class="float-left">View Details</span>
+          <span class="float-right">
+            <i class="fa fa-angle-right"></i>
+          </span>
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -24,13 +73,26 @@
 
 export default {
   head: {
-    title: 'Dashboard',
+    title: 'Dashboard'
   },
   components: {
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+.card-body {
+  flex: 1 1 auto;
+  padding: 1.25rem;
+}
+.card-body-icon {
+  position: absolute;
+  z-index: 0;
+  top: -1.25rem;
+  right: -1rem;
+  opacity: 0.4;
+  font-size: 5rem;
+  -webkit-transform: rotate(15deg);
+  transform: rotate(15deg);
+}
 </style>

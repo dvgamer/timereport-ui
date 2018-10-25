@@ -1,8 +1,8 @@
 export const state = () => ({
   default: [
     { permission: 0, name: 'Dashboard', route: '/', icon: 'fa fa-home' },
-    { permission: 1, name: 'Application', menu: 'application', icon: 'fa fa-tasks' },
-    { permission: 2, name: 'Setting', menu: 'setting', icon: 'fa fa-gear' },
+    { permission: 1, name: 'Application', route: '/app', menu: 'application', icon: 'fa fa-tasks' },
+    { permission: 2, name: 'Setting', route: '/setting/configuration', menu: 'setting', icon: 'fa fa-gear' },
     { permission: 1, name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' },
   ],
   application: [
