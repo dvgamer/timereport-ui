@@ -8,24 +8,9 @@
       </b-navbar-brand>
       <b-container fluid>
         <b-collapse is-nav id="nav_collapse">
-          <b-nav-form @submit.prevent="onSearch">
-            <div class="form-group form-icon">
-              <b-form-input size="sm" type="text" placeholder="Search"/>
-              <i class="fa fa-search"></i>
-            </div>
-          </b-nav-form>
+          <nav-search/>
           <!-- Right aligned nav items -->
-          <b-navbar-nav class="ml-auto">
-
-            <b-nav-item href="#"><i class="fa fa-user"></i> Sing-In</b-nav-item>
-            <b-nav-item-dropdown right>
-              <template slot="button-content">
-                <em>User</em>
-              </template>
-              <b-dropdown-item href="#">Profile</b-dropdown-item>
-              <b-dropdown-item href="#">Signout</b-dropdown-item>
-            </b-nav-item-dropdown>
-          </b-navbar-nav>
+          <nav-user/>
         </b-collapse>
       </b-container>
     </b-navbar>
@@ -34,6 +19,12 @@
       <div class="row">
         <sidebar/>
         <main role="main" class="col-md-27 ml-sm-auto col-lg-29 pt-3 px-4 mb-3">
+          <span v-if="online.socket === 2" class="badge badge-socket badge-light pull-right">
+            <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> loading...
+          </span>
+          <a v-else href="#" class="badge pull-right" @click.prevent="onCheckStatus" :class="online.socket === 1 ? 'badge-success' : 'badge-danger'">
+            <i class="fa" :class="online.socket === 1 ? 'fa-check' : 'fa-close'"></i> Socket.io
+          </a>
           <b-breadcrumb :items="breadcrumb"/>
           <nuxt/>
         </main>
@@ -43,13 +34,21 @@
 </template>
 <script>
 import sidebar from '~/components/sidebar.vue'
+import navUser from '~/components/nav-user.vue';
+import navSearch from '~/components/nav-search.vue';
+
 export default {
   components: {
-    sidebar
+    sidebar,
+    navUser,
+    navSearch
   },
   data: () => ({
     appName: 'DevOps',
     version: 'v1.1',
+    online: {
+      socket: 1 // 0=offline, 1=online, 2=wait
+    },
     breadcrumb: [
       {
         text: 'Home',
@@ -58,6 +57,13 @@ export default {
     ]
   }),
   methods: {
+    onCheckStatus () {
+      let vm = this
+      vm.online.socket = 2
+      setTimeout(() => {
+        vm.online.socket = 1
+      }, 2000)
+    },
     onSearch () {
       console.log('search:')
     }

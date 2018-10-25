@@ -117,3 +117,13 @@ body {
   font-size: 11px;
   background-color: transparent;
 }
+
+.badge-socket {
+  width: 74px;
+  text-align: left;
+  padding: 0.25em 0.6em;
+  > i.fa.fa-circle-o-notch {
+    height: .9em;
+    font-weight: bold;
+  }
+}
