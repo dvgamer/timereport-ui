@@ -7,11 +7,13 @@ const sql = require('mssql')
 const prod = require('./config-prod.js')
 
 // Require API routes
+const terminal = require('./terminal')
 const inboundTransder = require('./inbound-transfer')
 const query = require('./inbound-transfer/query')
 
 // Import API Routes
-app.use(inboundTransder)
+app.use('/inbound-transfer', inboundTransder)
+app.use('/terminal', terminal)
 
 // sql.close()
 http.listen(5000, () => {

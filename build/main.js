@@ -92,11 +92,13 @@ const sql = __webpack_require__(6);
 const prod = __webpack_require__(7);
 
 // Require API routes
-const inboundTransder = __webpack_require__(8);
-const query = __webpack_require__(9);
+const terminal = __webpack_require__(8);
+const inboundTransder = __webpack_require__(21);
+const query = __webpack_require__(22);
 
 // Import API Routes
-app.use(inboundTransder);
+app.use('/inbound-transfer', inboundTransder);
+app.use('/terminal', terminal);
 
 // sql.close()
 http.listen(5000, () => {
@@ -208,10 +210,264 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 const { Router } = __webpack_require__(0);
+const { MongoConnection } = __webpack_require__(9);
+const router = Router();
+const fs = __webpack_require__(18);
+const path = __webpack_require__(19);
+const simpleGit = __webpack_require__(20);
+
+const repositories = process.env.GIT_REPOS || 'D:/APP - DevOps/';
+const project = path.resolve(path.join(repositories, 'app_terminal.git'));
+if (!fs.existsSync(project)) fs.mkdirSync(project);
+
+let conn = { connected: () => false };
+if (!conn.connected()) MongoConnection().then(db => {
+  conn = db;
+});
+
+router.get('/', (req, res) => (async () => {
+  console.log('git:', project);
+  const git = simpleGit(project);
+
+  const isRepo = await git.checkIsRepo();
+  if (!isRepo) await git.init(true);
+  res.json({});
+})().catch(ex => {
+  res.json({ error: ex.message, stack: ex.stack });
+}));
+
+// /* GET user by ID. */
+// router.get('/inbound-transfer/:id', function (req, res, next) {
+//   const id = parseInt(req.params.id)
+//   if (id >= 0 && id < users.length) {
+//     res.json(users[id])
+//   } else {
+//     res.sendStatus(404)
+//   }
+// })
+
+module.exports = router;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const mongoose = __webpack_require__(10);
+const moment = __webpack_require__(11);
+
+mongoose.Promise = Promise;
+moment.tz.setDefault(process.env.TZ || 'Asia/Bangkok');
+
+const debuger = __webpack_require__(12)('MongoDB');
+let mongodb = {
+  MongoConnection: async (dbname, account, server) => {
+    const IsAdmin = !!process.env.MONGODB_ADMIN;
+    const MONGODB_ACCOUNT = account || process.env.MONGODB_ADMIN;
+    const MONGODB_SERVER = server || process.env.MONGODB_SERVER || 'localhost:27017';
+
+    // if (MONGODB_ACCOUNT === undefined || !MONGODB_SERVER) throw new Error('No Environment db-mongo Setup')
+    let MONGODB_URI = `mongodb://${MONGODB_ACCOUNT ? `${MONGODB_ACCOUNT}@` : ''}${MONGODB_SERVER}/${dbname}?authMode=scram-sha1${IsAdmin ? '&authSource=admin' : ''}`;
+    let conn = await mongoose.createConnection(MONGODB_URI, { useCreateIndex: true, useNewUrlParser: true, connectTimeoutMS: 10000 });
+    debuger.log(`Connected. mongodb://${MONGODB_SERVER}/${dbname} (State is ${conn.readyState})`);
+    conn.connected = () => conn.readyState === 1;
+    conn.close = async () => {
+      await conn.close();
+      debuger.log(`Closed. mongodb://${MONGODB_SERVER}/${dbname} (State is ${conn.readyState})`);
+    };
+    conn.Schema = {
+      ObjectId: mongoose.Schema.ObjectId
+    };
+    return conn;
+  },
+  MongoSchemaMapping: (conn, db) => {
+    for (let i = 0; i < db.length; i++) {
+      if (conn[db[i].id]) throw new Error(`MongoDB schema name is duplicate '${db[i].id}'`);
+      conn[db[i].id] = conn.model(db[i].name, db[i].schema, db[i].name);
+    }
+  }
+};
+
+module.exports = mongodb;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose");
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = require("moment-timezone");
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const chalk = __webpack_require__(13);
+const moment = __webpack_require__(14);
+const numeral = __webpack_require__(15);
+const isDev = "development" === 'production';
+
+class Time {
+  constructor() {
+    this._core = process.hrtime();
+    this._total = 0;
+  }
+  nanoseconds() {
+    let hr = process.hrtime(this._core);
+    const nanoseconds = hr[0] * 1e9 + hr[1];
+    this._core = process.hrtime();
+    this._total += nanoseconds;
+    return `${numeral(nanoseconds / 1e6).format('0,0')}ms`;
+  }
+  seconds() {
+    let hr = process.hrtime(this._core);
+    const nanoseconds = hr[0] * 1e9 + hr[1];
+    this._core = process.hrtime();
+    this._total += nanoseconds;
+    return `${numeral(nanoseconds / 1e9).format('0,0.00')}s`;
+  }
+  total() {
+    let hr = process.hrtime(this._core);
+    const nanoseconds = hr[0] * 1e9 + hr[1];
+    this._core = process.hrtime();
+    this._total += nanoseconds;
+    return `${numeral(this._total / 1e9).format('0,0.00')}s`;
+  }
+}
+
+const groupSize = 6;
+const scopeSize = 8;
+const groupPadding = (msg, size, pad) => {
+  return msg.length > size ? msg.substr(0, size) : msg[pad](size, ' ');
+};
+
+const logWindows = (scope, icon, title, color, msg) => {
+  let msg2 = [chalk.gray(moment().format('HH:mm:ss.SSS')), color(icon)];
+  msg2.push(color(groupPadding(title, groupSize, 'padStart')));
+  if (scope) {
+    msg2.push(groupPadding(scope, scopeSize, 'padEnd'));
+    msg2.push(chalk.cyan('»'));
+  }
+  console.log(...msg2.concat(msg));
+};
+
+const logLinux = (scope, icon, msg) => {
+  let msg2 = [moment().format('YYYY-MM-DD HH:mm:ss.SSS'), !icon ? '…' : icon];
+  if (scope) msg2.push(`[${scope.toUpperCase()}]`);
+  console.log(...msg2.concat(msg));
+};
+
+module.exports = scopeName => {
+  let measure = null;
+  return {
+    log(...msg) {
+      if (!isDev) return;
+      let msg2 = [chalk.gray(moment().format('HH:mm:ss.SSS')), chalk.gray.bold('…')];
+      msg2.push(measure ? groupPadding(measure.nanoseconds(), groupSize, 'padStart') : chalk.gray.bold(groupPadding('debug', groupSize, 'padStart')));
+      if (scopeName) {
+        msg2.push(groupPadding(scopeName, scopeSize, 'padEnd'));
+        msg2.push(chalk.cyan('»'));
+      }
+      console.log(...msg2.concat(msg));
+    },
+    start(...msg) {
+      measure = new Time();
+      if (isDev) logWindows(scopeName, '○', 'start', chalk.cyan.bold, msg);else logLinux(scopeName, '○', msg);
+    },
+    success(...msg) {
+      if (measure) msg.push(`(${measure.total()})`);
+      if (isDev) logWindows(scopeName, '●', 'success', chalk.green.bold, msg);else logLinux(scopeName, '●', msg);
+      measure = null;
+    },
+    warning(...msg) {
+      if (isDev) logWindows(scopeName, '▲', 'warning', chalk.yellow.bold, msg);else logLinux(scopeName, '▲', msg);
+      measure = null;
+    },
+    info(...msg) {
+      if (isDev) logWindows(scopeName, '╍', 'info', chalk.blue.bold, msg);else logLinux(scopeName, null, msg);
+    },
+    async error(ex) {
+      if (!ex) return;
+      if (ex instanceof Error) {
+        if (isDev) {
+          const Youch = __webpack_require__(16);
+          let output = await new Youch(ex, {}).toJSON();
+          console.log(__webpack_require__(17)(output));
+        } else {
+          let excep = /at.*?\((.*?)\)/i.exec(ex.stack) || [];
+          logLinux(scopeName, 'х', [ex.message.indexOf('Error:') === 0 ? ex.message.replace('Error:', 'ERROR-Message:') : `ERROR-Message: ${ex.message}`]);
+          logLinux(scopeName, 'х', [`ERROR-File: ${excep[1] ? excep[1] : 'N/A'}`, ex.message]);
+          // require('../raven').error(ex)
+        }
+      } else {
+        let msg = [ex.toString()];
+        if (measure) msg.push(`(${measure.total()})`);
+        if (isDev) logWindows(scopeName, 'х', 'error', chalk.red.bold, msg);else logLinux(scopeName, 'х', msg);
+      }
+    }
+  };
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("chalk");
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports = require("moment");
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = require("numeral");
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports = require("youch");
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+module.exports = require("youch-terminal");
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+module.exports = require("simple-git/promise");
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const { Router } = __webpack_require__(0);
 const router = Router();
 
 /* GET users listing. */
-router.get('/inbound-transfer/status', (req, res) => {
+router.get('/status', (req, res) => {
   // dataStatus().then(data => {
   //   res.json(data)
   // }).catch(ex => {
@@ -232,7 +488,7 @@ router.get('/inbound-transfer/status', (req, res) => {
 module.exports = router;
 
 /***/ }),
-/* 9 */
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = {

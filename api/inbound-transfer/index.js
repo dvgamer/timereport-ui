@@ -2,7 +2,7 @@ const { Router } = require('express')
 const router = Router()
 
 /* GET users listing. */
-router.get('/inbound-transfer/status', (req, res) => {
+router.get('/status', (req, res) => {
   // dataStatus().then(data => {
   //   res.json(data)
   // }).catch(ex => {

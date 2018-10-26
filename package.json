@@ -14,11 +14,17 @@
   },
   "dependencies": {
     "@nuxtjs/pwa": "^2.6.0",
+    "chalk": "^2.4.1",
     "consola": "^1.4.1",
     "express": "^4.15.3",
     "font-awesome": "^4.7.0",
+    "moment": "^2.22.2",
+    "moment-timezone": "^0.5.21",
+    "mongoose": "^5.3.6",
     "mssql": "^4.1.0",
+    "numeral": "^2.0.6",
     "nuxt": "^2.2.0",
+    "simple-git": "^1.105.0",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
@@ -47,7 +53,9 @@
     "tedious": "^2.2.4",
     "vue-highcharts": "0.0.10",
     "vue-socket.io": "^2.1.1-b",
-    "vuebar": "0.0.20"
+    "vuebar": "0.0.20",
+    "youch": "^2.0.10",
+    "youch-terminal": "^1.0.0"
   },
   "main": "nuxt",
   "repository": {
