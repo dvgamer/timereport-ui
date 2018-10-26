@@ -1,9 +1,9 @@
 export const state = () => ({
   default: [
     { permission: 0, name: 'Dashboard', route: '/', icon: 'fa fa-home' },
-    { permission: 0, name: 'Inspection', route: '/inspect', menu: 'inspection', icon: 'fa fa-bug' },
-    { permission: 1, name: 'Application', route: '/app', menu: 'application', icon: 'fa fa-tasks' },
-    { permission: 2, name: 'Setting', route: '/setting/configuration', menu: 'setting', icon: 'fa fa-gear' },
+    { permission: 0, name: 'Inspection', menu: 'inspection', icon: 'fa fa-bug' },
+    { permission: 1, name: 'Application', menu: 'application', icon: 'fa fa-tasks' },
+    { permission: 2, name: 'Setting', menu: 'setting', icon: 'fa fa-gear' },
     { permission: 0, name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' },
   ],
   application: [
@@ -27,3 +27,31 @@ export const state = () => ({
     { name: 'Terminal', route: '/inspect/terminal', icon: 'fa fa-terminal' }
   ]
 })
+
+export const getters = {
+  getMainMenu: (state, getters) => (path) => {
+    let IsStop = false
+    let sResult = 'default'
+    let compare = (route) => {
+      IsStop = route === path
+      return IsStop
+    }
+    for (let key in state) {
+      for (let i in state[key]) {
+        if (compare(state[key][i].route)) {
+          sResult = key
+          break;
+        } else if (state[key][i].items) {
+          for (let l in state[key][i].items) {
+            if (compare(state[key][i].items[l].route)) {
+              sResult = key
+              break;
+            }
+          }
+        }
+      }
+      if (IsStop) break;
+    }
+    return sResult
+  }
+}

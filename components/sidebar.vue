@@ -74,6 +74,11 @@ export default {
       this.mainMenu = this.mainStack.pop()
       this.toggleSidebar()
     }
+  },
+  created () {
+    this.mainMenu = this.$store.getters['mainmenu/getMainMenu'](this.$route.path)
+    if (this.mainMenu !== 'default') this.mainStack.push('default')
+    // console.log(this)
   }
 }
 </script>

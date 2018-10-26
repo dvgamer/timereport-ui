@@ -8,6 +8,7 @@ let config = {
   ],
   modules: [
     [ 'bootstrap-vue/nuxt', { css: false } ],
+    '@nuxtjs/axios',
     '@nuxtjs/font-awesome',
     '@nuxtjs/pwa'
   ],
@@ -34,7 +35,7 @@ if (process.env.NODE_ENV === 'production') {
   config = Object.assign({
     serverMiddleware: [ '~/api/index.js' ],
     axios: {
-      baseURL: process.env.API_URL || 'http://localhost:3000/api'
+      baseURL: process.env.API_URL || 'http://localhost:3001/api'
     },
     env: {
       SOCKET_HOST_URL: process.env.SOCKET_HOST_URL || 'http://localhost:3001'
