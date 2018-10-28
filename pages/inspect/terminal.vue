@@ -7,12 +7,10 @@
     <b-form class="mb-2 mb-md-0" @submit.prevent="onBashEnter">
       <b-input-group size="sm">
         <b-input-group-prepend>
-          <b-btn variant="outline-info"><i class="fa fa-folder-open-o"></i> LOAD</b-btn>
+          <b-btn variant="outline-info"><i class="fa fa-file-o"></i> moment.js</b-btn>
+          <b-button type="submit" class="btn-outline-success"><i class="fa fa-play"></i></b-button>
         </b-input-group-prepend>
-        <b-form-input type="text" v-model="cmd.stdin" placeholder="bash"></b-form-input>
-        <b-input-group-append>
-          <b-button type="submit" class="btn-outline-success"><i class="fa fa-play"></i> RUN</b-button>
-        </b-input-group-append>
+        <b-form-input type="text" v-model="cmd.stdin" placeholder="args"></b-form-input>
       </b-input-group>
     </b-form>
   </div>
@@ -75,22 +73,19 @@ export default {
   },
   computed: {
     codeHtml () {
-      return this.cmd.stdout.join('<br>')
+      return this.cmd.stdout.join('')
     }
   },
   methods: {
     getCmdFormat (msg, type) {
       let date = moment().format('YYYY-MM-DD HH:mm:ss.SSS')
-      return `${date} ${type} ${msg}`
+      return `<p class="cmd"><span class="type">${date} ${type}</span> <span class="msg">${msg}</span></p>`
     },
     onBashEnter () {
-      this.cmd.stdout = [ getCmdFormat(this.cmd.stdin, '›') ].concat(this.cmd.stdout)
-      this.cmd.stdin = ''
-      // this.$showPanel({
-      //   component: "panel-1",
-      //   cssClass: "panel-1",
-      //   props: {}
-      // })
+      if (this.cmd.stdin.trim()) {
+        this.cmd.stdout = [ this.getCmdFormat(this.cmd.stdin, '›') ].concat(this.cmd.stdout)
+        this.cmd.stdin = ''
+      }
     },
     onCmCursorActivity(codemirror) {
       console.log('onCmCursorActivity', codemirror)
@@ -132,5 +127,24 @@ export default {
   color: #EAEAEA;
   min-height: 320px;
   height: calc(100vh - 170px) !important;
+  code {
+    color: #EAEAEA;
+    font-size: 12px;
+    font-family: 'Consolas';
+    p {
+      margin: 0px;
+    }
+    .type {
+      color: #96a0ab;
+      font-weight: bold;
+    }
+    .cmd {
+      .type {
+      }
+      .msg {
+        
+      }
+    }
+  }
 }
 </style>
