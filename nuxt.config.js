@@ -2,9 +2,12 @@ let config = {
   head: {
     titleTemplate: title => (title ? `${title} · ` : '') + 'DevOps'
   },
-  loading: '~/components/loading.vue',
+  loading: '~/components/loading/top-bar.vue',
   css: [
-    './assets/scss/index.scss'
+    './assets/scss/index.scss',
+    'codemirror/lib/codemirror.css',
+    'codemirror/addon/merge/merge.css',
+    'codemirror/theme/material.css'
   ],
   modules: [
     [ 'bootstrap-vue/nuxt', { css: false } ],
@@ -13,8 +16,11 @@ let config = {
     '@nuxtjs/pwa'
   ],
   plugins: [
-    { src: '~/plugins/socket.io.js', ssr: false },
-    '~/plugins/vue-component.js'
+    '~/plugins/vue-api.js',
+    '~/plugins/vue-installed.js',
+    { src: '~/plugins/vue-component.js', ssr: false },
+    { src: '~/plugins/vue-codemirror.js', ssr: false },
+    { src: '~/plugins/socket.io.js', ssr: false }
   ],
   vendor: [ 'axios', '~/node_modules/vue-socket.io' ],
   build: {

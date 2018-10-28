@@ -1,7 +1,9 @@
 import Vue from 'vue'
-import VueHighcharts from 'vue-highcharts'
-import Highcharts from 'highcharts'
-import Vuebar from 'vuebar'
+import { VueSlideoutPanel } from 'vue2-slideout-panel'
 
-Vue.use(Vuebar)
-Vue.use(VueHighcharts, { Highcharts })
+Vue.component('slideout-panel', VueSlideoutPanel)
+// Vue.use({
+//   install(Vue) {
+//     Vue.prototype.$showPanel = vueSlideoutPanelService.show
+//   }
+// })
