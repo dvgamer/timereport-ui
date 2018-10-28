@@ -20,11 +20,11 @@
     "font-awesome": "^4.7.0",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21",
-    "mongoose": "^5.3.6",
+    "mongoose": "^5.3.7",
     "mssql": "^4.1.0",
     "numeral": "^2.0.6",
     "nuxt": "^2.2.0",
-    "simple-git": "^1.105.0",
+    "simple-git": "^1.106.0",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "sass-loader": "^7.1.0",
     "socket.io-client": "^2.1.1",
     "source-map-support": "^0.4.15",
-    "tedious": "^2.2.4",
+    "tedious": "^2.7.1",
     "vue-codemirror": "^4.0.5",
     "vue-highcharts": "0.0.10",
     "vue-loading-spinner": "^1.0.11",

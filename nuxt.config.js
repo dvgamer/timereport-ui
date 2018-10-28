@@ -22,7 +22,7 @@ let config = {
     { src: '~/plugins/vue-codemirror.js', ssr: false },
     { src: '~/plugins/socket.io.js', ssr: false }
   ],
-  vendor: [ 'axios', '~/node_modules/vue-socket.io' ],
+  vendor: [ 'axios', 'moment', '~/node_modules/vue-socket.io' ],
   build: {
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {
