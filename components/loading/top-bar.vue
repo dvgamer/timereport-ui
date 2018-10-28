@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="load-bar" :style="{ height: height, top: '50px', opacity: !loading ? 0 : 1 }">
+    <div class="load-bar" :style="{ opacity: !loading ? 0 : 1 }">
       <div class="load-bar-container">
         <div class="load-bar-base base1" :style="{ background: col_1 }">
           <div class="color red" :style="{ background: col_2 }"></div>
@@ -25,11 +25,12 @@
 
 export default {
   data: () => ({
-    height: '3px',
     col_1: '#159756',
     col_2: '#da4733',
     col_3: '#3b78e7',
-    col_4: '#fdba2c'
+    col_4: '#fdba2c',
+    display: 'none',
+    timeout: null
   }),
   computed: {
     loading () {
@@ -39,9 +40,16 @@ export default {
   methods: {
     start() {
       this.$store.commit('setWait', true)
+      // this.display = 'block'
+      // if (this.timeout != null) clearTimeout(this.timeout)
     },
     finish() {
-      this.$store.commit('setWait', false)
+      let vm = this
+      vm.$store.commit('setWait', false)
+      // vm.timeout = setTimeout(() => {
+      //   vm.display = 'none'
+      //   vm.timeout = null
+      // }, 300)
     }
   }
 }
@@ -56,12 +64,12 @@ export default {
 }
 
 .load-bar {
-  position:fixed;
-  bottom:0;
-  height:5px;
+  position:absolute;
+  top: 46px;
+  height:4px;
   width:100%;
   opacity: 1;
-  z-index: 10000;
+  z-index: 1100;
   -webkit-transition: opacity 0.2s linear;
   transition: opacity 0.2s linear;
 }

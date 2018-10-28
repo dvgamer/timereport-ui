@@ -14,7 +14,6 @@
         </b-collapse>
       </b-container>
     </b-navbar>
-
     <div class="container-fluid">
       <div class="row">
         <sidebar/>

@@ -1,38 +1,41 @@
 <template>
 <div>
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-    <h1 class="h2">Terminal</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <b-button-group class="mr-2" size="sm">
-        <b-button class="btn-outline-success"><i class="fa fa-play"></i> RUN</b-button>
-      </b-button-group>
-      <b-button-group class="mr-2" size="sm">
-        <b-button class="btn-outline-secondary"><i class="fa fa-edit"></i> EDIT</b-button>
-        <b-button class="btn-outline-secondary"><i class="fa fa-plus"></i> ADD</b-button>
-      </b-button-group>
-    </div>
+  <no-ssr>
+    <slideout-panel v-show="true"></slideout-panel>
+  </no-ssr>
+  <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <b-form class="mb-2 mb-md-0">
+      <b-input-group size="sm">
+        <b-input-group-prepend>
+          <b-btn variant="outline-info"><i class="fa fa-folder-open-o"></i> LOAD</b-btn>
+        </b-input-group-prepend>
+        <b-form-input type="text" required placeholder="bash"></b-form-input>
+        <b-input-group-append>
+          <b-button type="submit" class="btn-outline-success"><i class="fa fa-play"></i> RUN</b-button>
+        </b-input-group-append>
+      </b-input-group>
+    </b-form>
   </div>
   <div class="row">
-    <div class="col-12">
-      <b-table class="script-lists" :small="true" striped hover
-        :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" :items="items" :fields="fields">
-      </b-table>
-      <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
-    </div>
-    <div class="col-24">
-
+    <div class="col">
+      <textarea disabled="disabled" rows="5" wrap="soft" class="code-console form-control">asdasd</textarea>
     </div>
   </div>
 </div>
 </template>
 
 <script>
+import spinnerSocket from '~/components/loading/spinner-socket.vue'
 
 export default {
+  components: {
+    'spinner-socket': spinnerSocket
+  },
   head: {
     title: 'Terminal',
   },
   data: () => ({
+    coding: '/_/coding/javascript',
     sortBy: 'no',
     sortDesc: false,
     currentPage: 1,
@@ -47,8 +50,49 @@ export default {
       { no: 2, filename: 'Larsen Shaw' },
       { no: 3, filename: 'Geneva Wilson' },
       { no: 4, filename: 'Jami Carney' }
-    ]
-  })
+    ],
+    bash: [ '--- Console command ---' ],
+    cmOption: {
+      tabSize: 4,
+      styleActiveLine: true,
+      lineNumbers: true,
+      line: true,
+      mode: 'powershell',
+      lineWrapping: true,
+      keyMap: "sublime",
+      theme: "material"
+    }
+  }),
+  computed: {
+    textConsole () {
+      return ''
+    }
+  },
+  methods: {
+    onBashEnter () {
+      this.bash.push('value')
+      console.log('bash:', this.bash.length)
+      // this.$showPanel({
+      //   component: "panel-1",
+      //   cssClass: "panel-1",
+      //   props: {}
+      // })
+    },
+    onCmCursorActivity(codemirror) {
+      console.log('onCmCursorActivity', codemirror)
+    },
+    onCmReady(codemirror) {
+      console.log('onCmReady', codemirror)
+    },
+    onCmFocus(codemirror) {
+      console.log('onCmFocus', codemirror)
+    },
+    onCmBlur(codemirror) {
+      console.log('onCmBlur', codemirror)
+    }
+  },
+  created () {
+  }
 }
 </script>
 
@@ -65,5 +109,14 @@ export default {
 .table th {
   border-top: none;
   outline: none;
+}
+.code-console {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 4px 16px;
+  background-color: #3a4449 !important;
+  color: #EAEAEA;
+  min-height: 320px;
+  height: calc(100vh - 170px) !important;
 }
 </style>
