@@ -7,13 +7,24 @@ const sql = require('mssql')
 const prod = require('./config-prod.js')
 
 // Require API routes
-const terminal = require('./terminal')
+const inspect = require('./inspect')
 const inboundTransder = require('./inbound-transfer')
 const query = require('./inbound-transfer/query')
 
+if (process.env.NODE_ENV !== 'production') {
+  app.use((req, res, next) => {
+    const methodAllow = [ 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' ]
+    res.setHeader('Content-Type', 'application/json')
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
+    res.setHeader('Access-Control-Allow-Methods', methodAllow.join(','))
+    if (req.method === 'OPTIONS') return res.sendStatus(200)
+    next()
+  })
+}
 // Import API Routes
 app.use('/inbound-transfer', inboundTransder)
-app.use('/terminal', terminal)
+app.use('/inspect', inspect)
 
 // sql.close()
 http.listen(5000, () => {

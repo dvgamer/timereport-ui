@@ -34,18 +34,18 @@ let config = {
         })
       }
     }
+  },
+  axios: { baseURL: process.env.AXIOS_BASE_URL || 'http://localhost:3001/' },
+  env: {
+    dev: process.env.NODE_ENV !== 'production',
+    baseURL: process.env.AXIOS_BASE_URL || 'http://localhost:3001/',
+    SOCKET_HOST_URL: process.env.SOCKET_HOST_URL || 'http://localhost:5000'
   }
 }
 
 if (process.env.NODE_ENV === 'production') {
   config = Object.assign({
-    serverMiddleware: [ '~/api/index.js' ],
-    axios: {
-      baseURL: process.env.API_URL || 'http://localhost:3001/api'
-    },
-    env: {
-      SOCKET_HOST_URL: process.env.SOCKET_HOST_URL || 'http://localhost:3001'
-    }
+    serverMiddleware: [ '~/api/index.js' ]
   }, config)
 }
 module.exports = config
