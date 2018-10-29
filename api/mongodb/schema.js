@@ -7,6 +7,7 @@ module.exports = [
     name: 'db-snippet',
     schema: Schema({
       title: String,
+      mode: String,
       file: String,
       task: String,
       user: String,
