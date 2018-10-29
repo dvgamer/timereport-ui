@@ -1,16 +1,14 @@
 const { Router } = require('express')
-const { MongoConnection } = require('../mongodb')
+const db = require('../mongodb')
 const router = Router()
 const fs = require('fs')
+const fx = require('mkdir-recursive')
 const path = require('path')
 const simpleGit = require('simple-git/promise')
 
-const repositories = process.env.GIT_REPOS || 'D:/APP - DevOps/'
+const repositories = process.env.GIT_REPOS || './tmp'
 const project = path.resolve(path.join(repositories, 'app_terminal.git'))
-if (!fs.existsSync(project)) fs.mkdirSync(project)
-
-let conn = { connected: () => false }
-if (!conn.connected()) MongoConnection().then(db => { conn = db })
+if (!fs.existsSync(project)) fx.mkdirSync(project)
 
 router.get('/', (req, res) => (async () => {
   console.log('git:', project)

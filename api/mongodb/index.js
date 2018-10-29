@@ -33,15 +33,13 @@ let mongodb = {
   }
 }
 
-const { MongoConnection, MongoSchemaMapping } = mongodb
-
 let conn = { connected: () => false }
 module.exports = {
   connected: () => conn.connected(),
   open: async () => {
     if (!conn.connected()) {
-      conn = await MongoConnection('app_devops', process.env.DBTOUNO_USER, process.env.DBTOUNO_SERVER)
-      MongoSchemaMapping(conn, require('./schema'))
+      conn = await mongodb.MongoConnection('app_devops', process.env.DBTOUNO_USER, process.env.DBTOUNO_SERVER)
+      mongodb.MongoSchemaMapping(conn, require('./schema'))
     }
     return conn
   }
