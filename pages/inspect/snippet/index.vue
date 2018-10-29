@@ -14,7 +14,7 @@
   <div class="row">
     <div class="col">
       <div class="table-responsive-sm">
-        <b-table class="table table-filter" :items="items" :fields="fields">
+        <b-table class="table table-filter" :items="items" :fields="fields" show-empty empty-text="No snippet.">
           <template slot="table-colgroup">
             <col style="width: 75%">
             <col style="width: 10%">
@@ -44,6 +44,10 @@ export default {
   head: {
     title: 'Snippets',
   },
+  async asyncData ({ $api, env, $axios, store, params }) {
+    let data = await $api.get('/inspect/snippet')
+    return { items: data }
+  },
   data: () => ({
     sortBy: 'no',
     sortDesc: false,
@@ -55,12 +59,7 @@ export default {
       { key: 'policy', sortable: true },
       { key: 'modify', sortable: true },
     ],
-    items: [
-      { owner: 'uifaces', avatar: 'https://avatars.dicebear.com/v2/male/bseysd.svg', filename: 'Dickerson Macdonald', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) },
-      { owner: 'uifaces', avatar: 'https://avatars.dicebear.com/v2/male/bdfhd.svg', filename: 'Larsen Shaw', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) },
-      { owner: 'uifaces', avatar: 'https://avatars.dicebear.com/v2/female/fnxdrykf.svg', filename: 'Geneva Wilson', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) },
-      { owner: 'uifaces', avatar: 'https://avatars.dicebear.com/v2/female/gy54esvcg.svg', filename: 'Jami Carney', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) }
-    ],
+    items: [],
     cmOption: {
       tabSize: 4,
       styleActiveLine: true,
@@ -158,27 +157,37 @@ export default {
 	font-family: 'Glyphicons Halflings';
 	position: absolute;
 }
-.table-filter .star {
-	color: #ccc;
-	text-align: center;
-	display: block;
+.table-filter  {
+  tr.b-table-empty-row, tr.b-table-empty-row:hover {
+    background-color: transparent;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: default;
+  }
+  .star {
+    color: #ccc;
+    text-align: center;
+    display: block;
+    &.star-checked {
+      color: #F0AD4E;
+      &:hover {
+        color: #F0AD4E;
+      }
+    }
+    &:hover {
+      color: #ccc;
+    }
+  }
+  .media-photo {
+    width: 34px;
+    height: 34px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #f5f5f5;
+  }
 }
-.table-filter .star.star-checked {
-	color: #F0AD4E;
-}
-.table-filter .star:hover {
-	color: #ccc;
-}
-.table-filter .star.star-checked:hover {
-	color: #F0AD4E;
-}
-.table-filter .media-photo {
-	width: 34px;
-  height: 34px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-color: #f5f5f5;
-}
+
+
 .table-filter .media-body {
     display: block;
     /* Had to use this style to force the div to expand (wasn't necessary with my bootstrap version 3.3.6) */
