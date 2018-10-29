@@ -73,6 +73,11 @@ export default {
     onSearch () {
       console.log('search:')
     }
+  },
+  beforeMount () {
+    window.addEventListener('keydown', (e) => {
+      if (e.keyCode >= 112 && e.keyCode <= 123) return e.preventDefault()
+    })
   }
 }
 </script>

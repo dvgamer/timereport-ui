@@ -56,10 +56,10 @@ export default {
       { key: 'modify', sortable: true },
     ],
     items: [
-      { owner: 'uifaces', avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/fffabs/128.jpg', filename: 'Dickerson Macdonald', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) },
-      { owner: 'uifaces', avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/fffabs/128.jpg', filename: 'Larsen Shaw', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) },
-      { owner: 'uifaces', avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/fffabs/128.jpg', filename: 'Geneva Wilson', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) },
-      { owner: 'uifaces', avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/fffabs/128.jpg', filename: 'Jami Carney', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) }
+      { owner: 'uifaces', avatar: 'https://avatars.dicebear.com/v2/male/bseysd.svg', filename: 'Dickerson Macdonald', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) },
+      { owner: 'uifaces', avatar: 'https://avatars.dicebear.com/v2/male/bdfhd.svg', filename: 'Larsen Shaw', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) },
+      { owner: 'uifaces', avatar: 'https://avatars.dicebear.com/v2/female/fnxdrykf.svg', filename: 'Geneva Wilson', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) },
+      { owner: 'uifaces', avatar: 'https://avatars.dicebear.com/v2/female/gy54esvcg.svg', filename: 'Jami Carney', detail: 't enim ad minim veniam, quis nostrud exercitation...', policy: 'Private', modify: new Date(2018, 6, 23) }
     ],
     cmOption: {
       tabSize: 4,
@@ -176,7 +176,8 @@ export default {
 	width: 34px;
   height: 34px;
   background-size: cover;
-  background-repeat: no-repeat; 
+  background-repeat: no-repeat;
+  background-color: #f5f5f5;
 }
 .table-filter .media-body {
     display: block;

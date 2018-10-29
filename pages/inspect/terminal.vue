@@ -3,20 +3,24 @@
   <no-ssr>
     <slideout-panel v-show="true"></slideout-panel>
   </no-ssr>
-  <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-    <b-form class="mb-2 mb-md-0" @submit.prevent="onBashEnter">
-      <b-input-group size="sm">
-        <b-input-group-prepend>
-          <b-btn variant="outline-info"><i class="fa fa-file-o"></i> moment.js</b-btn>
-          <b-button type="submit" class="btn-outline-success"><i class="fa fa-play"></i></b-button>
-        </b-input-group-prepend>
-        <b-form-input type="text" v-model="cmd.stdin" placeholder="args"></b-form-input>
-      </b-input-group>
-    </b-form>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h2 class="h2">Terminal</h2>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <b-button-group class="mr-2" size="sm">
+        <b-btn variant="outline-info"><i class="fa fa-folder-open-o"></i> LOAD</b-btn>
+        <b-btn class="btn-outline-success"><i class="fa fa-play"></i></b-btn>
+      </b-button-group>
+    </div>
   </div>
   <div class="row">
     <div class="col">
       <div class="code-console border p-2">
+        <code>
+          <span class="cmd">
+            <span class="type" v-html="`${getLogTime('YYYY-MM-DD HH:mm:ss')}.xxx ` + (cmd.process ? '…' :'›')"></span>
+            <span class="msg" v-html="cmd.process ? '' : toHtml(cmd.stdin) + (cmd.dash ? '_' : '')"></span>
+          </span>
+        </code>
         <code v-html="codeHtml"></code>
       </div>
     </div>
@@ -28,6 +32,13 @@
 import moment from 'moment'
 import spinnerSocket from '~/components/loading/spinner-socket.vue'
 
+let iDash = 0
+let T_CMD = 0
+let T_INFO = 1
+let T_DEBUG = 2
+let T_RUN = 3
+let T_FAIL = 4
+
 export default {
   components: {
     'spinner-socket': spinnerSocket
@@ -37,6 +48,9 @@ export default {
   },
   data: () => ({
     cmd: {
+      keyEvent: true,
+      dash: false,
+      process: false,
       stdout: [],
       stdin: ''
     },
@@ -67,40 +81,109 @@ export default {
     }
   }),
   watch: {
-    bash () {
-      if (this.bash.length > 200) this.bash.shift()
-    }
   },
   computed: {
+    codeCompile () {
+      return this.getCmdFormat(this.cmd.stdin, T_CMD)
+    },
     codeHtml () {
       return this.cmd.stdout.join('')
     }
   },
   methods: {
-    getCmdFormat (msg, type) {
-      let date = moment().format('YYYY-MM-DD HH:mm:ss.SSS')
-      return `<p class="cmd"><span class="type">${date} ${type}</span> <span class="msg">${msg}</span></p>`
+    async axiosCompiler () {
+      let vm = this
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          vm.cmdWriteLog(T_FAIL, `'${vm.cmd.stdin}' is not recognized as command.`)
+          resolve()
+        }, 500)
+      })
     },
-    onBashEnter () {
+    onEnter () {
       if (this.cmd.stdin.trim()) {
-        this.cmd.stdout = [ this.getCmdFormat(this.cmd.stdin, '›') ].concat(this.cmd.stdout)
-        this.cmd.stdin = ''
+        this.cmd.process = true
+        this.axiosCompiler().catch((ex => {
+          this.cmdWriteLog(T_FAIL, `<span class="text-danger">${ex.message}</span>`)
+        }).bind(this))
       }
     },
-    onCmCursorActivity(codemirror) {
-      console.log('onCmCursorActivity', codemirror)
+    onSave () {
+      console.log('saved.')
     },
-    onCmReady(codemirror) {
-      console.log('onCmReady', codemirror)
+    onClear () {
+      this.cmd.stdout = []
     },
-    onCmFocus(codemirror) {
-      console.log('onCmFocus', codemirror)
+    eventTerminalKey (e) {
+      if (!this.cmd.keyEvent) return
+      let IsKey = [ 'Enter', 'Backspace', 'Space' ].indexOf(e.code) === -1
+      let IsFn = e.altKey || e.metaKey || (e.keyCode >= 112 && e.keyCode <= 123)
+
+      if (e.key.charCodeAt() > 126 || IsFn || (e.keyCode < 48 && IsKey)) return e.preventDefault()
+
+      if (e.code === 'Backspace') {
+        this.cmd.stdin = this.cmd.stdin.slice(0, this.cmd.stdin.length - 1)
+      } else if (e.code === 'Enter') {
+          if (!this.cmd.process) this.onEnter()
+          return e.preventDefault()
+      } else {
+        if (!e.ctrlKey) {
+           this.cmd.stdin += e.key
+        } else if (e.code === 'KeyS') {
+          this.onSave()
+          return e.preventDefault()
+        } else if (e.code === 'KeyL') {
+          this.onClear()
+          return e.preventDefault()
+        } else if (e.code === 'KeyA') {
+          return e.preventDefault()
+        } else if (e.code === 'KeyC') {
+          this.cmd.stdin = ''
+        }
+      }
     },
-    onCmBlur(codemirror) {
-      console.log('onCmBlur', codemirror)
+    eventTerminalPaste (e) {
+      if (!this.cmd.keyEvent || !e.clipboardData) return
+
+      let data = e.clipboardData.getData('text').trim()
+      this.cmd.stdin = data
+    },
+    toHtml (text) {
+      return text.replace(/ /g, '&nbsp')
+    },
+    cmdWriteLog (type, msg) {
+      this.cmd.stdout = [ this.getCmdFormat(msg, type) ].concat(this.cmd.stdout)
+      this.cmd.stdin = ''
+      this.cmd.process = false
+    },
+    getCmdFormat (msg, type) {
+      let color = ''
+      switch (type) {
+        case T_CMD: type = '›'; color = 'text-light'; break
+        case T_INFO: type = '―'; color = 'text-info'; break
+        case T_DEBUG: type = '…'; color = 'text-muted'; break
+        case T_FAIL: type = '‼'; color = 'text-danger'; break
+        default: type = '·'; color = 'text-warning'; break
+      }
+      return `<p class="cmd"><span class="date">${this.getLogTime()}</span> <span class="type ${color}">${type}</span> <span class="msg">${msg}</span></p>`
+    },
+    getLogTime (format) {
+      return moment().format(format ? format :'YYYY-MM-DD HH:mm:ss.SSS')
     }
   },
+  beforeMount () {
+    window.addEventListener('keydown', this.eventTerminalKey)
+    window.addEventListener('paste', this.eventTerminalPaste)
+
+  },
   created () {
+    iDash = setInterval((() => { this.cmd.dash = !this.cmd.dash }).bind(this), 500)
+
+  },
+  destroyed () {
+    clearInterval(iDash)
+    window.removeEventListener('keydown', this.eventTerminalKey)
+    window.removeEventListener('paste', this.eventTerminalPaste)
   }
 }
 </script>
@@ -119,6 +202,9 @@ export default {
   border-top: none;
   outline: none;
 }
+.cmd-console:focus {
+  outline: none !important;
+}
 .code-console {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -126,7 +212,9 @@ export default {
   background-color: #3a4449 !important;
   color: #EAEAEA;
   min-height: 320px;
-  height: calc(100vh - 170px) !important;
+  height: calc(100vh - 185px) !important;
+  overflow-y: scroll;
+  overflow-x: none;
   code {
     color: #EAEAEA;
     font-size: 12px;
@@ -134,7 +222,7 @@ export default {
     p {
       margin: 0px;
     }
-    .type {
+    .type, .date {
       color: #96a0ab;
       font-weight: bold;
     }
