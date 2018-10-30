@@ -1,7 +1,40 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
 const { Mixed } = Schema.Types
+
 module.exports = [
+  {
+    id: 'User',
+    name: 'db-user',
+    schema: Schema({
+      name: String,
+      mail: String,
+      title: String,
+      company: String,
+      department: String,
+      office_name: String,
+      description: String,
+      display_name: String,
+      telephone_no: String,
+      user_name: String,
+      user_type: String,
+      basic: String,
+      token: String,
+      lasted: Date,
+      updated: Date,
+      created: Date
+    })
+  },
+  {
+    id: 'UserHistory',
+    name: 'db-user-history',
+    schema: Schema({
+      mail: String,
+      basic: String,
+      token: String,
+      created: Date
+    })
+  },
   {
     id: 'Snippet',
     name: 'db-snippet',
