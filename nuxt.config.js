@@ -39,13 +39,13 @@ let config = {
   env: {
     dev: process.env.NODE_ENV !== 'production',
     baseURL: process.env.AXIOS_BASE_URL || 'http://localhost:3001/',
-    SOCKET_HOST_URL: process.env.SOCKET_HOST_URL || 'http://localhost:5000'
+    SOCKET_HOST_URL: process.env.SOCKET_HOST ? `http://${process.env.SOCKET_HOST}:${process.env.SOCKET_PORT}` : 'http://localhost:3010'
   }
 }
 
 if (process.env.NODE_ENV === 'production') {
   config = Object.assign({
-    serverMiddleware: [ '~/api/index.js' ]
+    serverMiddleware: [ '~/api/index.js', '~/api/auth/index.js', '~/api/socket-io.js' ]
   }, config)
 }
 module.exports = config
