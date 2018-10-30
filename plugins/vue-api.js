@@ -5,7 +5,7 @@ export default (ctx) => {
   let { env, store, route } = ctx
 
   let _axios = axios.create({
-    baseURL: env.baseURL
+    baseURL: `${env.baseURL}api/`
   })
   let _api = async (method, url, body) => {
     let res = []

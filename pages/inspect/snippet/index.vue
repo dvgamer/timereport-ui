@@ -19,17 +19,23 @@
             <col style="width: 75%">
             <col style="width: 10%">
             <col style="width: 15%">
-          </template>   
-          <template slot="filename" slot-scope="data">
-            <div class="media">
+          </template>
+          <template slot="file" slot-scope="data">
+            <nuxt-link class="media" :to="{ path: `/inspect/snippet/${data.item._id}` }">
               <a href="#" class="pull-left pr-2">
                 <div class="media-photo" :style="{ backgroundImage: `url('${data.item.avatar}')` }"></div>
               </a>
               <div class="media-body">
                 <h4 class="title" v-text="data.value"></h4>
-                <p class="summary text-nowrap mb-0" v-text="data.item.detail"></p>
+                <p class="summary text-muted text-nowrap mb-0" v-text="getDetail(data.item.content)"></p>
               </div>
-            </div>
+            </nuxt-link>
+          </template>
+          <template slot="private" slot-scope="data">
+            <div v-text="data.value ? 'Private' : 'Public'"></div>
+          </template>
+          <template slot="updated" slot-scope="data">
+            <div v-text="getModify(data.value)"></div>
           </template>
         </b-table>
       </div>
@@ -39,6 +45,7 @@
 </template>
 
 <script>
+const moment = require('moment')
 
 export default {
   head: {
@@ -55,9 +62,9 @@ export default {
     perPage: 20,
     totalRows: 120,
     fields: [
-      { key: 'filename', sortable: true },
-      { key: 'policy', sortable: true },
-      { key: 'modify', sortable: true },
+      { key: 'file', sortable: true },
+      { key: 'private', sortable: true },
+      { key: 'updated', sortable: true },
     ],
     items: [],
     cmOption: {
@@ -72,12 +79,12 @@ export default {
     }
   }),
   methods: {
-    onShowPanel () {
-      // this.$showPanel({
-      //   component: "panel-1",
-      //   cssClass: "panel-1",
-      //   props: {}
-      // })
+    getDetail (data) {
+      let [ raw, line ] = /(.*?)\n/ig.exec(data) || []
+      return line
+    },
+    getModify (date) {
+      return moment(date).fromNow()
     },
     onCmCursorActivity(codemirror) {
       console.log('onCmCursorActivity', codemirror)
@@ -177,6 +184,9 @@ export default {
     &:hover {
       color: #ccc;
     }
+  }
+  .media:hover {
+    text-decoration:none;
   }
   .media-photo {
     width: 34px;
