@@ -10,11 +10,53 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-26">
-        <chart-upload-minutes :data="minutes.data" ref="chartupload"></chart-upload-minutes>
+      <div class="col-md-24">
+        <div class="card table-card card-status">
+          <div class="row">
+            <div class="col-md-14 bg-secondary">
+              <div class="files-status"><i class="fa fa-check-circle"></i> COMPLETED <small>(CURRENT DAY)</small></div>
+              <div class="files-count"><span v-html="total.complete"></span> <small>file(s)</small></div>
+            </div>
+            <div class="col-md-12 bg-secondary">
+              <div class="files-status"><i class="fa fa-clock-o"></i> TASK WAIT <small>(TOTAL)</small></div>
+              <div class="files-count"><span v-html="total.wait"></span> <small>file(s)</small></div>
+            </div>
+            <div class="col-md-10 bg-secondary">
+              <div class="files-status"><i class="fa fa-times-circle"></i> FAIL <small>(LAST 7 DAY)</small></div>
+              <div class="files-count"><span v-html="total.fail"></span> <small>file(s)</small></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-lg-10">
-        <table class="table table-sm">
+      <div class="col-md-12">
+        <div class="card card-seq">
+          <div class="card-header bg-info">
+            <h3 class="card-title"><i class="fa fa-clock-o"></i> Sequence Transfer <small>(WAIT)</small></h3>
+          </div>
+          <table class="table table-sm card-table">
+            <colgroup>
+              <col class="text-center"/>
+              <col class="text-left"/>
+              <col class="text-right"/>
+            </colgroup>
+            <tbody>
+              <tr v-for="(file, index) in zip" :key="index">
+                <th class="text-center" scope="row" v-text="index+1"></th>
+                <td v-text="file.sTable"></td>
+                <th v-if="file.nTotal > 0" class="text-center" :class="file.nTotal < 90 ? 'text-warning' : 'text-danger'" v-text="file.nTotal"></th>
+                <th v-else class="text-center text-success"><i class="fa fa-check" aria-hidden="true"></i></th>
+              </tr>
+              <tr v-if="zip.length == 0">
+                <th class="text-center" colspan="3"><b>Loading...</b></th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- <div class="col-lg-26">
+        <chart-upload-minutes :data="minutes.data" ref="chartupload"></chart-upload-minutes>
+      </div> -->
+        <!-- <table class="table table-sm">
           <thead>
             <tr>
               <th class="text-center" scope="col">#</th>
@@ -33,35 +75,9 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> -->
     </div>
     <hr>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card bg-success p-2 pl-4">
-          <div class="counter counter-lg text-left pl-20">
-            <span class="counter-number" v-text="total.complete">0</span>
-            <div class="counter-label text-uppercase">Completed <small>(current day)</small></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-12">
-        <div class="card bg-warning p-2 pl-4">
-          <div class="counter counter-lg text-left pl-20">
-            <span class="counter-number" v-text="total.wait">0</span>
-            <div class="counter-label text-uppercase">Task Wait <small>(total)</small></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-12">
-        <div class="card bg-danger p-2 pl-4">
-          <div class="counter counter-lg text-left pl-20">
-            <span class="counter-number" v-text="total.fail">0</span>
-            <div class="counter-label text-uppercase">Fail <small>(last 7 day)</small></div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -85,11 +101,12 @@ export default {
     }
   },
   asyncData() {
-    return new Promise((resolve) => {
-      setTimeout(function () {
-        resolve({})
-      }, 1000)
-    })
+    // return new Promise((resolve) => {
+    //   setTimeout(function () {
+    //     resolve({})
+    //   }, 1000)
+    // })
+    return {}
   },
   // components: { ChartUploadMinutes },
   data () {
@@ -99,7 +116,17 @@ export default {
         fail: 0,
         complete: 0
       },
-      zip: [],
+      zip: [
+        { sTable: 'SaleT1CAccum', nTotal: 0 },
+        { sTable: 'ActualSale', nTotal: 0 },
+        { sTable: 'T1CSaleMember', nTotal: 0 },
+        { sTable: 'Daily', nTotal: 0 },
+        { sTable: 'FullInvoice', nTotal: 0 },
+        { sTable: 'StaffPurchase', nTotal: 0 },
+        { sTable: 'Number', nTotal: 0 },
+        { sTable: 'Time', nTotal: 0 },
+        { sTable: 'Others', nTotal: 0 }
+      ],
       minutes: {
         data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
         label: []
@@ -125,14 +152,33 @@ export default {
 }
 </script>
 
-<style>
-.card {
+<style lang="scss">
+.card-status {
   color: #FFF;
+
+  .row > div {
+    padding: 1em 1.2em;
+  }
+  div.files-count {
+    font-size: 1.5rem;
+    padding-left: .6em;
+    margin: 0px;
+    > small {
+      font-size: .8rem;
+    }
+  }
+  div.files-status {
+    font-weight: bold;
+  }
 }
-.counter-lg .counter-number-group, .counter-lg>.counter-number {
-    font-size: 40px;
-}
-.counter .counter-number-group, .counter>.counter-number {
+
+.card-seq {
+  .card-header h3 {
+    margin-bottom: 0px;
     color: #FFF;
+  }
+  .card-table {
+    margin-bottom: 0px;
+  }
 }
 </style>

@@ -28,9 +28,9 @@ router.post('/login', async (req, res) => {
   try {
     auth = new Buffer.from(raw, 'base64').toString('utf8')
     auth = /(?<usr>.*?):(?<pwd>.*)/ig.exec(auth).groups || {}
-    IsEncode = false
-  } finally {
-  }
+    IsEncode = true
+  } finally { /* decode but user random charector and send to server. */}
+
   if (!IsEncode) return res.status(401).json({ error: 'Unauthorized (401)'})
 
   try {
@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
     let data = await ldapAuth(auth.usr, auth.pwd)
     if (data.err) throw new Error(data.err)
 
-    let user = await User.findOne({ mail: groups.usr.trim() })
+    let user = await User.findOne({ mail: auth.usr.trim() })
     if (!user) {
       await new User(Object.assign({
         basic: raw,
