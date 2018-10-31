@@ -12,18 +12,23 @@
     <div class="row">
       <div class="col-md-24">
         <div class="card table-card card-status">
-          <div class="row">
-            <div class="col-md-14 bg-secondary">
-              <div class="files-status"><i class="fa fa-check-circle"></i> COMPLETED <small>(CURRENT DAY)</small></div>
-              <div class="files-count"><span v-html="total.complete"></span> <small>file(s)</small></div>
-            </div>
-            <div class="col-md-12 bg-secondary">
-              <div class="files-status"><i class="fa fa-clock-o"></i> TASK WAIT <small>(TOTAL)</small></div>
-              <div class="files-count"><span v-html="total.wait"></span> <small>file(s)</small></div>
-            </div>
-            <div class="col-md-10 bg-secondary">
-              <div class="files-status"><i class="fa fa-times-circle"></i> FAIL <small>(LAST 7 DAY)</small></div>
-              <div class="files-count"><span v-html="total.fail"></span> <small>file(s)</small></div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-14">
+                <i class="fa fa-check-circle text-muted"></i>
+                <div class="files-status">COMPLETED <small>(CURRENT DAY)</small></div>
+                <div class="files-count"><span v-html="total.complete"></span> <small>file(s)</small></div>
+              </div>
+              <div class="col-md-12">
+                <i class="fa fa-clock-o text-muted"></i>
+                <div class="files-status">TASK WAIT <small>(TOTAL)</small></div>
+                <div class="files-count"><span v-html="total.wait"></span> <small>file(s)</small></div>
+              </div>
+              <div class="col-md-10">
+                <i class="fa fa-times-circle text-muted"></i>
+                <div class="files-status">FAIL <small>(LAST 7 DAY)</small></div>
+                <div class="files-count"><span v-html="total.fail"></span> <small>file(s)</small></div>
+              </div>
             </div>
           </div>
         </div>
@@ -154,20 +159,28 @@ export default {
 
 <style lang="scss">
 .card-status {
-  color: #FFF;
-
+  .card-body {
+    padding: 0 1.25rem;
+    i.fa {
+      margin-top: 7px;
+      font-size: 2.2rem;
+      position: absolute;
+    }
+  }
   .row > div {
     padding: 1em 1.2em;
   }
   div.files-count {
     font-size: 1.5rem;
-    padding-left: .6em;
+    padding-left: 2.4rem;
     margin: 0px;
+    
     > small {
       font-size: .8rem;
     }
   }
   div.files-status {
+    padding-left: 2.4rem;
     font-weight: bold;
   }
 }
