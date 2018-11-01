@@ -1,6 +1,7 @@
 const app = require('express')()
 const chalk = require('chalk')
 const api = require('./api')
+const socket = require('./api/socket-io')
 const auth = require('./api/authication')
 const port = 3001
 
@@ -16,6 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
   })
 }
 
+app.use(socket.path, socket.handler)
 app.use(api.path, api.handler)
 app.use(auth.path, auth.handler)
 

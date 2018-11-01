@@ -32,6 +32,8 @@
             </div>
           </div>
         </div>
+        <hr>
+        <chart-upload-hour :data="hour.data" :height="200" ref="chartupload"></chart-upload-hour>
       </div>
       <div class="col-md-12">
         <div class="card card-seq">
@@ -59,7 +61,7 @@
         </div>
       </div>
       <!-- <div class="col-lg-26">
-        <chart-upload-minutes :data="minutes.data" ref="chartupload"></chart-upload-minutes>
+        <chart-upload-hour :data="hour.data" ref="chartupload"></chart-upload-hour>
       </div> -->
         <!-- <table class="table table-sm">
           <thead>
@@ -87,7 +89,7 @@
 </template>
 
 <script>
-// import ChartUploadMinutes from '../components/chartjs/upload-minutes'
+import ChartUploadHour from '~/components/chartjs/upload-hour'
 
 export default {
   head: {
@@ -95,14 +97,18 @@ export default {
   },
   sockets: {
     'inbound-realtime-graph' (data) {
+      console.log('inbound-realtime-graph', data)
     },
     'inbound-realtime-queue' (data) {
-      this.zip = data
+      console.log('inbound-realtime-queue', data)
+      // this.zip = data
     },
     'inbound-realtime-status' (data) {
-      this.total.wait = data.wait
-      this.total.fail = data.fail
-      this.total.complete = data.complete
+      console.log('inbound-realtime-status', data)
+
+      // this.total.wait = data.wait
+      // this.total.fail = data.fail
+      // this.total.complete = data.complete
     }
   },
   asyncData() {
@@ -113,7 +119,7 @@ export default {
     // })
     return {}
   },
-  // components: { ChartUploadMinutes },
+  components: { ChartUploadHour },
   data () {
     return {
       total: {
@@ -132,7 +138,7 @@ export default {
         { sTable: 'Time', nTotal: 0 },
         { sTable: 'Others', nTotal: 0 }
       ],
-      minutes: {
+      hour: {
         data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
         label: []
       }

@@ -13,10 +13,13 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Import API Routes
 router.get('/user', (req, res) => (async () => {
+
   res.json({})
 })().catch((ex) => {
   res.status(401).json({})
 }))
+
+
 
 router.post('/login', async (req, res) => {
   let { User, UserHistory } = await db.open()

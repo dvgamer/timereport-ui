@@ -1,19 +1,21 @@
 <template>
-  <highcharts :options="options" ref="high"></highcharts>
+  <highcharts :options="options" ref="high" :style="{ minHeight: height }"></highcharts>
 </template>
 
 <script>
 export default {
-  props: [ 'data' ],
+  props: [ 'data', 'height' ],
   data () {
     return {
       options: {
         title: {
-          text: 'Monthly Average Temperature',
+          text: 'XML Transfer Rate',
           x: -20 //center
         },
         xAxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ]
+          minorTickLength: 0,
+          tickLength: 0,
+          minPadding: 0
         },
         yAxis: {
           title: {
@@ -23,7 +25,13 @@ export default {
             value: 0,
             width: 1,
             color: '#808080'
-          }]
+          }],
+          minPadding: 0
+        },
+        chart: {
+          type: 'column',
+          height: this.height,
+          animation: false
         },
         tooltip: {
           valueSuffix: '°C'
@@ -38,8 +46,8 @@ export default {
           enabled: false
         },
         series: [{
-          name: 'Tokyo',
-          data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+          name: 'files',
+          data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
         }]
       }
     }

@@ -4,6 +4,18 @@ const { Mixed } = Schema.Types
 
 module.exports = [
   {
+    id: 'Page',
+    name: 'db-page',
+    schema: Schema({
+      route: String,
+      module: String,
+      query: String,
+      data: Object,
+      updated: Date,
+      created: Date
+    })
+  },
+  {
     id: 'User',
     name: 'db-user',
     schema: Schema({

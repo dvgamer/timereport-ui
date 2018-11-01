@@ -1,10 +1,12 @@
 const app = require('express')()
 const consola = require('consola')
+const chalk = require('chalk')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
 const sql = require('mssql')
 const prod = require('./config-prod.js')
+const dataSync = require('./data-sync')
 
 let router = {}
 if (process.env.NODE_ENV !== 'production') {
@@ -17,11 +19,12 @@ if (process.env.NODE_ENV !== 'production') {
 
 
 // Require API routes
-const query = require('./inbound-transfer/query')
 const port = process.env.SOCKET_PORT || 3010
 // sql.close()
 http.listen(port, () => {
-
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(chalk.black.bgGreen('READY ') + ' ' + chalk.green(`Socket.IO on http://localhost:${port}`))
+  }
   io.on('connection', socket => {
     consola.info('socket.io user connected')
     socket.on('disconnect', () => {
@@ -29,40 +32,30 @@ http.listen(port, () => {
     })
   })
 
+  console.log('data-sync loading.')
+  dataSync().then(() => {
+    console.log('data-sync completed.')
+  }).catch(ex => {
+    console.log(ex)
+  })
+  // operationType: 'insert',
+  // // fullDocument:
+
+  // db.open().then(({ User }) => {
+  //   const changeStream = User.watch()
+  //   changeStream.on('change', (change) => {
+  //     console.log('COLLECTION CHANGED', change)
+  //   })
+  // }).catch(console.log)
+  
+  
+
+
   // setInterval(() => {
   //   io.emit('inbound-realtime-graph', [])
   //   io.emit('inbound-realtime-queue', [])
   //   io.emit('inbound-realtime-status', { wait: 0, fail: 0, complete: 0 })
   // }, 1000)
-
-  let poolMain = async () => {
-    let pool = await sql.connect(prod)
-  
-    let taskGraph = async () => {
-      let results = await pool.request().query(query.graph)
-      io.emit('inbound-realtime-graph', results['recordsets'][0])
-      setTimeout(taskGraph, 1000)
-    }
-  
-    let taskQueue = async () => {
-      let results = await pool.request().query(query.queue)
-      io.emit('inbound-realtime-queue', results['recordsets'][0])
-      setTimeout(taskQueue, 500)
-    }
-  
-    let taskStatus = async () => {
-      let results = await pool.request().query(query.status)
-      io.emit('inbound-realtime-status', {
-        wait: results['recordset'][0].nTotal,
-        fail: results['recordset'][1].nTotal,
-        complete: results['recordset'][2].nTotal
-      })
-      setTimeout(taskStatus, 1000)
-    }
-    taskGraph()
-    taskQueue()
-    taskStatus()
-  }
   // poolMain()
 })
 
