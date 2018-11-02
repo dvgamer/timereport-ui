@@ -4,12 +4,13 @@ const { Mixed } = Schema.Types
 
 module.exports = [
   {
-    id: 'Page',
-    name: 'db-page',
+    id: 'PageSync',
+    name: 'db-page-sync',
     schema: Schema({
       route: String,
       module: String,
       query: String,
+      crontab: String,
       data: Object,
       updated: Date,
       created: Date
@@ -55,6 +56,7 @@ module.exports = [
       mode: String,
       file: String,
       task: String,
+      order: Number,
       user: String,
       avatar: String,
       private: Boolean,

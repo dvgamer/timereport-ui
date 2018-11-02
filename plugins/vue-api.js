@@ -3,7 +3,6 @@ import * as axios from 'axios'
 
 export default (ctx) => {
   let { env, store, route } = ctx
-
   let _axios = axios.create({
     baseURL: `${env.baseURL}api/`
   })
@@ -25,11 +24,13 @@ export default (ctx) => {
   }
 
   ctx.$api = {
-    async get ( url, data) {
+    async get (url, data) {
+      console.log('_axios get:', `${env.baseURL}api/${url}`)
       let res = await _api('get', url, data)
       return res
     },
     async post () {
+      console.log('_axios post:', `${env.baseURL}api/${url}`)
       let data = await _api('post', url, data)
       return res
     }

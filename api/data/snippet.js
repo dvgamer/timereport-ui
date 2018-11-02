@@ -3,6 +3,7 @@ module.exports = [
     title: 'Checking IIS Inbound Services',
     file: 'iis-services.ps1',
     task: 'inbound-checking',
+    order: 0,
     user: 'thkanane',
     avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
     private: false,
@@ -45,6 +46,7 @@ Write-Host $([string]::Format("(elapsed: {0:d2}:{1:d2})", $($Time.Elapsed).minut
     title: 'Checking FTP Services',
     file: 'ftp-connection.ps1',
     task: 'inbound-checking',
+    order: 2,
     user: 'thkanane',
     avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
     private: false,
@@ -110,6 +112,7 @@ Write-Host $([string]::Format("(elapsed: {0:d2}:{1:d2})", $($Time.Elapsed).minut
     title: 'Checking TXN POSGW to POSDB',
     file: 'posgw-posdb.ps1',
     task: 'inbound-checking',
+    order: 3,
     user: 'thkanane',
     avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
     private: false,
@@ -195,98 +198,303 @@ Write-Host $([string]::Format("(elapsed: {0:d2}:{1:d2})", $($Time.Elapsed).minut
     created: new Date
   },
   {
-    title: 'Checking IIS Inbound Services',
-    file: 'iis-services.ps1',
+    title: 'Log Watch file',
+    file: 'error-logs.ps1',
     task: 'inbound-checking',
+    order: 4,
     user: 'thkanane',
     avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
     private: false,
     mode: 'powershell',
-    content: `echo TEST %DATE%`,
+    content: 
+`# account administrator
+$user = 'pos\administrator'
+$pass = 'P@ssw0rd'
+
+$Time = [System.Diagnostics.Stopwatch]::StartNew()
+
+# Check File in Network Folder
+Write-Host "\`n Check Status and Error in log files" -ForegroundColor Blue
+Write-Host " - Mapping Network Drive";
+
+$IP55 = '10.101.147.55'
+$FTPData = "\\$IP55\Ftp Data"
+NET USE $FTPData \delete > $null
+NET USE $FTPData /user:$user $pass > $null
+
+function ReadingError
+{
+  $LogFiles = $(Get-ChildItem -Path $args[0] -Recurse -File -Filter *.log \`
+    | Sort-Object -Property LastWriteTime -Descending \`
+    | Select-Object -First 1)
+
+  if ($LogFiles.Count -eq 0) { Write-Host 'Empty directory.' -ForegroundColor Red }
+  Foreach ($File in $LogFiles) {
+    $IsError = 0
+    $oLine = New-Object System.Collections.Generic.List[System.Object]
+    Write-Host $File.Name -ForegroundColor Yellow -NoNewline;
+    Write-Host " ($([math]::truncate($File.Length / 1KB)) KB) " -NoNewline;
+    Foreach ($line in (Get-Content $File.FullName)) {
+      if ($line -match $args[1]) {
+        $IsError += 1
+        $oLine.Add($line)
+        if ($oLine.Count -gt 12) { $oLine.RemoveAt(0) }
+      }
+    }
+
+    if ($IsError -eq 0) {
+      Write-Host " >> OK." -ForegroundColor Green;
+    } else {
+      Write-Host " >> ERROR. ($IsError lines)" -ForegroundColor Red;
+      Write-Host " " -ForegroundColor Red;
+      Foreach ($line in $oLine) {
+        Write-Host "   " -NoNewline;
+        Write-Host $line -ForegroundColor Red;
+      }
+      Write-Host " " -ForegroundColor Red;
+    }
+    Clear-Variable -Name LogFiles, IsError, oLine, line
+  }
+}
+
+Write-Host " - BackUpFile Reading: " -NoNewline;
+ReadingError "$FTPData\POS\prd\Log\BackUpFile" ' ERROR -'
+
+Write-Host " - Gen XML Inbound Reading: " -NoNewline; 
+ReadingError "$FTPData\POS\prd\Log\Gen XML Inbound" ' ERROR -'
+
+Write-Host " - GenerateXML Reading: " -NoNewline; 
+ReadingError "$FTPData\POS\prd\XML\Log\GenerateXML" 'error: '
+
+Write-Host " - CallFTPWebService2DST Reading: " -NoNewline; 
+ReadingError "$FTPData\POS\prd\Log\CallFTPWebService2DST" ' ERROR -'
+
+Write-Host " - OutboundApp Reading: " -NoNewline; 
+ReadingError "$FTPData\POS\prd\Log\OutboundApp" ' ERROR -'
+
+Write-Host " - POSInterimUpdate_inbound Reading: " -NoNewline;  
+ReadingError "$FTPData\POS\prd\Log\POSInterimUpdate_inbound" ' ERROR -'
+
+
+Write-Host "\`n   " -NoNewline;
+Write-Host $([string]::Format("(elapsed: {0:d2}:{1:d2})", $($Time.Elapsed).minutes, $($Time.Elapsed).seconds))`,
+    updated: new Date,
+    created: new Date
+  },
+  { 
+    title: 'Log Count Error files',
+    file: 'count-logs.ps1',
+    task: 'inbound-checking',
+    order: 5,
+    user: 'thkanane',
+    avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
+    private: false,
+    mode: 'powershell',
+    content: 
+`# account administrator
+$user = 'pos\administrator'
+$pass = 'P@ssw0rd'
+
+$Time = [System.Diagnostics.Stopwatch]::StartNew()
+
+# # Monitor Error File in Network Folder
+Write-Host "\`n Counting Error files" -ForegroundColor Blue
+Write-Host " - Mapping Network Drive";
+
+$IP55 = '10.101.147.55'
+$FTPData = "\\$IP55\Ftp Data"
+NET USE $FTPData \delete > $null
+NET USE $FTPData /user:$user $pass > $null
+
+function CountFiles([string]$msg, [string]$folder)
+{
+  Write-Host $msg -NoNewline;
+  if ($(Test-Path $folder -PathType Container)) {
+    $Total = $(Get-ChildItem -Path $folder -File).Count
+    Write-Host $Total -ForegroundColor $(if($Total -ne 0) { 'Red' } else { 'Green' }) -NoNewline;
+  } else {
+    Write-Host "0" -ForegroundColor Green -NoNewline;
+  }
+  Write-Host " files";  
+}
+
+CountFiles " - IDoc Outbound Error: " "$FTPData\POS\prd\IDoc\Outbound_Error"
+CountFiles " - XML Inbound Error: " "$FTPData\POS\prd\XML\Inbound_Error"
+CountFiles " - XML Upload Error: " "$FTPData\POS\prd\XML\Upload_Error"
+CountFiles " - TextFile Outbound Error: " "$FTPData\POS\prd\TextFile\Outbound_Error"
+CountFiles " - TextFile Pro Fail ($(Get-Date -UFormat "%Y%m%d")): " "$FTPData\POS\prd\TextFile\Pro_Fail\$(Get-Date -UFormat "%Y%m%d")"
+
+
+Write-Host "\`n   " -NoNewline;
+Write-Host $([string]::Format("(elapsed: {0:d2}:{1:d2})", $($Time.Elapsed).minutes, $($Time.Elapsed).seconds))`,
     updated: new Date,
     created: new Date
   },
   {
-    title: 'Checking IIS Inbound Services',
-    file: 'iis-services.ps1',
+    title: 'Monitor Logfiles',
+    file: 'monitor-logs.ps1',
     task: 'inbound-checking',
+    order: 6,
     user: 'thkanane',
     avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
     private: false,
     mode: 'powershell',
-    content: `echo TEST %DATE%`,
+    content: 
+`# account administrator
+$user = 'pos\administrator'
+$pass = 'P@ssw0rd'
+
+$Time = [System.Diagnostics.Stopwatch]::StartNew()
+
+# # Monitor Error File in Network Folder
+Write-Host "\`n Monitor XML, Text Receive files" -ForegroundColor Blue
+Write-Host " - Mapping Network Drive";
+
+$IP55 = '10.101.147.55'
+$FTPData = "\\$IP55\Ftp Data"
+NET USE $FTPData \delete > $null
+NET USE $FTPData /user:$user $pass > $null
+
+function CountFiles([string]$msg, [string]$folder)
+{
+  Write-Host $msg -NoNewline;
+  $Total = $(Get-ChildItem -Path $folder -File).Count
+  Write-Host $Total -ForegroundColor Yellow -NoNewline;
+  Write-Host " files";
+}
+
+CountFiles " - XML Download_Receive: " "$FTPData\POS\prd\XML\Download_Receive"
+CountFiles " - XML Upload_Receive: " "$FTPData\POS\prd\XML\Upload_Receive"
+CountFiles " - TextFile Outbound_Receive_Sap: " "$FTPData\POS\prd\TextFile\Outbound_Receive_Sap"
+CountFiles " - TextFile Pro_Receive: " "$FTPData\POS\prd\TextFile\Pro_Receive"
+CountFiles " - IDoc Outbound_Receive_Sap: " "$FTPData\POS\prd\IDoc\Outbound_Receive_Sap"
+
+Write-Host "\`n   " -NoNewline;
+Write-Host $([string]::Format("(elapsed: {0:d2}:{1:d2})", $($Time.Elapsed).minutes, $($Time.Elapsed).seconds))`,
     updated: new Date,
     created: new Date
   },
   {
-    title: 'Checking IIS Inbound Services',
+    title: 'Checking Services Status',
     file: 'iis-services.ps1',
     task: 'inbound-checking',
+    order: 7,
     user: 'thkanane',
     avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
     private: false,
     mode: 'powershell',
-    content: `echo TEST %DATE%`,
+    content: 
+`$IP55 = '10.101.147.55'
+$IP56 = '10.101.147.56'
+
+$Time = [System.Diagnostics.Stopwatch]::StartNew()
+
+# account administrator
+$user = 'pos\administrator'
+$pass = 'P@ssw0rd'
+$pass_encrpt = $pass | ConvertTo-SecureString -AsPlainText -Force
+$Cred = New-Object System.Management.Automation.PsCredential($user, $pass_encrpt)
+
+Write-Host "\`n Checking Services Window" -ForegroundColor Blue
+Get-WmiObject -Class win32_service -Credential $Cred \`
+  -ComputerName $IP55,$IP56 \`
+  | Where-Object { 
+    $_.Name -eq "BackupFile" -or
+    $_.Name -eq "InboundTransferWinDowService" -or
+    $_.Name -eq "CMGPOS Inbound_XML_TO_SAP" -or
+    $_.Name -eq "GenerateXML Windows Service" -or
+    $_.Name -eq "CallFTPWebService2DST" -or
+    $_.Name -eq "StockOnlineWindowsService" -or
+    $_.Name -eq "BTSSvc{894C15BD-DBFC-4349-85BA-5C3808FC00D0}"
+  } \`
+  | Select-Object DisplayName, Status, State, ExitCode \`
+  | Format-Table -Wrap -AutoSize
+
+Write-Host "\`n   " -NoNewline;
+Write-Host $([string]::Format("(elapsed: {0:d2}:{1:d2})", $($Time.Elapsed).minutes, $($Time.Elapsed).seconds))`,
     updated: new Date,
     created: new Date
   },
   {
-    title: 'Checking IIS Inbound Services',
-    file: 'iis-services.ps1',
+    title: 'Disk spacing On Server Less 10%',
+    file: 'disk-freespace.ps1',
     task: 'inbound-checking',
+    order: 8,
     user: 'thkanane',
     avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
     private: false,
     mode: 'powershell',
-    content: `echo TEST %DATE%`,
+    content: 
+`$IP42 = '10.101.147.42'
+$IP43 = '10.101.147.43'
+$IP44 = '10.101.147.44'
+
+#Server IP
+$IP46 = '10.101.147.46'
+$IP47 = '10.101.147.47'
+
+$IP48 = '10.101.147.48'
+$IP49 = '10.101.147.49'
+
+$IP50 = '10.101.147.50'
+$IP51 = '10.101.147.51'
+
+$IP54 = '10.101.147.54'
+$IP55 = '10.101.147.55'
+$IP56 = '10.101.147.56'
+$IP59 = '10.101.147.59'
+
+$IP62 = '10.101.147.62'
+$IP69 = '10.101.147.69'
+$IP70 = '10.101.147.70'
+
+$Time = [System.Diagnostics.Stopwatch]::StartNew()
+
+# account administrator
+$user = 'pos\administrator'
+$pass = 'P@ssw0rd'
+$pass_encrpt = $pass | ConvertTo-SecureString -AsPlainText -Force
+$Cred = New-Object System.Management.Automation.PsCredential($user, $pass_encrpt)
+
+Write-Host "\`n Checking Disk Freespace..." -ForegroundColor Blue
+foreach ($ip in @($IP42,$IP43,$IP44,$IP46,$IP47,$IP48,$IP49,$IP50,$IP51,$IP54,$IP55,$IP56,$IP59,$IP62,$IP69,$IP70)) {
+Get-WmiObject -Class win32_logicalDisk -Credential $Cred \`
+  -ComputerName $ip \`
+  | Where-Object {$_.drivetype -eq 3} \`
+  | Select-Object \`
+    @{n = "IP Address"; e = {$ip}}, DeviceID, \`
+    @{n = "Free(MB)"; e = {[math]::truncate($_.freespace / 1MB)}}, \`
+    @{n = "Size(MB)"; e = {[math]::truncate($_.size / 1MB)}}, \`
+    @{
+      n = "Free(%)";
+      e = {[math]::truncate([math]::truncate($_.freespace / 1MB) * 100 / [math]::truncate($_.size / 1MB))};
+    } \`
+  | Sort-Object -Property 'Free(%)', PSComputerName \`
+  | Where {$_.'Free(%)' -le 20 -or $_.'Free(%)' -eq $Null} \`
+  | Format-Table -Wrap -AutoSize
+}
+
+Write-Host "\`n   " -NoNewline;
+Write-Host $([string]::Format("(elapsed: {0:d2}:{1:d2})", $($Time.Elapsed).minutes, $($Time.Elapsed).seconds))`,
     updated: new Date,
     created: new Date
   },
   {
-    title: 'Checking IIS Inbound Services',
-    file: 'iis-services.ps1',
+    title: 'Powershell Version Checking',
+    file: 'version-ps.ps1',
     task: 'inbound-checking',
+    order: 1,
     user: 'thkanane',
     avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
     private: false,
     mode: 'powershell',
-    content: `echo TEST %DATE%`,
-    updated: new Date,
-    created: new Date
-  },
-  {
-    title: 'Checking IIS Inbound Services',
-    file: 'iis-services.ps1',
-    task: 'inbound-checking',
-    user: 'thkanane',
-    avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
-    private: false,
-    mode: 'powershell',
-    content: `echo TEST %DATE%`,
-    updated: new Date,
-    created: new Date
-  },
-  {
-    title: 'Checking IIS Inbound Services',
-    file: 'iis-services.ps1',
-    task: 'inbound-checking',
-    user: 'thkanane',
-    avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
-    private: false,
-    mode: 'powershell',
-    content: `echo TEST %DATE%`,
-    updated: new Date,
-    created: new Date
-  },
-  {
-    title: 'Checking IIS Inbound Services',
-    file: 'iis-services.ps1',
-    task: 'inbound-checking',
-    user: 'thkanane',
-    avatar: 'https://avatars.dicebear.com/v2/male/thkanane.svg',
-    private: false,
-    mode: 'powershell',
-    content: `echo TEST %DATE%`,
+    content: 
+`if ($PSVersionTable.PSVersion.Major -lt 5) {
+  Write-Host "Powershell supported is greater or equal 5.0 (version $($PSVersionTable.PSVersion.Major))" -ForegroundColor Red
+  exit 1
+}
+
+Clear-Host`,
     updated: new Date,
     created: new Date
   }

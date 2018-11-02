@@ -1,5 +1,6 @@
 const app = require('express')()
 const http = require('http').Server(app)
+const data = require('./data')
 
 let router = {}
 if (process.env.NODE_ENV !== 'production') {
@@ -12,10 +13,19 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Require API routes
 const inspect = require('./inspect')
-const inboundTransder = require('./inbound-transfer')
+const appService = require('./app-service')
 
+router.get('/init', (req, res) => {
+  data().then(() => {
+    res.status(200).end()
+  }).catch(ex => {
+    res.status(404)
+    res.write(ex.message)
+    res.send()
+  })
+})
 // Import API Routes
-router.use('/inbound-transfer', inboundTransder)
+router.use('/app', appService)
 router.use('/inspect', inspect)
 
 

@@ -96,27 +96,21 @@ export default {
     title: 'InboundTransfer Service',
   },
   sockets: {
-    'inbound-realtime-graph' (data) {
-      console.log('inbound-realtime-graph', data)
+    'app-inbound-transfer|panel-graph-hour' (data) {
+      console.log('app-inbound-transfer|panel-graph-hour', data)
     },
-    'inbound-realtime-queue' (data) {
-      console.log('inbound-realtime-queue', data)
-      // this.zip = data
+    'app-inbound-transfer|panel-sequence' (data) {
+      this.zip = data
     },
-    'inbound-realtime-status' (data) {
-      console.log('inbound-realtime-status', data)
-
-      // this.total.wait = data.wait
-      // this.total.fail = data.fail
-      // this.total.complete = data.complete
+    'app-inbound-transfer|panel-status' (data) {
+      this.total.wait = data.wait
+      this.total.fail = data.fail
+      this.total.complete = data.complete
     }
   },
-  asyncData() {
-    // return new Promise((resolve) => {
-    //   setTimeout(function () {
-    //     resolve({})
-    //   }, 1000)
-    // })
+  async asyncData({ $api }) {
+    // let data = await $api.get('/api/app/inbound-transfer')
+    // console.log(data)
     return {}
   },
   components: { ChartUploadHour },
@@ -150,7 +144,7 @@ export default {
     }
   },
   created () {
-    // vm.$socket.on('inbound-realtime-queue', data => {
+    // vm.$socket.on('app-inbound-transfer|panel-sequence', data => {
     //   console.log('queue', data)
     // })
     // vm.$socket.on('inbound-realtime-graph', data => {

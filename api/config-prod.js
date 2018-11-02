@@ -1,9 +1,9 @@
 module.exports = {
-  'posgw': {
-    user: 'posappadm',
-    password: 'qwerty8*',
-    server: '10.101.147.46\\poscmg',
-    database: 'POSGW',
+  'posdb': {
+    user: 'posquery',
+    password: 'ycmgquer',
+    server: 'posdbrep.cmg.co.th',
+    database: 'POSDB',
     options: {
       encrypt: true
     }

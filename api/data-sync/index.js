@@ -1,53 +1,53 @@
-const consola = require('consola')
 const sql = require('mssql')
 const db = require('../mongodb')
+const cron = require('node-cron')
 const prod = require('../config-prod.js')
-
-
-const prepare = require('./prepare-page')
-
-let whileLoopTimeout = (func, second) => {
-  let isExit = null
-  let loop = 0
-  consola.info(`while lopp every ${second} seconds.`)
-  if (!second || !func) throw new Error('parameter not setting.')
-  let funcNext = async () => {
-    try {
-      let data = await func()
-    } catch (ex) {
-      isExit = ex
-      consola.error(ex)
-      clearTimeout(loop)
-    }
-    loop = setTimeout(funcNext, second * 1000)
+ 
+const dbNormalize = {
+  'app-inbound-transfer|panel-status': (data, records) => {
+    return { wait: records[0]['nTotal'], fail: records[1]['nTotal'], complete: records[2]['nTotal'] }
   }
-  return funcNext()
 }
 
+const sqlConnectionPool = () => new Promise((resolve, reject) => {
+  const conn = new sql.ConnectionPool(prod['posdb'])
+  conn.connect(err => {
+    if (err) return reject(err)
+    resolve(conn)
+  })
+})
 
-module.exports = async () => {
-  let pool = await sql.connect(prod['posgw'])
-  let { Page } = await db.open()
-  await prepare()
+const dbDataSync = async () => {
+  let { PageSync } = await db.open()
 
-  let inboundStatus = { route: 'app-inbound-transfer', module: 'panel-status' }
-  let status = await Page.findOne(inboundStatus)
-  whileLoopTimeout(async () => {
-    let [ records ] = (await pool.request().query(status.query)).recordsets
-    await Page.updateOne(inboundStatus, {
-      $set: {
-        data: { wait: records[0]['nTotal'], fail: records[1]['nTotal'], complete: records[2]['nTotal'] },
-        updated: new Date()
+  let sync = await PageSync.find({})
+  console.log(`Page Data Sync ${sync.length} jobs.`)
+  for (let i = 0; i < sync.length; i++) {
+    const data = sync[i]
+    const key = `${data.route}|${data.module}`
+    console.log(`Sync '${key}' crontab: ${data.crontab}`)
+    cron.schedule(data.crontab, () => (async () => {
+      let pool = { close: () => {} }
+      try {
+        pool = await sqlConnectionPool()
+
+        let [ records ] = (await pool.request().query(data.query)).recordsets
+        await PageSync.updateOne({ _id: data._id }, {
+          $set: {
+            data: !dbNormalize[key] ? records : dbNormalize[key](data, records),
+            updated: new Date()
+          }
+        })
+      } catch (ex) {
+        console.log('crontab: ', ex.message)
+        console.log(ex.stack)
       }
-    })
-  }, 2)
-
-  whileLoopTimeout(async () => {
-    return []
-  }, 10)
-
-  whileLoopTimeout(async () => {
-    return []
-  }, 5)
-  
+      pool.close()
+    })().catch(ex => {
+      console.log('crontab: ', ex.message)
+      console.log(ex.stack)
+    }))
+  }
 }
+
+dbDataSync()
