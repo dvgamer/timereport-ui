@@ -4,19 +4,20 @@ import * as axios from 'axios'
 export default (ctx) => {
   let { env, store, route } = ctx
   let _axios = axios.create({
-    baseURL: `${env.baseURL}api/`
+    baseURL: `${env.baseURL}api/`,
+    timeout: 5000
   })
+
   let _api = async (method, url, body) => {
     let res = []
     try {
       store.commit('$api', true)
       let ax = await _axios[method](url, body)
-
-      if (!(ax.data instanceof Array) || ax.data.error) throw new Error(ax.data.error)
+      // if (!(ax.data instanceof Array) || ax.data.error) throw new Error(ax.data.error)
       if (ax.status !== 200) throw new Error(ax.statusText) 
       res = ax.data
     } catch (ex) {
-      console.log('ERROR-API::', ex.message)
+      console.log('ERROR-API::', ex.message || ex)
       res = []
     }
     store.commit('$api', false)
@@ -25,12 +26,10 @@ export default (ctx) => {
 
   ctx.$api = {
     async get (url, data) {
-      console.log('_axios get:', `${env.baseURL}api/${url}`)
       let res = await _api('get', url, data)
       return res
     },
     async post () {
-      console.log('_axios post:', `${env.baseURL}api/${url}`)
       let data = await _api('post', url, data)
       return res
     }

@@ -1,4 +1,5 @@
 const sql = require('mssql')
+const moment = require('moment')
 const db = require('../mongodb')
 const cron = require('node-cron')
 const prod = require('../config-prod.js')
@@ -32,11 +33,10 @@ const dbDataSync = async () => {
         pool = await sqlConnectionPool()
 
         let [ records ] = (await pool.request().query(data.query)).recordsets
+        console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} -`, key, ':', records.length)
+        let newData = !dbNormalize[key] ? records : dbNormalize[key](data, records)
         await PageSync.updateOne({ _id: data._id }, {
-          $set: {
-            data: !dbNormalize[key] ? records : dbNormalize[key](data, records),
-            updated: new Date()
-          }
+          $set: { data: newData, updated: new Date() }
         })
       } catch (ex) {
         console.log('crontab: ', ex.message)

@@ -7,9 +7,9 @@ const db = require('../mongodb')
 router.get('/inbound-transfer', (req, res) => (async () => {
   const { PageSync } = await db.open()
   let result = {
-    graph: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-graph-hour' })).data,
-    sequence: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-sequence' })).data,
-    status: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-status' })).data
+    graph: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-graph-hour' })).data || [],
+    sequence: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-sequence' })).data || [],
+    status: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-status' })).data || {}
   }
   res.json(result)
 })())

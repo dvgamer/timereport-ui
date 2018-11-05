@@ -109,9 +109,11 @@ export default {
     }
   },
   async asyncData({ $api }) {
-    // let data = await $api.get('/api/app/inbound-transfer')
-    // console.log(data)
-    return {}
+    let data = await $api.get('app/inbound-transfer')
+    return {
+      zip: data.sequence,
+      total: data.status
+    }
   },
   components: { ChartUploadHour },
   data () {

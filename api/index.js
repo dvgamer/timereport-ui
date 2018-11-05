@@ -15,6 +15,11 @@ if (process.env.NODE_ENV !== 'production') {
 const inspect = require('./inspect')
 const appService = require('./app-service')
 
+router.use('*', (req, res, next) => {
+  console.log(`API:: ${req.method} ${req.baseUrl}`)
+  next()
+})
+
 router.get('/init', (req, res) => {
   data().then(() => {
     res.status(200).end()
