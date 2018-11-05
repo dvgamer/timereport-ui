@@ -17,17 +17,17 @@
               <div class="col-md-14">
                 <i class="fa fa-check-circle text-muted"></i>
                 <div class="files-status">COMPLETED <small>(CURRENT DAY)</small></div>
-                <div class="files-count"><span v-html="total.complete"></span> <small>file(s)</small></div>
+                <div class="files-count"><span v-html="toTextNumber(total.complete)"></span> <small>file(s)</small></div>
               </div>
               <div class="col-md-12">
                 <i class="fa fa-clock-o text-muted"></i>
                 <div class="files-status">TASK WAIT <small>(TOTAL)</small></div>
-                <div class="files-count"><span v-html="total.wait"></span> <small>file(s)</small></div>
+                <div class="files-count"><span v-html="toTextNumber(total.wait)"></span> <small>file(s)</small></div>
               </div>
               <div class="col-md-10">
                 <i class="fa fa-times-circle text-muted"></i>
                 <div class="files-status">FAIL <small>(LAST 7 DAY)</small></div>
-                <div class="files-count"><span v-html="total.fail"></span> <small>file(s)</small></div>
+                <div class="files-count"><span v-html="toTextNumber(total.fail)"></span> <small>file(s)</small></div>
               </div>
             </div>
           </div>
@@ -141,6 +141,9 @@ export default {
     }
   },
   methods: {
+    toTextNumber (val) {
+      return val >= 950 ? (val / 950).toFixed(1) + 'k' : val
+    },
     clickButton () {
       this.$refs.chartupload.update()
     }
