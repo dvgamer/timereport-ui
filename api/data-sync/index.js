@@ -18,22 +18,23 @@ const sqlConnectionPool = () => new Promise((resolve, reject) => {
   })
 })
 
+let cronJobs = {}
+
 const dbDataSync = async () => {
   let { PageSync } = await db.open()
-
+  let pool = await sqlConnectionPool()
+  
   let sync = await PageSync.find({})
+
   console.log(`Page Data Sync ${sync.length} jobs.`)
   for (let i = 0; i < sync.length; i++) {
     const data = sync[i]
     const key = `${data.route}|${data.module}`
     console.log(`Sync '${key}' crontab: ${data.crontab}`)
-    cron.schedule(data.crontab, () => (async () => {
-      let pool = { close: () => {} }
-      try {
-        pool = await sqlConnectionPool()
 
+    const taskJob = async () => {
+      try {
         let [ records ] = (await pool.request().query(data.query)).recordsets
-        console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} -`, key, ':', records.length)
         let newData = !dbNormalize[key] ? records : dbNormalize[key](data, records)
         await PageSync.updateOne({ _id: data._id }, {
           $set: { data: newData, updated: new Date() }
@@ -42,11 +43,15 @@ const dbDataSync = async () => {
         console.log('crontab: ', ex.message)
         console.log(ex.stack)
       }
-      pool.close()
-    })().catch(ex => {
-      console.log('crontab: ', ex.message)
-      console.log(ex.stack)
-    }))
+      // pool.close()
+    }
+
+    cronJobs[key] = cron.schedule(data.crontab, () => {
+      console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key}...`)
+      taskJob().then(() => {
+        console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} finish.`)
+      })
+    })
   }
 }
 
