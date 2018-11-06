@@ -33,7 +33,7 @@
           </div>
         </div>
         <hr>
-        <chart-upload-hour :data="hour.data" :height="200" ref="chartupload"></chart-upload-hour>
+        <chart-upload-hour :data="hour.data" :label="hour.label" :height="200" ref="chartupload"></chart-upload-hour>
       </div>
       <div class="col-md-12">
         <div class="card card-seq">
@@ -91,25 +91,26 @@
 <script>
 import ChartUploadHour from '~/components/chartjs/upload-hour'
 
-let graphData = (array) => {
+let graphData = (array = []) => {
   let data = []
   let label = []
   let hNext = -1
   for (let i = array.length -1; i >= 0; i--) {
     let { sHour, aa } = array[i]
     let hour = parseInt(sHour)
-    if (hNext < 0) {
-      hNext = hour
-      label.push(sHour)
-      label.push(aa)
-    } else {
 
+    hNext = hour
+    label.push(hour)
+    data.push(aa)
+
+    if (hNext > 0) {
+      for (let l = hour + 1; l <= hNext; l++) {
+        label.push(hour)
+        data.push(0)
+      }
     }
   }
-  return {
-    data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
-    label: []
-  }
+  return { data, label }
 }
 
 export default {
@@ -131,11 +132,10 @@ export default {
   },
   async asyncData({ $api }) {
     let data = await $api.get('app/inbound-transfer')
-    let hNext = graphData(data.graph)
     return {
       zip: data.sequence,
       total: data.status,
-      hour: hNext
+      hour: graphData(data.graph)
     }
   },
   components: { ChartUploadHour },
@@ -158,7 +158,7 @@ export default {
         { sTable: 'Others', nTotal: 0 }
       ],
       hour: {
-        data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
+        data: [],
         label: []
       }
     }
