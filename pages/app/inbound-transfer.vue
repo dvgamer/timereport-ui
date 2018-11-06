@@ -91,6 +91,27 @@
 <script>
 import ChartUploadHour from '~/components/chartjs/upload-hour'
 
+let graphData = (array) => {
+  let data = []
+  let label = []
+  let hNext = -1
+  for (let i = array.length -1; i >= 0; i--) {
+    let { sHour, aa } = array[i]
+    let hour = parseInt(sHour)
+    if (hNext < 0) {
+      hNext = hour
+      label.push(sHour)
+      label.push(aa)
+    } else {
+
+    }
+  }
+  return {
+    data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11],
+    label: []
+  }
+}
+
 export default {
   head: {
     title: 'InboundTransfer Service',
@@ -110,10 +131,11 @@ export default {
   },
   async asyncData({ $api }) {
     let data = await $api.get('app/inbound-transfer')
-    console.log(data.graph)
+    let hNext = graphData(data.graph)
     return {
       zip: data.sequence,
-      total: data.status
+      total: data.status,
+      hour: hNext
     }
   },
   components: { ChartUploadHour },
@@ -148,17 +170,6 @@ export default {
     clickButton () {
       this.$refs.chartupload.update()
     }
-  },
-  created () {
-    // vm.$socket.on('app-inbound-transfer|panel-sequence', data => {
-    //   console.log('queue', data)
-    // })
-    // vm.$socket.on('inbound-realtime-graph', data => {
-    //   console.log('graph', data)
-    // })
-    // vm.$socket.on('inbound-realtime-status', data => {
-    //   console.log('status', data)
-    // })
   }
 }
 </script>
