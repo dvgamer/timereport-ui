@@ -110,6 +110,7 @@ export default {
   },
   async asyncData({ $api }) {
     let data = await $api.get('app/inbound-transfer')
+    console.log(data.graph)
     return {
       zip: data.sequence,
       total: data.status

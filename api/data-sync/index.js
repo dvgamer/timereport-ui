@@ -45,7 +45,7 @@ const dbDataSync = async () => {
       }
       // pool.close()
     }
-
+    await taskJob()
     cronJobs[key] = cron.schedule(data.crontab, () => {
       console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key}...`)
       taskJob().then(() => {
