@@ -33,9 +33,6 @@ export default {
           height: this.height,
           animation: false
         },
-        tooltip: {
-          valueSuffix: '°C'
-        },
         legend: {
           layout: 'vertical',
           align: 'right',
