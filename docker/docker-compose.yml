@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  # caddy:
+  #   restart: always
+  #   image: abiosoft/caddy
+  #   container_name: caddy
+  #   ports:
+  #     - 80:80
+  #   command: -conf /etc/Caddyfile # -log stdout -errors stdout
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /app/caddy/Caddyfile:/etc/Caddyfile
+  #     - /app/caddy/html:/opt/html
+  #     - /data/caddy/data:/root/.caddy
+  #     - /data/caddy/logs:/opt/logs
+
+  # portainer:
+  #   restart: always
+  #   image: portainer/portainer
+  #   container_name: portainer
+  #   ports:
+  #     - 9000:9000
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /data/portainer:/data
+  ui_postgres:
+    restart: always
+    image: adminer
+    container_name: ui_postgres
+    ports:
+      - 6510:8080
+  db_postgres:
+    restart: always
+    container_name: db_postgres
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: 0AGa0yC1a6nI054Cu
+      POSTGRES_DB: gitlabhq_production
+  db_redis:
+    restart: always
+    container_name: db_redis
+    image: 'bitnami/redis:latest'
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/bitnami/redis
+    environment:
+      REDIS_PASSWORD: jHQCel6U1kECuHSy1a
+      REDIS_DISABLE_COMMANDS: FLUSHDB,FLUSHALL
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
