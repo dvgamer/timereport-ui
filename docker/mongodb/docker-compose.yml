@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  mongo:
+    restart: always
+    container_name: mongo
+    image: bitnami/mongodb:latest
+    ports:
+      - 27017:27017
+    environment:
+      - MONGODB_REPLICA_SET_MODE=primary
+    volumes:
+      - /data/db-mongo:/data/db 
+
+  mongo-rs1:
+    restart: always
+    container_name: mongo-rs1
+    image: bitnami/mongodb:latest
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_PRIMARY_HOST=mongo
+      - MONGODB_PRIMARY_PORT_NUMBER=27017
+
+  mongo-rs2:
+    restart: always
+    container_name: mongo-rs2
+    image: bitnami/mongodb:latest
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_PRIMARY_HOST=mongo
+      - MONGODB_PRIMARY_PORT_NUMBER=27017
