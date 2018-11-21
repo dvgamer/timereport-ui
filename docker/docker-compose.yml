@@ -1,29 +1,28 @@
 version: '3'
 
 services:
-  # caddy:
-  #   restart: always
-  #   image: abiosoft/caddy
-  #   container_name: caddy
-  #   ports:
-  #     - 80:80
-  #   command: -conf /etc/Caddyfile # -log stdout -errors stdout
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - /app/caddy/Caddyfile:/etc/Caddyfile
-  #     - /app/caddy/html:/opt/html
-  #     - /data/caddy/data:/root/.caddy
-  #     - /data/caddy/logs:/opt/logs
-
-  # portainer:
-  #   restart: always
-  #   image: portainer/portainer
-  #   container_name: portainer
-  #   ports:
-  #     - 9000:9000
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - /data/portainer:/data
+  caddy:
+    restart: always
+    image: abiosoft/caddy
+    container_name: caddy
+    ports:
+      - 80:80
+    command: -conf /etc/Caddyfile -log stdout -errors stdout # -log stdout -errors stdout
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /app/caddy/Caddyfile:/etc/Caddyfile
+      - /app/caddy/html:/opt/html
+      - caddy_data:/root/.caddy
+      # - /data/caddy/logs:/opt/logs
+  ui_docker:
+    restart: always
+    image: portainer/portainer
+    container_name: portainer
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
   ui_postgres:
     restart: always
     image: adminer
@@ -40,7 +39,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: 0AGa0yC1a6nI054Cu
-      POSTGRES_DB: gitlabhq_production
   db_redis:
     restart: always
     container_name: db_redis
@@ -57,4 +55,8 @@ volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  portainer_data:
+    driver: local
+  caddy_data:
     driver: local

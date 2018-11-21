@@ -17,7 +17,7 @@
     <div class="container-fluid">
       <div class="row">
         <sidebar/>
-        <main role="main" class="col-md-27 ml-sm-auto col-lg-29 pt-3 px-4 mb-3">
+        <div class="col-md-27 ml-sm-auto col-lg-29 pt-3 px-4 mb-3">
           <span v-if="online.socket === 2" class="badge badge-socket badge-light pull-right">
             <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Socket.io
           </span>
@@ -32,7 +32,7 @@
           </a>
           <b-breadcrumb :items="breadcrumb"/>
           <nuxt/>
-        </main>
+        </div>
       </div>
     </div>
   </div>
