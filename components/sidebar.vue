@@ -1,5 +1,5 @@
 <template>
-<nav class="col-md-9 col-lg-7 d-none d-md-block bg-light sidebar">
+<div class="col-md-9 col-lg-7 d-none d-md-block bg-light sidebar">
   <div class="sidebar-sticky">
     <transition name="slide">
       <ul v-if="!mainToggle" class="nav flex-column">
@@ -46,7 +46,7 @@
       </h6> -->
     </transition>
   </div>
-</nav>
+</div>
 </template>
 <script>
 export default {
