@@ -5,13 +5,14 @@ let config = {
   loading: '~/components/loading/top-bar.vue',
   css: [
     './assets/scss/index.scss',
-    'codemirror/lib/codemirror.css',
-    'codemirror/addon/merge/merge.css',
-    'codemirror/theme/material.css'
+    // 'codemirror/lib/codemirror.css',
+    // 'codemirror/addon/merge/merge.css',
+    // 'codemirror/theme/material.css'
   ],
   modules: [
     [ 'bootstrap-vue/nuxt', { css: false } ],
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
     '@nuxtjs/font-awesome',
     '@nuxtjs/pwa'
   ],
@@ -19,7 +20,7 @@ let config = {
     '~/plugins/vue-api.js',
     '~/plugins/vue-installed.js',
     { src: '~/plugins/vue-component.js', ssr: false },
-    { src: '~/plugins/vue-codemirror.js', ssr: false },
+  //   { src: '~/plugins/vue-codemirror.js', ssr: false },
     { src: '~/plugins/socket.io.js', ssr: false }
   ],
   vendor: [ 'axios', 'moment', '~/node_modules/vue-socket.io' ],

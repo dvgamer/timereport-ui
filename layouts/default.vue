@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-panel">
     <b-navbar toggleable="md" type="dark" class="sticky-top bg-dark flex-md-nowrap p-0">
       <b-navbar-brand class="col-md-9 col-lg-7 d-md-block mr-0" to="/">
           <img class="d-inline-block align-top" src="~assets/icon-devops-agile.png" alt="" width="32" height="32">
@@ -21,15 +21,15 @@
           <span v-if="online.socket === 2" class="badge badge-socket badge-light pull-right">
             <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Socket.io
           </span>
-          <a v-else href="#" class="badge pull-right" @click.prevent="onCheckStatus('socket')" :class="online.socket === 1 ? 'badge-success' : 'badge-danger'">
+          <span v-else class="badge pull-right" :class="online.socket === 1 ? 'badge-success' : 'badge-danger'">
             <i class="fa" :class="online.socket === 1 ? 'fa-check' : 'fa-close'"></i> Socket.io
-          </a>
+          </span>
           <span v-if="online.api === 2" class="badge badge-api badge-light pull-right mr-1">
             <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> API
           </span>
-          <a v-else href="#" class="badge pull-right mr-1" @click.prevent="onCheckStatus('api')" :class="online.api === 1 ? 'badge-success' : 'badge-danger'">
+          <span v-else class="badge pull-right mr-1" :class="online.api === 1 ? 'badge-success' : 'badge-danger'">
             <i class="fa" :class="online.api === 1 ? 'fa-check' : 'fa-close'"></i> API
-          </a>
+          </span>
           <b-breadcrumb :items="breadcrumb"/>
           <nuxt/>
         </div>
@@ -48,12 +48,20 @@ export default {
     navUser,
     navSearch
   },
+  sockets: {
+    'connect_error' () {
+      this.online.socket = 0
+    },
+    'connected' () {
+      this.online.socket = 1
+    }
+  },
   data: () => ({
     appName: 'DevOps',
     version: 'v1.1',
     online: {
-      api: 1,
-      socket: 1 // 0=offline, 1=online, 2=wait
+      api: 2,
+      socket: 2 // 0=offline, 1=online, 2=wait
     },
     breadcrumb: [
       {
@@ -63,21 +71,14 @@ export default {
     ]
   }),
   methods: {
-    onCheckStatus (name) {
-      let vm = this
-      vm.online[name] = 2
-      setTimeout(() => {
-        vm.online[name] = 0
-      }, 2000)
-    },
     onSearch () {
       console.log('search:')
     }
   },
   beforeMount () {
-    window.addEventListener('keydown', (e) => {
-      if (e.keyCode >= 112 && e.keyCode <= 123) return e.preventDefault()
-    })
+    // window.addEventListener('keydown', (e) => {
+    //   if (e.keyCode >= 112 && e.keyCode <= 123) return e.preventDefault()
+    // })
   }
 }
 </script>

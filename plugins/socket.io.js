@@ -1,7 +1,18 @@
 import Vue from 'vue'
-import VueSocketio from 'vue-socket.io'
+import VueSocketIO from 'vue-socket.io'
+const store = require('../store')
 
 export default ({ env, app }) => {
-  console.log('socket:', env.SOCKET_HOST_URL)
-  Vue.use(VueSocketio, env.SOCKET_HOST_URL, app.store)
+  Vue.use(new VueSocketIO({
+    // debug: true,
+    connection: env.SOCKET_HOST_URL,
+    vuex: {
+      store,
+      actionPrefix: '__io_',
+      mutationPrefix: '__io_'
+    }
+}))
+
+
+
 }

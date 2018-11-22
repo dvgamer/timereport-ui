@@ -3,7 +3,15 @@
 
 @import '_vue-bar';
 
-
+#__nuxt, #__layout {
+  height: 100vh;
+}
+#__layout {
+  display: flex !important;
+  > div.main-panel {
+    width: 100vw;
+  }
+}
 .container {
   transition: all .2s cubic-bezier(.55,0,.1,1);
 }
@@ -25,23 +33,14 @@
  */
 
 .sidebar {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100; /* Behind the navbar */
   padding: 0;
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
 .sidebar-sticky {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 48px; /* Height of navbar */
-  height: calc(100vh - 48px);
+  height: calc(100vh - 3.145rem);
   padding-top: .5rem;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden;
   > ul {
     margin-bottom: 40px;
   }
@@ -106,6 +105,11 @@
   .form-icon > .form-control {
     padding-right: 18px;
     border: none !important;
+  }
+  .navbar-toggler {
+    padding: 0.5rem 1rem;
+    margin: -0.5rem -0.8rem;
+    border: none;
   }
 }
 
