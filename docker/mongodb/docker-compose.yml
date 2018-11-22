@@ -1,9 +1,14 @@
 version: '3'
 
+# // commandline for apply streaming data.
+# docker exec -it mongo-pr mongo
+# db.enableFreeMonitoring()
+# rs.slaveOk()
+
 services:
-  mongo:
+  mongo-pr:
     restart: always
-    container_name: mongo
+    container_name: mongo-pr
     image: bitnami/mongodb:latest
     ports:
       - 27017:27017
@@ -12,24 +17,24 @@ services:
     volumes:
       - /data/db-mongo:/data/db 
 
-  mongo-rs1:
+  mongo-sc:
     restart: always
-    container_name: mongo-rs1
+    container_name: mongo-sc
     image: bitnami/mongodb:latest
     depends_on:
-      - mongo
+      - mongo-pr
     environment:
       - MONGODB_REPLICA_SET_MODE=secondary
-      - MONGODB_PRIMARY_HOST=mongo
+      - MONGODB_PRIMARY_HOST=mongo-pr
       - MONGODB_PRIMARY_PORT_NUMBER=27017
 
-  mongo-rs2:
+  mongo-ab:
     restart: always
-    container_name: mongo-rs2
+    container_name: mongo-ab
     image: bitnami/mongodb:latest
     depends_on:
-      - mongo
+      - mongo-pr
     environment:
       - MONGODB_REPLICA_SET_MODE=arbiter
-      - MONGODB_PRIMARY_HOST=mongo
+      - MONGODB_PRIMARY_HOST=mongo-pr
       - MONGODB_PRIMARY_PORT_NUMBER=27017
