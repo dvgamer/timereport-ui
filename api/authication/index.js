@@ -1,6 +1,7 @@
 
 const ldapAuth = require('./ldap')
 const db = require('../mongodb')
+const bodyParser = require('body-parser')
 
 let router = {}
 if (process.env.NODE_ENV !== 'production') {
@@ -10,6 +11,7 @@ if (process.env.NODE_ENV !== 'production') {
   const app = require('express')()
   router = app
 }
+router.use(bodyParser.json())
 
 // Import API Routes
 router.get('/user', (req, res) => (async () => {
@@ -21,20 +23,25 @@ router.get('/user', (req, res) => (async () => {
 
 
 
-router.post('/login', async (req, res) => {
+router.post('/login', (req, res) => (async () => {
   let { User, UserHistory } = await db.open()
   let date = new Date()
-  let raw = req.headers['authorization'].replace(/^basic /ig, '')
   
   let auth = {}
-  let IsEncode = false
-  try {
-    auth = new Buffer.from(raw, 'base64').toString('utf8')
-    auth = /(?<usr>.*?):(?<pwd>.*)/ig.exec(auth).groups || {}
-    IsEncode = true
-  } finally { /* decode but user random charector and send to server. */}
+  let raw = req.headers['authorization']
+  if (raw) {
+    let IsEncode = false
+    try {
+      auth = new Buffer.from(raw.replace(/^basic /ig, ''), 'base64').toString('utf8')
+      auth = /(?<usr>.*?):(?<pwd>.*)/ig.exec(auth).groups || {}
+      IsEncode = true
+    } finally { /* decode but user random charector and send to server. */}
 
-  if (!IsEncode) return res.status(401).json({ error: 'Unauthorized (401)'})
+    if (!IsEncode) return res.status(401).json({ error: 'Unauthorized (401)'})
+  } else {
+    let { user, pass} = req.body
+    auth = { usr: user, pwd: pass }
+  }
 
   try {
     if (!auth) throw new Error('Unauthorized (402)')
@@ -66,7 +73,9 @@ router.post('/login', async (req, res) => {
     await new UserHistory({ mail: auth.usr, basic: raw, token: null, created: date }).save()
     res.status(401).json({ error: ex.message })
   }
-})
+})().catch((ex) => {
+  res.status(401).json({})
+}))
 
 router.post('/logout', (req, res) => (async () => {
   res.json({})

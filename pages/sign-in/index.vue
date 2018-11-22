@@ -56,6 +56,7 @@ export default {
   layout: 'guest',
   data () {
     const remember = this.$auth.$storage.getLocalStorage('login.remember', true)
+    console.log(remember)
     const isCache = remember && remember.saved
     return {
       disabled: {

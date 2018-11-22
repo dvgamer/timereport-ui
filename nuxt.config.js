@@ -36,6 +36,34 @@ let config = {
       }
     }
   },
+  auth: {
+    cookie: false,
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: '/auth/login',
+            method: 'post',
+            propertyName: 'token'
+          },
+          logout: {
+            url: '/auth/logout',
+            method: 'post'
+          },
+          user: {
+            url: '/auth/user',
+            method: 'get',
+            propertyName: 'user'
+          }
+        }
+      }
+    },
+    redirect: {
+      login: '/sign-in',
+      logout: '/sign-in',
+      home: '/'
+    }
+  },
   axios: { baseURL: process.env.AXIOS_BASE_URL || 'http://localhost:3001/' },
   env: {
     dev: process.env.NODE_ENV !== 'production',

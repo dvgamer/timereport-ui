@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@nuxtjs/pwa": "^2.6.0",
+    "body-parser": "^1.18.3",
     "consola": "^1.4.5",
     "express": "^4.15.3",
     "font-awesome": "^4.7.0",
