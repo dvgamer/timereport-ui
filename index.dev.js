@@ -10,8 +10,8 @@ if (process.env.NODE_ENV !== 'production') {
     const methodAllow = [ 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' ]
     res.setHeader('Content-Type', 'application/json')
     res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader('Access-Control-Allow-Credentials', 'true')
     res.setHeader('Access-Control-Allow-Headers', '*')
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
     res.setHeader('Access-Control-Allow-Methods', methodAllow.join(','))
     if (req.method === 'OPTIONS') return res.sendStatus(200)
     next()

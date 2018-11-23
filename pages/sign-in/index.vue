@@ -105,6 +105,7 @@ export default {
         await vm.$auth.loginWith('local', {
           data: { user: username, pass: password, saved: remember }
         })
+        console.log('$auth:', vm.$auth.loggedIn, vm.$auth.user)
         vm.account.btn_sign = `Hi, Welcome Back.`
         vm.$auth.$storage.setLocalStorage('login.remember', { user: username, saved: remember }, true)
       } catch (ex) {
@@ -116,19 +117,23 @@ export default {
   },
   created () {
     let vm = this
-    const remember = this.$auth.$storage.getLocalStorage('login.remember', true)
-    const isCache = remember && remember.saved
-    if (isCache) {
-      vm.account.username = remember.user
-      vm.account.remember = remember.saved
-    }
-    vm.$nextTick(() => {
+    if (!vm.$auth.loggedIn) {
+      const remember = this.$auth.$storage.getLocalStorage('login.remember', true)
+      const isCache = remember && remember.saved
       if (isCache) {
-        if (vm.$refs.password) vm.$refs.password.focus()
-      } else {
-        if (vm.$refs.email) vm.$refs.email.focus()
+        vm.account.username = remember.user
+        vm.account.remember = remember.saved
       }
-    })
+      vm.$nextTick(() => {
+        if (isCache) {
+          if (vm.$refs.password) vm.$refs.password.focus()
+        } else {
+          if (vm.$refs.email) vm.$refs.email.focus()
+        }
+      })
+    } else {
+      console.log('$auth:', vm.$auth.loggedIn, vm.$auth.user)
+    }
   }
 }
 </script>

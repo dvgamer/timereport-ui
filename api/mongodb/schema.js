@@ -32,6 +32,7 @@ module.exports = [
       user_name: String,
       user_type: String,
       basic: String,
+      active: Boolean,
       token: String,
       lasted: Date,
       updated: Date,
