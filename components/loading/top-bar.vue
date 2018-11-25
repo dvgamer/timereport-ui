@@ -39,6 +39,7 @@ export default {
   },
   methods: {
     start() {
+      console.log(this.$store.state)
       this.$store.commit('$page', true)
       // this.display = 'block'
       // if (this.timeout != null) clearTimeout(this.timeout)

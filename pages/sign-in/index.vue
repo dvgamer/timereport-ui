@@ -16,34 +16,48 @@
               </div>
               <div class="col-xl-13 col-lg-15 col-md-19 col-sm-36 mt-3 mb-3 panel-sign">
                 <div class="d-none d-md-block" style="height: 24px;"></div>
-                <no-ssr>
-                  <div slot="placeholder">
-                    <div class="dimmer-layout"></div>
-                    <div class="dimmer-content"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></div>
-                  </div>
-                </no-ssr>
+                  <transition name="fade">
+                    <no-ssr>
+                      <div slot="placeholder">
+                        <div class="dimmer-layout"></div>
+                        <div class="dimmer-content"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></div>
+                      </div>
+                    </no-ssr>
+                  </transition>
                 <div class="mb-3 mt-2">
+                  <button v-if="!activate || !enabled" @click="onSignOut" :disabled="sing_out"
+                    type="button" class="btn btn-warning btn-sm btn-logout pull-right">Logout</button>
                   <h3 class="mb-0">Sign-In</h3>
                   <small>central.co.th</small>
                 </div>
-                <div class="form-group">
-                  <label class="form-label">Email address</label>
-                  <input :readonly="account.sing" ref="email" type="text" tabindex="1" class="form-control" v-model="account.username" maxlength="30" placeholder="Enter email">
+                <div v-if="activate && enabled">
+                  <div class="form-group">
+                    <label class="form-label">Email address</label>
+                    <input :readonly="account.sing" ref="email" type="text" tabindex="1" class="form-control" v-model="account.username" maxlength="30" placeholder="Enter email">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input :readonly="account.sing" ref="password" tabindex="2" type="password" class="form-control" v-model="account.password" maxlength="12" placeholder="Password">
+                  </div>
+                  <div class="form-group">
+                    <label class="custom-control custom-checkbox">
+                      <input :disabled="account.sing" tabindex="3" type="checkbox" class="custom-control-input" v-model="account.saved" />
+                      <span class="custom-control-label">Remember me</span>
+                    </label>
+                  </div>
+                  <div class="form-footer">
+                    <button type="submit" tabindex="4" class="btn btn-primary btn-block" :disabled="account.sing">{{account.btn_sign}}</button>
+                  </div>
+                  <small><b><div v-if="!!account.error" class="pt-3 text-danger text-nowrap text-center" v-text="account.error"></div></b></small>
                 </div>
-                <div class="form-group">
-                  <label class="form-label">Password</label>
-                  <input :readonly="account.sing" ref="password" tabindex="2" type="password" class="form-control" v-model="account.password" maxlength="12" placeholder="Password">
+                <div v-else class="text-center">
+                  <div class="avatar-thumbnail">
+                    <v-gravatar class="rounded-circle" email="thkananek@central.co.th" :size="160" default-img="retro" />
+                  </div>
+                  <h5 class="pt-3">Walcome, {{'Kananek Thongkam'}}</h5>
+                  <div v-if="!enabled"><b class="text-danger">Your Account is Suspended.</b><br>Please contact administrator.</div>
+                  <div v-else><b class="text-danger">Your Account is Inactivate.</b><br>Please wait a moment...</div>
                 </div>
-                <div class="form-group">
-                  <label class="custom-control custom-checkbox">
-                    <input :disabled="account.sing" tabindex="3" type="checkbox" class="custom-control-input" v-model="account.remember" />
-                    <span class="custom-control-label">Remember me</span>
-                  </label>
-                </div>
-                <div class="form-footer">
-                  <button type="submit" tabindex="4" class="btn btn-primary btn-block" :disabled="account.sing">{{account.btn_sign}}</button>
-                </div>
-                <small><b><div v-if="!!account.error" class="pt-3 text-danger text-nowrap text-center" v-text="account.error"></div></b></small>
               </div>
             </div>
           </div>
@@ -55,7 +69,7 @@
         <footer class="footer">
           <div class="content text-center">
             <p>
-              <strong>DevOps</strong> by <a href="https://dvgamerr.github.io">T. Kananek</a>. The source code is licensed
+              <strong>{{$store.state.appName}}</strong> {{$store.state.version}} by <a href="https://dvgamerr.github.io">T. Kananek</a>. The source code is licensed
               <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content is licensed.
             </p>
           </div>
@@ -68,27 +82,72 @@
 
 <script>
 export default {
+  auth: false,
   layout: 'guest',
+  middleware: 'signin',
   head: {
     title: 'Sign In'
   },
+  sockets: {
+    'sign-in|status' (data) {
+      const login = this.$auth.$storage.getLocalStorage('login.saved', true)
+      if (login && login.user === data.mail) {
+        this.activate = data.activate
+        this.enabled = data.enabled
+        if (data.activate) {
+          this.onAuth(login.user, login.pass, login.saved)
+        }
+      }
+    }
+  },
   data () {
     return {
+      sing_out: false,
+      activate: true,
+      enabled: true,
       account: {
         sign: false,
         error: '',
         btn_sign: 'Sign-In',
         username: '',
         password: '',
-        remember: false
+        saved: false
       }
     }
   },
   methods: {
+    async onAuth (user, pass, saved) {
+      let vm = this
+      try {
+        await vm.$auth.loginWith('local', { data: { user, pass, saved } })
+      } catch (ex) {
+        vm.account.sing = false
+        vm.account.btn_sign = `Sign-In`
+        vm.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : 'Email or Password worng.'}`
+      }
+
+      if (vm.$auth.loggedIn) {
+        vm.account.btn_sign = `Hi, Welcome Back.`
+        vm.$auth.$storage.setLocalStorage('login.saved', { user, pass, saved }, true)
+        vm.$router.go()
+      } else {
+        let { data } = await vm.$axios.post('/auth/recheck', { user })
+        if (!data.error) {
+          vm.activate = data.activate
+          vm.enabled = data.enabled
+        }
+      }
+    },
+    async onSignOut () {
+      this.sing_out = true
+      this.$auth.$storage.setLocalStorage('login.saved', null, true)
+      this.$router.go()
+    },
     async onSignIn () {
       let vm = this
-      let { username, password, remember } = this.account
-      let data = 
+      let { username, password, saved } = this.account
+
+      vm.$auth.$storage.setLocalStorage('login.saved', { user: username, pass: password, saved: saved }, true)
       vm.account.sing = true
       vm.account.btn_sign = `Signing LDAP...`
       vm.account.error = ''
@@ -101,49 +160,62 @@ export default {
           vm.$refs.password.focus()
           throw new Error('Password is empty.')
         }
-
-        await vm.$auth.loginWith('local', {
-          data: { user: username, pass: password, saved: remember }
-        })
-        console.log('$auth:', vm.$auth.loggedIn, vm.$auth.user)
-        vm.account.btn_sign = `Hi, Welcome Back.`
-        vm.$auth.$storage.setLocalStorage('login.remember', { user: username, saved: remember }, true)
+        await vm.onAuth(username, password, saved)
       } catch (ex) {
         vm.account.sing = false
         vm.account.btn_sign = `Sign-In`
         vm.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : ex.message}`
       }
-    }
-  },
-  created () {
-    let vm = this
-    if (!vm.$auth.loggedIn) {
-      const remember = this.$auth.$storage.getLocalStorage('login.remember', true)
-      const isCache = remember && remember.saved
-      if (isCache) {
-        vm.account.username = remember.user
-        vm.account.remember = remember.saved
+    },
+    updatedInputFocus () {
+      let vm = this
+      const login = this.$auth.$storage.getLocalStorage('login.saved', true)
+
+      if (login && login.saved) {
+        vm.account.username = login.user
+        vm.account.saved = login.saved
       }
+
       vm.$nextTick(() => {
-        if (isCache) {
+        if (login && login.saved) {
           if (vm.$refs.password) vm.$refs.password.focus()
         } else {
           if (vm.$refs.email) vm.$refs.email.focus()
         }
       })
-    } else {
-      console.log('$auth:', vm.$auth.loggedIn, vm.$auth.user)
+    }
+  },
+  async created () {
+    let vm = this
+    if (!vm.$auth.loggedIn) {
+      const login = this.$auth.$storage.getLocalStorage('login.saved', true)
+      if (login) {
+        let { data } = await vm.$axios.post('/auth/recheck', { user: login.user })
+        if (!data.err) {
+          vm.activate = data.activate
+          vm.enabled = data.enabled
+        }
+      }
+      this.updatedInputFocus()
     }
   }
 }
 </script>
 
 <style scoped>
+.avatar-thumbnail {
+  height: 160px;
+}
+.avatar-thumbnail > img {
+  width: 160px;
+  height: 160px;
+  background-color: #ccc;
+}
 .sign-navbar {
   height: 48px;
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(0, 0, 0, 0.3);
   box-shadow: none;
-  padding: 12px;
+  padding: 9px 0 0 12px;
 }
 .navbar-brand {
   font-size: 1.1rem;
@@ -161,11 +233,11 @@ export default {
 .bg-login {
   width: 100%;
   height: 100%;
-  background-color: #efefe6;
-  /* background-image: url('~assets/DevOps.png'); */
+  /* background-color: #efefe6; */
+  background-image: url('~assets/photo-1430165558479-de3cf8cf1478.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: 15px;
+  background-position: 0px;
 }
 .panel-sign {
   height: 380px;
@@ -191,6 +263,10 @@ export default {
   height: 100%;
   vertical-align: middle;
   margin-top: 130px;
+}
+.btn-logout {
+  font-weight: bold;
+  font-size: 0.65rem;
 }
 .card {
   box-shadow: #f3f2f2 2px 2px 2px 2px;

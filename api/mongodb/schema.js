@@ -20,9 +20,18 @@ module.exports = [
     id: 'User',
     name: 'db-user',
     schema: Schema({
-      name: String,
-      mail: String,
-      title: String,
+      name: {
+        type: String,
+        index: true
+      },
+      mail: {
+        type: String,
+        index: true
+      },
+      title: {
+        type: String,
+        index: true
+      },
       company: String,
       department: String,
       office_name: String,
@@ -31,22 +40,42 @@ module.exports = [
       telephone_no: String,
       user_name: String,
       user_type: String,
-      basic: String,
-      active: Boolean,
+      pwd: String,
+      permission: String,
+      enabled: {
+        type: Boolean,
+        index: true
+      },
+      activate: {
+        type: Boolean,
+        index: true
+      },
       token: String,
-      lasted: Date,
+      lasted: {
+        type: Date,
+        index: true
+      },
       updated: Date,
-      created: Date
+      created: {
+        type: Date,
+        index: true
+      },
     })
   },
   {
     id: 'UserHistory',
     name: 'db-user-history',
     schema: Schema({
-      mail: String,
-      basic: String,
+      mail: {
+        type: String,
+        index: true
+      },
+      error: String,
       token: String,
-      created: Date
+      created: {
+        type: Date,
+        index: true
+      },
     })
   },
   {

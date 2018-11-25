@@ -15,10 +15,39 @@ if (process.env.NODE_ENV !== 'production') {
 router.use(bodyParser.json())
 
 // Import API Routes
+const userData = [
+  'name',
+  'mail',
+  'title',
+  'company',
+  'permission',
+  'department',
+  'office_name',
+  'description',
+  'display_name',
+  'telephone_no',
+  'user_name',
+  'user_type',
+  'lasted',
+  'created'
+]
 router.get('/user', (req, res) => (async () => {
-  res.json({})
+  let raw = req.headers['authorization']
+  if (!raw) return res.json({})
+
+  try {
+    let { User } = await db.open()
+    raw = raw.replace(/^bearer /ig, '')
+    let decode = decodeToken(raw)
+    let data = await User.findById(decode._id, userData.join(' '))
+    if (!data) throw new Error('user data not found.')
+    res.json({ user: data })
+  } catch (ex) {
+    console.log('user::', ex)
+    res.json({})
+  }
 })().catch((ex) => {
-  res.status(401).json({})
+  res.json({})
 }))
 
 const encodeToken = (data) => {
@@ -28,7 +57,25 @@ const encodeToken = (data) => {
 
 const decodeToken = (data) => {
   return jsonwebtoken.verify(data, process.env.JWT_KEYHASH)
-} 
+}
+
+router.post('/recheck', (req, res) => (async () => {
+  let { user } = req.body
+  let { User } = await db.open()
+  try {
+    if (!user) throw new Error('Unauthorized 402')
+    user = user.trim().toLowerCase()
+
+    let acc = await User.findOne({ mail: user })
+    if (!acc) throw new Error('Unauthorized 403')
+    res.json({ enabled: acc.enabled, activate: acc.activate })
+  } catch (ex) {
+    res.json({ error: ex.message || ex })
+  }
+})().catch(ex => {
+  res.json({ error: ex.message || ex })
+}))
+
 
 router.post('/login', (req, res) => (async () => {
   let date = new Date()
@@ -45,7 +92,7 @@ router.post('/login', (req, res) => (async () => {
 
     if (!IsEncode) return res.status(401).json({ error: 'Unauthorized (401)'})
   } else {
-    let { user, pass} = req.body
+    let { user, pass } = req.body
     auth = { usr: user, pwd: pass }
   }
 
@@ -53,18 +100,25 @@ router.post('/login', (req, res) => (async () => {
   try {
     if (!auth) throw new Error('Unauthorized (402)')
     auth.usr = auth.usr.trim().toLowerCase()
-    let data = await ldapAuth(auth.usr, auth.pwd)
-    if (data.err) throw new Error(data.err)
 
     let user = await User.findOne({ mail: auth.usr })
 
-    data.mail = data.mail.trim().toLowerCase()
-
+    let data = {}
+    try {
+      data = await ldapAuth(auth.usr, auth.pwd)
+      data.mail = data.mail.trim().toLowerCase()
+    } catch (ex) {
+      data.err = ex.message
+      user = await User.findOne({ mail: auth.usr, pwd: md5(auth.pwd) })
+      if (!user) throw new Error(ex.message)
+    }
+    console.log('User Saved:: ', !user)
     if (!user) {
       user = await new User(Object.assign({
-        basic: raw,
+        pwd: md5(auth.pwd),
         token: null,
-        active: false,
+        activate: false,
+        enabled: false,
         lasted: date,
         updated: date,
         created: date
@@ -72,7 +126,7 @@ router.post('/login', (req, res) => (async () => {
     } else {
       await User.updateOne({ _id: user._id }, {
         $set: {
-          basic: raw,
+          pwd: md5(auth.pwd),
           token: null,
           lasted: date
         }
@@ -81,11 +135,16 @@ router.post('/login', (req, res) => (async () => {
  
     let accessToken = encodeToken({ _id: user._id })
     await User.updateOne({ _id: user._id }, { $set: { token: accessToken } })
-    await new UserHistory({ mail: auth.usr, basic: raw, token: accessToken, created: date }).save()
-    res.json({ token: accessToken })
+    if (user.activate && user.enabled) {
+      await new UserHistory({ mail: auth.usr, error: data.err, token: accessToken, created: date }).save()
+      res.json({ token: accessToken })
+    } else {
+      await new UserHistory({ mail: auth.usr, error: 'account suspended or inactivate', token: accessToken, created: date }).save()
+      res.status(401).json({ error: 'Unauthorized (403)' })
+    }
   } catch (ex) {
-    await new UserHistory({ mail: auth.usr, basic: raw, token: null, created: date }).save()
-    res.status(401).json({ error: ex.message || ex })
+    await new UserHistory({ mail: auth.usr, error: (ex.message || ex), token: null, created: date }).save()
+    res.json({ error: ex.message || ex })
   }
 })().catch(ex => {
   res.status(401).json({ error: ex.message || ex })

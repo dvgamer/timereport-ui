@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import { VueSlideoutPanel } from 'vue2-slideout-panel'
+import Gravatar from 'vue-gravatar'
 
+Vue.component('v-gravatar', Gravatar)
 Vue.component('slideout-panel', VueSlideoutPanel)
 
 const elemKeydown = (element, $elem, settings, event) => {
@@ -37,14 +39,20 @@ const focusNext = pool => {
   pool[i < pool.length - 1 ? i + 1 : 0].focus()
 }
 
+const elementFind = (el, tagname) => {
+  for (const e of el.getElementsByTagName(tagname)) {
+    if (e.hasAttribute('tabindex')) el.$elem.push(e)
+  }
+}
+
 Vue.directive('tabindex', {
-  bind: (el, binding) => {
-    const settings = {
-      enterKey: !!binding.modifiers.enter 
-    }
+  bind: (el) => {
+  },
+  inserted: (el, binding) => {
     el.$elem = []
-    for (const e of el.getElementsByTagName('input')) el.$elem.push(e)
-    for (const e of el.getElementsByTagName('button')) el.$elem.push(e)
+    const settings = { enterKey: !!binding.modifiers.enter } // v-if="!activate || !enabled" 
+    elementFind(el, 'input')
+    elementFind(el, 'button')
     el.$elem.sort((a, b) => { return a.tabIndex > b.tabIndex ? 1 : -1 })
 
     for (const element of el.$elem) {

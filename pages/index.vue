@@ -6,11 +6,13 @@
 <script>
 
 export default {
-  middleware: 'auth',
   head: {
     title: 'Dashboard'
   },
   components: {
+  },
+  created () {
+    console.log('dashboard:', this.$auth.user)
   }
 }
 </script>

@@ -20,11 +20,12 @@ module.exports = (usr, pwd, filter) => {
     baseDN: adSuffix,
     timeout: timeout,
     connectTimeout: timeout,
-    idleTimeout: timeout * 5
+    idleTimeout: timeout
   })
   
   return new Promise((resolve, reject) => {
     const resolveClient = (data) => client.unbind(err => {
+      clearTimeout(manualTimeout)
       // console.log('unbind:', !err)
       if (err) return reject(err)
       resolve(data)
@@ -35,8 +36,12 @@ module.exports = (usr, pwd, filter) => {
         reject(err || ex)
       })
     }
+    let manualTimeout = setTimeout(() => {
+      rejectClient('client bind timeout.')
+    }, timeout)
 
     // console.log('auth:', username, password)
+    manualTimeout
     client.bind(username, password, err => {
       // console.log('bind:', !err)
       if (err) return resolveClient({ err: err.lde_message })

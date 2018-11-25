@@ -29,10 +29,20 @@ http.listen(port, () => (async () => {
       consola.info('socket.io user disconnected')
     })
   })
-  let { PageSync } = await db.open()
+  let { PageSync, User } = await db.open()
 
-  const changeStream = PageSync.watch()
-  changeStream.on('change', async (change) => {
+  const changeUser = User.watch()
+  changeUser.on('change', async (change) => {
+    if (change.operationType !== 'update') return
+    let { updatedFields } = change.updateDescription
+    if (!updatedFields.activate && !updatedFields.enabled) return
+    console.log('changeUser', updatedFields.activate, updatedFields.enabled)
+    let { activate, enabled, mail }  = await User.findOne({ _id: change.documentKey._id })
+    io.emit(`sign-in|status`, { activate, enabled, mail })
+  })
+
+  const changePageSync = PageSync.watch()
+  changePageSync.on('change', async (change) => {
     if (change.operationType !== 'update') return
     let { data, route, module  }  = await PageSync.findOne({ _id: change.documentKey._id })
     io.emit(`${route}|${module}`, data)

@@ -2,6 +2,9 @@ let config = {
   head: {
     titleTemplate: title => (title ? `${title} · ` : '') + 'DevOps'
   },
+  router: {
+    middleware: ['auth']
+  },
   loading: '~/components/loading/top-bar.vue',
   css: [
     './assets/scss/index.scss',
@@ -37,7 +40,6 @@ let config = {
     }
   },
   auth: {
-    cookie: false,
     strategies: {
       local: {
         endpoints: {
