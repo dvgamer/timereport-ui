@@ -16,7 +16,7 @@ const inspect = require('./inspect')
 const appService = require('./app-service')
 
 router.use('*', (req, res, next) => {
-  console.log(`API:: ${req.method} ${req.baseUrl}`)
+  console.log(` API:: ${req.method} ${req.baseUrl}`)
   next()
 })
 
@@ -28,6 +28,10 @@ router.get('/init', (req, res) => {
     res.write(ex.message)
     res.send()
   })
+})
+
+router.get('/status', (req, res) => {
+  res.status(200).end()
 })
 // Import API Routes
 router.use('/app', appService)

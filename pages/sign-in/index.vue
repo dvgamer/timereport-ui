@@ -92,10 +92,9 @@ export default {
     'sign-in|status' (data) {
       const login = this.$auth.$storage.getLocalStorage('login.saved', true)
       if (login && login.user === data.mail) {
-        this.activate = data.activate
         this.enabled = data.enabled
         if (data.activate) {
-          this.onAuth(login.user, login.pass, login.saved)
+          this.onAuth(login.user, login.pass, login.saved, true)
         }
       }
     }
@@ -116,14 +115,17 @@ export default {
     }
   },
   methods: {
-    async onAuth (user, pass, saved) {
+    async onAuth (user, pass, saved, noerr = false) {
       let vm = this
+      vm.account.sing = true
       try {
         await vm.$auth.loginWith('local', { data: { user, pass, saved } })
       } catch (ex) {
-        vm.account.sing = false
-        vm.account.btn_sign = `Sign-In`
-        vm.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : 'Email or Password worng.'}`
+        if (!noerr) {
+          vm.account.sing = false
+          vm.account.btn_sign = `Sign-In`
+          vm.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : 'Email or Password worng.'}`
+        }
       }
 
       if (vm.$auth.loggedIn) {

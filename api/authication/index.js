@@ -14,6 +14,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 router.use(bodyParser.json())
 
+router.use('*', (req, res, next) => {
+  console.log(`AUTH:: ${req.method} ${req.baseUrl}`)
+  next()
+})
+
 // Import API Routes
 const userData = [
   'name',
