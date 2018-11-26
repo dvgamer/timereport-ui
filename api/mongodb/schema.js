@@ -4,6 +4,23 @@ const { Mixed } = Schema.Types
 
 module.exports = [
   {
+    id: 'GlobalConfig',
+    name: 'config-global',
+    schema: Schema({
+      segment: {
+        type: String,
+        index: true
+      },
+      field: {
+        type: String,
+        index: true
+      },
+      value: String,
+      type: String,
+      created: Date
+    })
+  },
+  {
     id: 'PageSync',
     name: 'db-page-sync',
     schema: Schema({

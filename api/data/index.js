@@ -9,7 +9,7 @@ dbRemoveAllAndInsert = async (dbMongo, dataRows) => {
 }
 
 module.exports = async () => {
-  let { PageSync, Snippet, User, UserHistory } = await db.open()
+  let { PageSync, Snippet, User, UserHistory, GlobalConfig } = await db.open()
 
   // permission
   // - system,admin,analyst,developer,user
@@ -36,6 +36,9 @@ module.exports = async () => {
     user_type: '805306368',
     pwd: '64aec91f181411454aafe47fc38777c0'
   }).save()
+
+
+  await dbRemoveAllAndInsert(GlobalConfig, require('./global-config'))
 
   await dbRemoveAllAndInsert(Snippet, require('./snippet'))
   await dbRemoveAllAndInsert(PageSync, require('./page-sync'))

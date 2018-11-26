@@ -5,8 +5,8 @@
       <span class="user-avatar">
         <v-gravatar class="rounded-circle" :email="$auth.user.mail" :size="32" default-img="retro" />
         <span class="user-info">
-          <div class="name">{{$auth.user.name}}</div>
-          <div class="title">{{$auth.user.title}}</div>
+          <div class="name text-nowrap">{{$auth.user.name}}</div>
+          <div class="title text-nowrap">{{$auth.user.title}}</div>
         </span>
       </span>
     </template>
@@ -37,14 +37,15 @@ export default {
   left: -30px;
 }
 .user-info {
-  width: 120px;
   color: #CDCDCD;
 }
 .user-info .name {
+  width: 160px;
   font-size: 1rem;
   line-height: 1.3rem;
 }
 .user-info .title {
+  width: 160px;
   font-size: .7rem;
   line-height: .7rem;
 }

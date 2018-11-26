@@ -66,7 +66,7 @@ export default {
 
 .load-bar {
   position: fixed;
-  top: 46px;
+  top: 50px;
   height:4px;
   width:100%;
   opacity: 1;
