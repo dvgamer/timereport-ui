@@ -10,69 +10,11 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-18 col-md-9 mb-3">
-      <div class="card o-hidden h-100">
-        <div class="card-body">
-          <div class="card-body-icon">
-            <i class="text-primary fa fa-fw fa-comments"></i>
-          </div>
-          <div>26 New Messages!</div>
-        </div>
-        <a class="card-footer clearfix small z-1" href="#">
-          <span class="float-left">View Details</span>
-          <span class="float-right">
-            <i class="fa fa-angle-right"></i>
-          </span>
-        </a>
-      </div>
+    <div class="col-sm-24 mb-3">
+      aa
     </div>
-    <div class="col-sm-18 col-md-9 mb-3">
-      <div class="card o-hidden h-100">
-        <div class="card-body">
-          <div class="card-body-icon">
-            <i class="text-primary fa fa-fw fa-list"></i>
-          </div>
-          <div>11 New Tasks!</div>
-        </div>
-        <a class="card-footer clearfix small z-1" href="#">
-          <span class="float-left">View Details</span>
-          <span class="float-right">
-            <i class="fa fa-angle-right"></i>
-          </span>
-        </a>
-      </div>
-    </div>
-    <div class="col-sm-18 col-md-9 mb-3">
-      <div class="card o-hidden h-100">
-        <div class="card-body">
-          <div class="card-body-icon">
-            <i class="text-primary fa fa-fw fa-shopping-cart"></i>
-          </div>
-          <div>123 New Orders!</div>
-        </div>
-        <a class="card-footer clearfix small z-1" href="#">
-          <span class="float-left">View Details</span>
-          <span class="float-right">
-            <i class="fa fa-angle-right"></i>
-          </span>
-        </a>
-      </div>
-    </div>
-    <div class="col-sm-18 col-md-9 mb-3">
-      <div class="card o-hidden h-100">
-        <div class="card-body">
-          <div class="card-body-icon">
-            <i class="text-primary fa fa-fw fa-life-ring"></i>
-          </div>
-          <div>13 New Tickets!</div>
-        </div>
-        <a class="card-footer clearfix small z-1" href="#">
-          <span class="float-left">View Details</span>
-          <span class="float-right">
-            <i class="fa fa-angle-right"></i>
-          </span>
-        </a>
-      </div>
+    <div class="col-sm-12 mb-3">
+      aa
     </div>
   </div>
 </div>
