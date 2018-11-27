@@ -30,7 +30,7 @@ const dbDataSync = async () => {
   for (let i = 0; i < sync.length; i++) {
     const data = sync[i]
     const key = `${data.route}|${data.module}`
-    console.log(`Sync '${key}' crontab: ${data.crontab}`)
+    if (!data.crontab) continue
 
     const taskJob = async () => {
       try {
@@ -45,13 +45,18 @@ const dbDataSync = async () => {
       }
       // pool.close()
     }
-    await taskJob()
-    cronJobs[key] = cron.schedule(data.crontab, () => {
-      console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key}...`)
-      taskJob().then(() => {
-        console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} finish.`)
+    try {
+      await taskJob()
+      cronJobs[key] = cron.schedule(data.crontab, () => {
+        console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key}...`)
+        taskJob().then(() => {
+          console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} finish.`)
+        })
       })
-    })
+      console.log(`Sync '${key}' crontab: ${data.crontab} created.`)
+    } catch (ex) {
+      console.log(`Sync '${key}' crontab: ${data.crontab} fail::${ex.message}.`)
+    }
   }
 }
 

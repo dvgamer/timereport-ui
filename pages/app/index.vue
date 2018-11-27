@@ -14,18 +14,18 @@
     </div>
     <div class="col-sm-12 mb-3">
       <h6 class="border-bottom">IIS</h6>
-      <ul>
-        <li>aaa</li>
-        <li>aaa</li>
-        <li>aaa</li>
-        <li>aaa</li>
-        <li>aaa</li>
-        <li>aaa</li>
+      <ul class="stats">
+        <li v-for="item in online" :key="item.key">
+          <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+          <span v-text="item.label"></span>
+        </li>
       </ul>
       <h6 class="border-bottom">FTP</h6>
-      <ul>
-        <li>aaa</li>
-        <li>aaa</li>
+      <ul class="stats">
+        <li v-for="item in ftp" :key="item.key">
+          <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+          <span v-text="item.label"></span>
+        </li>
       </ul>
     </div>
   </div>
@@ -38,12 +38,26 @@ export default {
   head: {
     title: 'Application Dashboard'
   },
-  components: {
+  async asyncData({ $api }) {
+    let data = await $api.get('app')
+    return data
   }
 }
 </script>
 
 <style scoped>
+ul.stats {
+  padding-left: 10px;
+}
+ul.stats > li {
+  display: block;
+  font-weight: bold;
+  font-size: 0.7rem;
+  padding: 2px 0px;
+}
+ul.stats > li > i {
+  font-size: .75rem;
+}
 .card {
   overflow: hidden;
 }

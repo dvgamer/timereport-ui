@@ -3,6 +3,78 @@
 module.exports = [
   {
     route: 'app-inbound-transfer',
+    module: 'iis-online',
+    crontab: null,
+    query: 'iis_service_url.ip48_in',
+    data: { online: true, label: 'http://10.101.147.48' },
+    updated: new Date(),
+    created: new Date()
+  },
+  {
+    route: 'app-inbound-transfer',
+    module: 'iis-online',
+    crontab: null,
+    query: 'iis_service_url.ip49_in',
+    data: { online: true, label: 'http://10.101.147.49' },
+    updated: new Date(),
+    created: new Date()
+  },
+  {
+    route: 'app-inbound-transfer',
+    module: 'iis-online',
+    crontab: null,
+    query: 'iis_service_url.ip61_in',
+    data: { online: true, label: 'http://10.101.147.61' },
+    updated: new Date(),
+    created: new Date()
+  },
+  {
+    route: 'app-inbound-transfer',
+    module: 'iis-online',
+    crontab: null,
+    query: 'iis_service_url.ip48_out',
+    data: { online: true, label: 'http://10.101.147.48' },
+    updated: new Date(),
+    created: new Date()
+  },
+  {
+    route: 'app-inbound-transfer',
+    module: 'iis-online',
+    crontab: null,
+    query: 'iis_service_url.ip49_out',
+    data: { online: true, label: 'http://10.101.147.49' },
+    updated: new Date(),
+    created: new Date()
+  },
+  {
+    route: 'app-inbound-transfer',
+    module: 'iis-online',
+    crontab: null,
+    query: 'iis_service_url.ip61_out',
+    data: { online: true, label: 'http://10.101.147.61' },
+    updated: new Date(),
+    created: new Date()
+  },
+  {
+    route: 'app-inbound-transfer',
+    module: 'ftp-online',
+    crontab: null,
+    query: 'ftp_service_addr.ip59_inbound',
+    data: { online: true, label: 'ftp://10.101.147.59' },
+    updated: new Date(),
+    created: new Date()
+  },
+  {
+    route: 'app-inbound-transfer',
+    module: 'ftp-online',
+    crontab: null,
+    query: 'ftp_service_addr.ip62_outbound',
+    data: { online: true, label: 'ftp://10.101.147.62' },
+    updated: new Date(),
+    created: new Date()
+  },
+  {
+    route: 'app-inbound-transfer',
     module: 'panel-status',
     crontab: '* * * * *',
     query: 
