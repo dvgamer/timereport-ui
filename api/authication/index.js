@@ -43,12 +43,13 @@ router.get('/user', (req, res) => (async () => {
   try {
     let { User } = await db.open()
     raw = raw.replace(/^bearer /ig, '')
+    if (raw === 'undefined') throw new Error('user data not found.')
+
     let decode = decodeToken(raw)
     let data = await User.findById(decode._id, userData.join(' '))
     if (!data) throw new Error('user data not found.')
     res.json({ user: data })
   } catch (ex) {
-    console.log('user::', ex)
     res.json({})
   }
 })().catch((ex) => {
@@ -108,16 +109,15 @@ router.post('/login', (req, res) => (async () => {
 
     let user = await User.findOne({ mail: auth.usr })
 
-    let data = {}
+    let data = null
     try {
       data = await ldapAuth(auth.usr, auth.pwd)
       data.mail = data.mail.trim().toLowerCase()
     } catch (ex) {
-      data.err = ex.message
+      data = { error: ex.message }
       user = await User.findOne({ mail: auth.usr, pwd: md5(auth.pwd) })
-      if (!user) throw new Error(ex.message)
     }
-    console.log('User Saved:: ', !user)
+    if (!user && !data) throw new Error('User account not found.')
     if (!user) {
       user = await new User(Object.assign({
         pwd: md5(auth.pwd),

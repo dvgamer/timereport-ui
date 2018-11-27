@@ -137,6 +137,11 @@ export default {
         if (!data.error) {
           vm.activate = data.activate
           vm.enabled = data.enabled
+        } else {
+          vm.account.sing = false
+          vm.account.btn_sign = `Sign-In`
+          vm.account.error = data.error
+          vm.$auth.$storage.setLocalStorage('login.saved', {}, true)
         }
       }
     },
@@ -148,6 +153,20 @@ export default {
     async onSignIn () {
       let vm = this
       let { username, password, saved } = this.account
+
+      if (!/\w{5,}@central.co.th$/ig.test(username)) {
+        vm.account.sing = false
+        vm.account.btn_sign = `Sign-In`
+        vm.account.error = `Domain name not central.co.th`
+        return
+      }
+
+      if (password.length <= 3) {
+        vm.account.sing = false
+        vm.account.btn_sign = `Sign-In`
+        vm.account.error = `Password worng.`
+        return
+      }
 
       vm.$auth.$storage.setLocalStorage('login.saved', { user: username, pass: password, saved: saved }, true)
       vm.account.sing = true
@@ -193,7 +212,7 @@ export default {
       const login = this.$auth.$storage.getLocalStorage('login.saved', true)
       if (login) {
         let { data } = await vm.$axios.post('/auth/recheck', { user: login.user })
-        if (!data.err) {
+        if (!data.error) {
           vm.activate = data.activate
           vm.enabled = data.enabled
         }
