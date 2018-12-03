@@ -24,13 +24,12 @@ const dbDataSync = async () => {
   let { PageSync } = await db.open()
   let pool = await sqlConnectionPool()
   
-  let sync = await PageSync.find({})
+  let sync = await PageSync.find({ crontab: { $ne: null } })
 
   console.log(`Page Data Sync ${sync.length} jobs.`)
   for (let i = 0; i < sync.length; i++) {
     const data = sync[i]
     const key = `${data.route}|${data.module}`
-    if (!data.crontab) continue
 
     const taskJob = async () => {
       try {
@@ -51,6 +50,8 @@ const dbDataSync = async () => {
         console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key}...`)
         taskJob().then(() => {
           console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} finish.`)
+        }).catch(ex => {
+          console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} fail::${ex.message}`)
         })
       })
       console.log(`Sync '${key}' crontab: ${data.crontab} created.`)
