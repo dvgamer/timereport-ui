@@ -47,11 +47,8 @@ const dbDataSync = async () => {
     try {
       await taskJob()
       cronJobs[key] = cron.schedule(data.crontab, () => {
-        console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key}...`)
-        taskJob().then(() => {
-          console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} finish.`)
-        }).catch(ex => {
-          console.log(` ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} fail::${ex.message}`)
+        taskJob().catch(ex => {
+          console.log(` - ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} fail::${ex.message}`)
         })
       })
       console.log(`Sync '${key}' crontab: ${data.crontab} created.`)

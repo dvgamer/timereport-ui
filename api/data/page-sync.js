@@ -23,8 +23,8 @@ module.exports = [
     route: 'app-inbound-transfer',
     module: 'iis-online',
     crontab: null,
-    query: 'iis_service_url.ip61_in',
-    data: { online: true, label: 'http://10.101.147.61' },
+    query: 'iis_service_url.ip51_in',
+    data: { online: true, label: 'http://10.101.147.51' },
     updated: new Date(),
     created: new Date()
   },
@@ -50,8 +50,8 @@ module.exports = [
     route: 'app-inbound-transfer',
     module: 'iis-online',
     crontab: null,
-    query: 'iis_service_url.ip61_out',
-    data: { online: true, label: 'http://10.101.147.61' },
+    query: 'iis_service_url.ip51_out',
+    data: { online: true, label: 'http://10.101.147.51' },
     updated: new Date(),
     created: new Date()
   },
