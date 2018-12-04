@@ -1,6 +1,8 @@
 const { Router } = require('express')
 const router = Router()
 
+const request = require('request-promise')
+const PromiseFtp = require('promise-ftp')
 const db = require('../mongodb')
 
 /* GET users listing. */
@@ -48,21 +50,34 @@ router.get('/inbound-online', (req, res) => (async () => {
       const ip = await GlobalConfig.findOne(groups)
       if (!ip) continue
 
-      console.log('iis:', ip.value)
+      let ip_res = {}
+      try {
+        ip_res = await request({ method: 'GET', uri: ip.value, resolveWithFullResponse: true, timeout: 3000 })
+      } catch (ex) {}
+      await PageSync.findOneAndUpdate(list._id, { 'data.online': ip_res.statusCode === 200 })
     }
-
+ 
     for (const list of ftp) {
       let { groups } = /(?<segment>\w+?)\.(?<field>\w+)/ig.exec(list.query)
       if (!groups) continue
-      
+
       const ip = await GlobalConfig.findOne(groups)
       if (!ip) continue
 
-      console.log('ftp:', ip.value)
+      const usr = await GlobalConfig.findOne({ segment: `ftp_account.${groups.field}`, field: 'usr' })
+      const pwd = await GlobalConfig.findOne({ segment: `ftp_account.${groups.field}`, field: 'pwd' })
+      const ftp = new PromiseFtp()
+      let serverMessage = null
+      try {
+        serverMessage = await ftp.connect({ host: ip.value, user: usr.value, password: pwd.value, connTimeout: 5000 })
+        await ftp.end()
+      } catch (ex) {}
+      await PageSync.findOneAndUpdate(list._id, { 'data.online': serverMessage != null})
     }
     res.sendStatus(200).end()
   } catch (ex) {
-    res.sendStatus(404).end()
+    console.log(ex)
+    res.sendStatus(502).end()
   }
 })())
 
