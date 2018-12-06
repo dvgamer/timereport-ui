@@ -85,10 +85,10 @@
     </div>
     <hr>
     <div class="row">
-      <div class="col-18">
+      <div class="col-lg-18">
         <chart-upload-hour :data="hour.data" :label="hour.label" :height="200" ref="chartupload"></chart-upload-hour>
       </div>
-      <div class="col-18">
+      <div class="col-lg-18">
         <chart-upload-hour :data="hour.data" :label="hour.label" :height="200" ref="chartupload"></chart-upload-hour>
       </div>
     </div>
