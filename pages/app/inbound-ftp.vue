@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-      <h1 class="h2">Inbound Transfer Services</h1>
+      <h1 class="h2">InboundFTP Services</h1>
       <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group mr-2">
           <button class="btn btn-sm btn-outline-secondary">Share</button>
@@ -33,7 +33,6 @@
           </div>
         </div>
         <hr>
-        <chart-upload-hour :data="hour.data" :label="hour.label" :height="200" ref="chartupload"></chart-upload-hour>
       </div>
       <div class="col-md-12">
         <div class="card card-seq">
@@ -85,6 +84,14 @@
       </div> -->
     </div>
     <hr>
+    <div class="row">
+      <div class="col-18">
+        <chart-upload-hour :data="hour.data" :label="hour.label" :height="200" ref="chartupload"></chart-upload-hour>
+      </div>
+      <div class="col-18">
+        <chart-upload-hour :data="hour.data" :label="hour.label" :height="200" ref="chartupload"></chart-upload-hour>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -115,7 +122,7 @@ let graphData = (array = []) => {
 
 export default {
   head: {
-    title: 'InboundTransfer Service',
+    title: 'InboundFTP Service',
   },
   sockets: {
     'app-inbound-transfer|panel-graph-hour' (data) {

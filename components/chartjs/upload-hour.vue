@@ -9,7 +9,7 @@ export default {
     return {
       options: {
         title: {
-          text: 'XML Transfer Rate',
+          text: 'ZIP Transfer / hours',
           x: -20 //center
         },
         xAxis: {
@@ -19,17 +19,16 @@ export default {
         },
         yAxis: {
           title: {
-            text: 'Total XML files'
+            text: 'ZIP files'
           },
           plotLines: [{
             value: 0,
             width: 1,
-            color: '#808080'
+            color: '#' + (Math.random() * 0xffffff | 0).toString(16)
           }],
           minPadding: 0
         },
         chart: {
-          type: 'column',
           height: this.height,
           animation: false
         },
@@ -43,6 +42,7 @@ export default {
           enabled: false
         },
         series: [{
+          showInLegend: false,
           name: 'files',
           data: this.data || [],
           label: this.label || []

@@ -55,9 +55,9 @@ const dbDataSync = async () => {
           console.log(` - ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} fail::${ex.message}`)
         })
       })
-      console.log(`Sync '${key}' crontab: ${data.crontab} created.`)
+      console.log(`Crontab: ${data.crontab}, Sync '${key}' created.`)
     } catch (ex) {
-      console.log(`Sync '${key}' crontab: ${data.crontab} fail::${ex.message}.`)
+      console.log(`Crontab: ${data.crontab}, Sync '${key}' fail::${ex.message}.`)
     }
   }
 }

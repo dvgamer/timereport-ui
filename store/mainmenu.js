@@ -12,7 +12,7 @@ export const state = () => ({
     { name: 'Dashboard', route: '/app', icon: 'fa fa-home', exact: true },
     { group: 'Service', items: [
       { name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'fa fa-tasks' },
-      { name: 'Inbound Transfer', route: '/app/inbound-transfer', icon: 'fa fa-file-text-o' }
+      { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'fa fa-file-text-o' }
     ] },
     { group: 'SSIS', items: [
       { name: 'SSIS Staging', route: '/app/ssis-staging', icon: 'fa fa-file-o' },
