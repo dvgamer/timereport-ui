@@ -18,6 +18,7 @@ router.get('/', (req, res) => (async () => {
         key: list.query,
         label: list.data.label,
         online: list.data.online,
+        msg: list.data.msg
       })
     }
     let stats_ftp = []
@@ -26,6 +27,7 @@ router.get('/', (req, res) => (async () => {
         key: list.query,
         label: list.data.label,
         online: list.data.online,
+        msg: list.data.msg
       })
     }
     res.json({

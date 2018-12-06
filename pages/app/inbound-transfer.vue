@@ -165,7 +165,7 @@ export default {
   },
   methods: {
     toTextNumber (val) {
-      return val >= 950 ? (val / 950).toFixed(1) + 'k' : val
+      return val >= 900 ? (val / 1000).toFixed(1) + 'k' : val
     },
     clickButton () {
       this.$refs.chartupload.update()

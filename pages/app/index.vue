@@ -4,8 +4,7 @@
     <h1 class="h2">Application</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
       <b-button-group class="mr-2" size="sm">
-        <b-button class="btn-outline-secondary">Button 1</b-button>
-        <b-button class="btn-outline-secondary">Button 2</b-button>
+        <b-button class="btn-outline-warning">Re-Check</b-button>
       </b-button-group>
     </div>
   </div>
@@ -13,18 +12,24 @@
     <div class="col-sm-24 mb-3">
     </div>
     <div class="col-sm-12 mb-3">
-      <h6 class="border-bottom">IIS</h6>
+      <h6 class="border-bottom pb-1">IIS <small class="text-secondary">(updated last at seconds.)</small></h6>
       <ul class="stats">
-        <li v-for="item in online" :key="item.key">
-          <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
-          <span v-text="item.label"></span>
+        <li v-for="item in online" :key="item.key" class="d-flex stats-online mb-2">
+          <i class="fa fa-server m-1" :class="item.online ? 'text-success' : 'text-danger'" aria-hidden="true"></i>
+          <div class="d-flex flex-column pl-2">
+            <span class="text" v-text="item.label"></span>
+            <span class="subtext" v-text="item.msg"></span>
+          </div>
         </li>
       </ul>
-      <h6 class="border-bottom">FTP</h6>
+      <h6 class="border-bottom pb-1">FTP <small class="text-secondary">(updated last at seconds.)</small></h6>
       <ul class="stats">
-        <li v-for="item in ftp" :key="item.key">
-          <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
-          <span v-text="item.label"></span>
+        <li v-for="item in ftp" :key="item.key" class="d-flex stats-online mb-2">
+          <i class="fa fa-cloud m-1" :class="item.online ? 'text-success' : 'text-danger'" aria-hidden="true"></i>
+          <div class="d-flex flex-column pl-2">
+            <span class="text" v-text="item.label"></span>
+            <span class="subtext" v-text="item.msg"></span>
+          </div>
         </li>
       </ul>
     </div>
@@ -51,12 +56,19 @@ ul.stats {
 }
 ul.stats > li {
   display: block;
-  font-weight: bold;
-  font-size: 0.7rem;
   padding: 2px 0px;
 }
 ul.stats > li > i {
-  font-size: .75rem;
+  font-size: 1.5rem;
+}
+ul.stats .flex-column > .text {
+  font-size: .8rem;
+  font-weight: bold;
+  line-height: 0.8rem;
+  padding-top: 3px;
+}
+ul.stats .flex-column > .subtext {
+  font-size: .65rem;
 }
 .card {
   overflow: hidden;

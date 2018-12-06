@@ -6,7 +6,7 @@ module.exports = [
     module: 'iis-online',
     crontab: null,
     query: 'iis_service_url.ip48_in',
-    data: { online: true, label: 'http://10.101.147.48' },
+    data: { online: true, label: 'HTTP: 10.101.147.48', msg: 'inbound http-1' },
     updated: new Date(),
     created: new Date()
   },
@@ -15,7 +15,7 @@ module.exports = [
     module: 'iis-online',
     crontab: null,
     query: 'iis_service_url.ip49_in',
-    data: { online: true, label: 'http://10.101.147.49' },
+    data: { online: true, label: 'HTTP: 10.101.147.49', msg: 'inbound http-2' },
     updated: new Date(),
     created: new Date()
   },
@@ -24,7 +24,7 @@ module.exports = [
     module: 'iis-online',
     crontab: null,
     query: 'iis_service_url.ip51_in',
-    data: { online: true, label: 'http://10.101.147.51' },
+    data: { online: true, label: 'HTTP: 10.101.147.51', msg: 'inbound http-3' },
     updated: new Date(),
     created: new Date()
   },
@@ -33,7 +33,7 @@ module.exports = [
     module: 'iis-online',
     crontab: null,
     query: 'iis_service_url.ip48_out',
-    data: { online: true, label: 'http://10.101.147.48' },
+    data: { online: true, label: 'HTTP: 10.101.147.48', msg: 'outbound http-1' },
     updated: new Date(),
     created: new Date()
   },
@@ -42,7 +42,7 @@ module.exports = [
     module: 'iis-online',
     crontab: null,
     query: 'iis_service_url.ip49_out',
-    data: { online: true, label: 'http://10.101.147.49' },
+    data: { online: true, label: 'HTTP: 10.101.147.49', msg: 'outbound http-2' },
     updated: new Date(),
     created: new Date()
   },
@@ -51,7 +51,7 @@ module.exports = [
     module: 'iis-online',
     crontab: null,
     query: 'iis_service_url.ip51_out',
-    data: { online: true, label: 'http://10.101.147.51' },
+    data: { online: true, label: 'HTTP: 10.101.147.51', msg: 'outbound http-3' },
     updated: new Date(),
     created: new Date()
   },
@@ -60,7 +60,7 @@ module.exports = [
     module: 'ftp-online',
     crontab: null,
     query: 'ftp_service_addr.ip59_inbound',
-    data: { online: true, label: 'ftp://10.101.147.59' },
+    data: { online: true, label: 'FTP: 10.101.147.59', msg: 'inbound ftp' },
     updated: new Date(),
     created: new Date()
   },
@@ -69,7 +69,7 @@ module.exports = [
     module: 'ftp-online',
     crontab: null,
     query: 'ftp_service_addr.ip62_outbound',
-    data: { online: true, label: 'ftp://10.101.147.62' },
+    data: { online: true, label: 'FTP: 10.101.147.62', msg: 'outbound ftp' },
     updated: new Date(),
     created: new Date()
   },

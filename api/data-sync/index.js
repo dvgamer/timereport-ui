@@ -34,13 +34,17 @@ const dbDataSync = async () => {
     const taskJob = async () => {
       try {
         let [ records ] = (await pool.request().query(data.query)).recordsets
+        if (!records) throw new Error('pool request no transaction recordsets.')
         let newData = !dbNormalize[key] ? records : dbNormalize[key](data, records)
-        await PageSync.updateOne({ _id: data._id }, {
+
+        if (newData) await PageSync.updateOne({ _id: data._id }, {
           $set: { data: newData, updated: new Date() }
         })
       } catch (ex) {
-        console.log('crontab: ', ex.message)
+        console.log('taskJob-Name: ', key)
+        console.log('taskJob-Message: ', ex.message)
         console.log(ex.stack)
+        console.log('')
       }
       // pool.close()
     }
