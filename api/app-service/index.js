@@ -66,12 +66,10 @@ router.get('/inbound-online', (req, res) => (async () => {
       const ip = await GlobalConfig.findOne(groups)
       if (!ip) continue
 
-      const usr = await GlobalConfig.findOne({ segment: `ftp_account.${groups.field}`, field: 'usr' })
-      const pwd = await GlobalConfig.findOne({ segment: `ftp_account.${groups.field}`, field: 'pwd' })
       const ftp = new PromiseFtp()
       let serverMessage = null
       try {
-        serverMessage = await ftp.connect({ host: ip.value, user: usr.value, password: pwd.value, connTimeout: 5000 })
+        serverMessage = await ftp.connect({ host: ip.value.addr, user: ip.value.usr, password: ip.value.pwd, connTimeout: 5000 })
         await ftp.end()
       } catch (ex) {}
       await PageSync.findOneAndUpdate(list._id, { 'data.online': serverMessage != null})

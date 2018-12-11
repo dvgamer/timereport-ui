@@ -10,32 +10,75 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-24">
-        <div class="card table-card card-status">
+      <div class="col-md-24 mb-3">
+        <div class="card table-card card-status" style="min-height: 300px;">
           <div class="card-body">
             <div class="row">
               <div class="col-md-14">
-                <i class="fa fa-check-circle text-muted"></i>
+                <i class="fa fa-big fa-check-circle text-muted"></i>
                 <div class="files-status">COMPLETED <small>(CURRENT DAY)</small></div>
                 <div class="files-count"><span v-html="toTextNumber(total.complete)"></span> <small>file(s)</small></div>
               </div>
               <div class="col-md-12">
-                <i class="fa fa-clock-o text-muted"></i>
+                <i class="fa fa-big fa-clock-o text-muted"></i>
                 <div class="files-status">TASK WAIT <small>(TOTAL)</small></div>
                 <div class="files-count"><span v-html="toTextNumber(total.wait)"></span> <small>file(s)</small></div>
               </div>
               <div class="col-md-10">
-                <i class="fa fa-times-circle text-muted"></i>
+                <i class="fa fa-big fa-times-circle text-muted"></i>
                 <div class="files-status">FAIL <small>(LAST 7 DAY)</small></div>
                 <div class="files-count"><span v-html="toTextNumber(total.fail)"></span> <small>file(s)</small></div>
               </div>
             </div>
+            <hr>
+            <div class="row">
+              <div class="col-md-36">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-1 mb-1">
+                  <h5 class="h5 mb-md-0 ml-2">TLInDGenSales <small class="text-muted">at 11-12-2018</small></h5>
+                  <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group btn-group-sm mr-2">
+                      <button type="button" class="btn btn-outline-primary"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+                      <button type="button" class="btn btn-outline-primary">Today</button>
+                      <button type="button" class="btn btn-outline-primary" disabled><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">First</th>
+                      <th scope="col">Last</th>
+                      <th scope="col">Handle</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                      <td>@mdo</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2</th>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">3</th>
+                      <td colspan="2">Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
-        <hr>
       </div>
-      <div class="col-md-12">
-        <div class="card card-seq">
+      <div class="col-md-12 mb-3">
+        <div class="card card-seq" style="min-height: 300px;">
           <div class="card-header bg-info">
             <h3 class="card-title"><i class="fa fa-clock-o"></i> Sequence Transfer <small>(WAIT)</small></h3>
           </div>
@@ -83,7 +126,6 @@
         </table>
       </div> -->
     </div>
-    <hr>
     <div class="row">
       <div class="col-lg-18">
         <chart-upload-hour :data="hour.data" :label="hour.label" :height="200" ref="chartupload"></chart-upload-hour>
@@ -185,7 +227,7 @@ export default {
 .card-status {
   .card-body {
     padding: 0 1.25rem;
-    i.fa {
+    i.fa.fa-big {
       margin-top: 7px;
       font-size: 2.2rem;
       position: absolute;

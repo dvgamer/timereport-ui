@@ -25,27 +25,36 @@ const dbDataSync = async () => {
   let pool = await sqlConnectionPool()
   
   let sync = await PageSync.find({ crontab: { $ne: null } })
+  let retryLimit = 3
 
-  console.log(`Page Data Sync ${sync.length} jobs.`)
+  console.log(`Data-Sync ${sync.length} jobs.`)
   for (let i = 0; i < sync.length; i++) {
     const data = sync[i]
     const key = `${data.route}|${data.module}`
 
     const taskJob = async () => {
+      let retry = 0
       try {
-        let [ records ] = (await pool.request().query(data.query)).recordsets
-        if (!records) throw new Error('pool request no transaction recordsets.')
-        let newData = !dbNormalize[key] ? records : dbNormalize[key](data, records)
+        let recheck = null
+        do {
+          retry++
+          let [ records ] = (await pool.request().query(data.query)).recordsets
+          if (!records) throw new Error('pool request no transaction recordsets.')
+          let newData = !dbNormalize[key] ? records : dbNormalize[key](data, records)
 
-        if (newData) await PageSync.updateOne({ _id: data._id }, {
-          $set: { data: newData, updated: new Date() }
-        })
+          await PageSync.updateOne({ _id: data._id }, {
+            $set: { data: newData, updated: new Date() }
+          })
+          recheck = await PageSync.findOne({ _id: data._id })
+          console.log(`[${retry}/${retryLimit}] Sync '${key}' updated: ${!(!recheck || !recheck.data)}`)
+        } while (retry <= retryLimit && (!recheck || !recheck.data))
       } catch (ex) {
         console.log('taskJob-Name: ', key)
         console.log('taskJob-Message: ', ex.message)
         console.log(ex.stack)
         console.log('')
       }
+      if (retry > retryLimit) process.exit(1)
       // pool.close()
     }
     try {
