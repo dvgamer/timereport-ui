@@ -218,6 +218,8 @@ export default {
         }
       }
       this.updatedInputFocus()
+    } else {
+      this.$router.push('/')
     }
   }
 }

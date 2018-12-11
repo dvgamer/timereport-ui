@@ -23,19 +23,21 @@
               {{menu.name}}
             </a>
           </li>
-          <h6 v-if="menu.group" class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
-            <span v-text="menu.group"></span>
-          </h6>
-          <li v-if="menu.group" v-for="sub in menu.items" :key="menu.items.indexOf(sub)" class="nav-item">
-            <nuxt-link v-if="sub.route" class="nav-link" :to="sub.route" active-class="active" :exact="sub.exact">
-              <i :class="!sub.loading ? sub.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true"></i>
-              {{sub.name}}
-            </nuxt-link>
-            <a v-else href="#" class="nav-link dropdown-toggle" @click.prevent="nextMenu(sub.menu)">
-              <i :class="sub.icon" aria-hidden="true"></i>
-              {{sub.name}}
-            </a>
-          </li>
+          <div v-else>
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
+              <span v-text="menu.group"></span>
+            </h6>
+            <li v-for="sub in menu.items" :key="menu.items.indexOf(sub)" class="nav-item">
+              <nuxt-link v-if="sub.route" class="nav-link" :to="sub.route" active-class="active" :exact="sub.exact">
+                <i :class="!sub.loading ? sub.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true"></i>
+                {{sub.name}}
+              </nuxt-link>
+              <a v-else href="#" class="nav-link dropdown-toggle" @click.prevent="nextMenu(sub.menu)">
+                <i :class="sub.icon" aria-hidden="true"></i>
+                {{sub.name}}
+              </a>
+            </li>
+          </div>
         </div>
       </ul>
       <!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">

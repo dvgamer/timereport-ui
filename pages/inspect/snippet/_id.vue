@@ -36,9 +36,9 @@
 import spinnerSocket from '~/components/loading/spinner-socket.vue'
 
 export default {
-  components: {
-    'spinner-socket': spinnerSocket
-  },
+  // components: {
+  //   'spinner-socket': spinnerSocket
+  // },
   head: {
     title: 'Snippets',
   },

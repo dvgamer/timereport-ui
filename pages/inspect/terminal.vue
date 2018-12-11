@@ -40,9 +40,9 @@ let T_RUN = 3
 let T_FAIL = 4
 
 export default {
-  components: {
-    'spinner-socket': spinnerSocket
-  },
+  // components: {
+  //   'spinner-socket': spinnerSocket
+  // },
   head: {
     title: 'Terminal',
   },
@@ -226,13 +226,13 @@ export default {
       color: #96a0ab;
       font-weight: bold;
     }
-    .cmd {
-      .type {
-      }
-      .msg {
+    // .cmd {
+    //   .type {
+    //   }
+    //   .msg {
         
-      }
-    }
+    //   }
+    // }
   }
 }
 </style>
