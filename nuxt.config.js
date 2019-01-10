@@ -1,3 +1,5 @@
+const pkg = require('./package')
+
 let config = {
   head: {
     titleTemplate: title => (title ? `${title} · ` : '') + 'DevOps'
@@ -66,17 +68,17 @@ let config = {
       home: '/'
     }
   },
-  axios: { baseURL: process.env.AXIOS_BASE_URL || 'http://localhost:3001/' },
+  axios: { baseURL: process.env.AXIOS_BASE_URL || 'http://10.0.80.52:25081/' },
   env: {
     dev: process.env.NODE_ENV !== 'production',
-    baseURL: process.env.AXIOS_BASE_URL || 'http://localhost:3001/',
-    SOCKET_HOST_URL: process.env.SOCKET_HOST ? `http://${process.env.SOCKET_HOST}:${process.env.SOCKET_PORT}` : 'http://localhost:3010'
+    baseURL: process.env.AXIOS_BASE_URL || 'http://10.0.80.52:25081/',
+    SOCKET_HOST_URL: process.env.SOCKET_HOST ? `http://${process.env.SOCKET_HOST}:${process.env.SOCKET_PORT}` : 'http://10.0.80.52:25082'
   }
 }
 
 if (process.env.NODE_ENV === 'production') {
   config = Object.assign({
-    serverMiddleware: [ '~/api/index.js', '~/api/auth/index.js', '~/api/socket-io.js' ]
+    serverMiddleware: [ '~/api/index.js', '~/api/authication/index.js', '~/api/socket-io.js' ]
   }, config)
 }
 module.exports = config

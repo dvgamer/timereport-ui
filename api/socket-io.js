@@ -16,19 +16,19 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Require API routes
-const port = process.env.SOCKET_PORT || 3010
+const host = process.env.SOCKET_HOST || '0.0.0.0'
+const port = process.env.SOCKET_PORT || 25082
 // sql.close()
-http.listen(port, () => (async () => {
+http.listen(port, host, () => (async () => {
   if (process.env.NODE_ENV !== 'production') {
-    console.log(chalk.black.bgGreen('READY ') + ' ' + chalk.green(`Socket.IO on http://localhost:${port}`))
-  }
-
-  io.on('connection', socket => {
-    consola.info('socket.io user connected')
-    socket.on('disconnect', () => {
-      consola.info('socket.io user disconnected')
+    consola.ready({ message: `Socket.IO listening on http://${host}:${port}`, badge: true })
+    io.on('connection', socket => {
+      consola.info('socket.io user connected')
+      socket.on('disconnect', () => {
+        consola.info('socket.io user disconnected')
+      })
     })
-  })
+  }
   let { PageSync, User } = await db.open()
 
   const changeUser = User.watch()

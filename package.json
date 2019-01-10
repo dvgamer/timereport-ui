@@ -5,10 +5,10 @@
   "author": "Kananek T. <info.dvgamer@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "env-cmd .env nuxt",
     "serv": "env-cmd .env backpack",
     "build": "nuxt build",
-    "start": "nuxt build && nuxt start",
+    "start": "env-cmd api/prod.env nuxt start",
     "precommit": "npm run lint",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "sync": "env-cmd .env node api/data-sync/index.js"
