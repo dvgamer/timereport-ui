@@ -63,6 +63,7 @@
     "socket.io-client": "^2.2.0",
     "source-map-support": "^0.5.9",
     "tedious": "^3.0.1",
+    "vue-burger-menu": "^2.0.0",
     "vue-codemirror": "^4.0.6",
     "vue-highcharts": "0.0.11",
     "vue-loading-spinner": "^1.0.11",
