@@ -4,11 +4,62 @@ let config = {
   head: {
     titleTemplate: title => (title ? `${title} · ` : '') + 'DevOps'
   },
+  workbox: {
+    // Workbox options
+  },
   meta: [
-      { name: 'application-name', content: 'DevOps-UI' },
-      { name: 'description', content: pkg.description, id: 'desc' },
-      { name: 'viewport', content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" }
+    { charset: 'utf-8' },
+    { name: 'application-name', content: 'DevOps-UI' },
+    { name: 'description', content: pkg.description, id: 'desc' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
+    { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
+    { name: 'apple-mobile-web-app-capable', content: 'yes' },
+    { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+    { name: 'MobileOptimized', content: 'width' },
+    { name: 'HandheldFriendly', content: 'true' }
   ],
+  icons: { },
+  manifest: {
+    name: 'DevOps-UI',
+    lang: 'en',
+    dir: 'rtl',
+    description: pkg.description,
+    short_name: 'DevOps',
+    icons: [
+      { src: '/icon-120.png', sizes: '64x64' },
+      { src: '/icon-144.png', sizes: '128x128' },
+      { src: '/icon-144.png', sizes: '144x144' }
+    ], 
+    scope: '/',
+    start_url: '/',
+    display: 'fullscreen',
+    orientation: 'portrait',
+    theme_color: '#ffffff',
+    background_color: '#ffffff',
+    screenshots: [
+      {
+        src: '/images/640x480.jpg',
+        sizes: '640x480',
+        type: 'image/jpeg'
+      },
+      {
+        src: '/images/1280x920.jpg',
+        sizes: '1280x920',
+        type: 'image/jpeg'
+      }
+    ],
+    browser_action: {
+      default_icon: '/icon-120.png',
+      default_popup: '/'
+    }
+  },
+  // link: [
+  //   { rel: 'icon', type: 'image/png', href: '/icon-32.png' },
+  //   { rel: 'apple-touch-icon', sizes: '114x114', href: '/icon-114.png' },
+  //   { rel: 'apple-touch-icon', sizes: '72x72', href: '/icon-72.png' },
+  //   { rel: 'apple-touch-icon', sizes: '57x57', href: '/icon-57.png' },
+  //   { rel: 'apple-touch-startup-image', type: 'image/png', href: '/icon-512.png' }
+  // ],
   router: {
     middleware: ['auth']
   },
