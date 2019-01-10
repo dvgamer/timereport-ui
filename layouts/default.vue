@@ -18,11 +18,11 @@
       <div class="row">
         <sidebar/>
         <div class="col-md-36 ml-sm-auto col-lg-29 pt-3 px-4 mb-3">
-          <span v-if="online.socket === 2" class="badge badge-socket badge-light pull-right">
+          <span v-if="online.sock === 2" class="badge badge-socket badge-light pull-right">
             <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Socket.io
           </span>
-          <span v-else class="badge pull-right" :class="online.socket === 1 ? 'badge-success' : 'badge-danger'">
-            <i class="fa" :class="online.socket === 1 ? 'fa-check' : 'fa-close'"></i> Socket.io
+          <span v-else class="badge pull-right" :class="online.sock === 1 ? 'badge-success' : 'badge-danger'">
+            <i class="fa" :class="online.sock === 1 ? 'fa-check' : 'fa-close'"></i> Socket.io
           </span>
           <span v-if="online.api === 2" class="badge badge-api badge-light pull-right mr-1">
             <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> API
@@ -49,19 +49,25 @@ export default {
     navSearch
   },
   sockets: {
-    'connect_error' () {
-      this.online.socket = 0
+    'connect' () {
+      clearTimeout(this.timeout.sock)
+      this.online.sock = 1
     },
-    'connected' () {
-      this.online.socket = 1
+    'disconnect' () {
+      clearTimeout(this.timeout.sock)
+      this.online.sock = 0
     }
   },
   data: () => ({
     appName: 'DevOps',
     version: 'v1.1',
+    timeout: {
+      api: 0,
+      sock: 0
+    },
     online: {
       api: 2,
-      socket: 2 // 0=offline, 1=online, 2=wait
+      sock: 2 // 0=offline, 1=online, 2=wait
     },
     breadcrumb: [
       {
@@ -74,6 +80,20 @@ export default {
     onSearch () {
       console.log('search:')
     }
+  },
+  created () {
+    let vm = this
+    this.timeout.api = setTimeout(() => vm.online.api = 0, 5000)
+    this.timeout.sock = setTimeout(() => vm.online.sock = 0, 5000)
+    this.$axios({
+      url: '/api/status'
+    }).then(data => {
+      vm.online.api = data.status === 200 ? 1 : 0
+      clearTimeout(vm.timeout.api)
+    }).catch(ex => {
+      vm.online.api = 0
+      clearTimeout(vm.timeout.api)
+    })
   },
   beforeMount () {
     // window.addEventListener('keydown', (e) => {

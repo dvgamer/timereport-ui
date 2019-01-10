@@ -33,7 +33,7 @@
 export const state = () => ({
   default: [
     { permission: 0, name: 'Dashboard', route: '/', icon: 'fa fa-home', exact: true },
-    { permission: 0, name: 'Container', route: '/app', icon: 'fa fa-home', exact: true },
+    { permission: 0, name: 'Application', route: '/app', icon: 'fa fa-bug', exact: true },
     { permission: 0, group: 'Service', items: [
       { name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'fa fa-tasks' },
       { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'fa fa-file-text-o' }
@@ -44,8 +44,10 @@ export const state = () => ({
     { permission: 0, group: 'Schedule', items: [
       { name: 'File FCCR', route: '/app/file-fccr', icon: 'fa fa-file-o' }
     ] },
-    { permission: 3, name: 'Configuration', route: '/setting/configuration', icon: 'fa fa-tasks' },
-    { permission: 3, name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' }
+    { permission: 3, group: 'setting', items: [
+      { name: 'Configuration', route: '/setting/configuration', icon: 'fa fa-tasks' },
+      { name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' }
+    ] }
   ]
 })
 export const getters = {
