@@ -114,10 +114,10 @@ router.post('/login', (req, res) => (async () => {
       data = await ldapAuth(auth.usr, auth.pwd)
       data.mail = data.mail.trim().toLowerCase()
     } catch (ex) {
-      data = { error: ex.message }
+      data = { error: ex.message || ex }
       user = await User.findOne({ mail: auth.usr, pwd: md5(auth.pwd) })
     }
-    if (!user && !data) throw new Error('User account not found.')
+    if (!user && data.error) throw new Error(data.error)
     if (!user) {
       user = await new User(Object.assign({
         pwd: md5(auth.pwd),

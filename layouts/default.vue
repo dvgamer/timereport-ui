@@ -2,9 +2,8 @@
   <div class="main-panel">
     <b-navbar toggleable="md" type="dark" class="sticky-top bg-dark flex-md-nowrap p-0">
       <b-navbar-brand class="col-md-9 col-lg-7 d-md-block mr-0" to="/">
-          <img class="d-inline-block align-top" src="~assets/icon-devops-agile.png" alt="" width="32" height="32">
-          <span class="ml-2" v-text="appName">NAME</span><small class="version" v-text="version">v0.0</small>
-        <b-navbar-toggle target="nav_collapse" class="pull-right"></b-navbar-toggle>
+        <img class="d-inline-block align-top" src="~assets/icon-devops-agile.png" alt="" width="32" height="32">
+        <span class="ml-2" v-text="appName">NAME</span><small class="version" v-text="version">v0.0</small>
       </b-navbar-brand>
       <b-container fluid>
         <b-collapse is-nav id="nav_collapse">

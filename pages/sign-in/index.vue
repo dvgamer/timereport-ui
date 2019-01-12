@@ -52,9 +52,9 @@
                 </div>
                 <div v-else class="text-center">
                   <div class="avatar-thumbnail">
-                    <v-gravatar class="rounded-circle" email="thkananek@central.co.th" :size="160" default-img="retro" />
+                    <v-gravatar class="rounded-circle" :email="account.username" :size="160" default-img="retro" />
                   </div>
-                  <h5 class="pt-3">Walcome, {{'Kananek Thongkam'}}</h5>
+                  <h5 class="pt-3">Walcome, {{account.username}}</h5>
                   <div v-if="!enabled"><b class="text-danger">Your Account is Suspended.</b><br>Please contact administrator.</div>
                   <div v-else><b class="text-danger">Your Account is Inactivate.</b><br>Please wait a moment...</div>
                 </div>
