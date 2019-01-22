@@ -137,4 +137,5 @@ if (process.env.NODE_ENV === 'production') {
     serverMiddleware: [ '~/api/index.js', '~/api/authication/index.js', '~/api/socket-io.js' ]
   }, config)
 }
+console.log(config)
 module.exports = config

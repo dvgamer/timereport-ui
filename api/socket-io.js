@@ -16,6 +16,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Require API routes
+const debuger = require('./debuger')('SocketIO')
 const host = process.env.SOCKET_HOST || '0.0.0.0'
 const port = process.env.SOCKET_PORT || 25082
 // sql.close()
@@ -28,6 +29,8 @@ http.listen(port, host, () => (async () => {
         consola.info('socket.io user disconnected')
       })
     })
+  } else {
+    debuger.start(`Socket.IO listening on http://${host}:${port}`)
   }
   let { PageSync, User } = await db.open()
 

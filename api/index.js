@@ -16,7 +16,6 @@ const inspect = require('./inspect')
 const appService = require('./app-service')
 
 router.use('*', (req, res, next) => {
-  console.log(` API:: ${req.method} ${req.baseUrl}`)
   next()
 })
 
@@ -37,7 +36,10 @@ router.get('/status', (req, res) => {
 router.use('/app', appService)
 router.use('/inspect', inspect)
 
-
+if (process.env.NODE_ENV === 'production') {
+  const debuger = require('./debuger')('API')
+  debuger.start(`Server listening on ${process.env.AXIOS_BASE_URL}`)
+}
 // Export the server middleware
 module.exports = {
   path: '/api',

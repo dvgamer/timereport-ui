@@ -161,6 +161,10 @@ router.post('/logout', (req, res) => (async () => {
   res.status(401).json({})
 }))
 
+if (process.env.NODE_ENV === 'production') {
+  const debuger = require('../debuger')('Auth')
+  debuger.start(`Authentication listening on ${process.env.AXIOS_BASE_URL}`)
+}
 // Export the server middleware
 module.exports = {
   path: '/auth',
