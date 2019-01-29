@@ -14,11 +14,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 router.use(bodyParser.json())
 
-router.use('*', (req, res, next) => {
-  console.log(`AUTH:: ${req.method} ${req.baseUrl}`)
-  next()
-})
-
 // Import API Routes
 const userData = [
   'name',
@@ -67,6 +62,8 @@ const decodeToken = (data) => {
 
 router.post('/recheck', (req, res) => (async () => {
   let { user } = req.body
+
+  console.log(`[${new Date().toDateString()}] AUTH::RECHECK -- ${user}`)
   let { User } = await db.open()
   try {
     if (!user) throw new Error('Unauthorized 402')
@@ -96,7 +93,10 @@ router.post('/login', (req, res) => (async () => {
       IsEncode = true
     } finally { /* decode but user random charector and send to server. */}
 
-    if (!IsEncode) return res.status(401).json({ error: 'Unauthorized (401)'})
+    if (!IsEncode) {
+      console.log(`[${new Date().toDateString()}] AUTH::LOGIN -- Unauthorized (401)`)
+      return res.status(401).json({ error: 'Unauthorized (401)'})
+    }
   } else {
     let { user, pass } = req.body
     auth = { usr: user, pwd: pass }
@@ -111,11 +111,12 @@ router.post('/login', (req, res) => (async () => {
 
     let data = null
     try {
+      throw new Error('Ignore LDAP')
       data = await ldapAuth(auth.usr, auth.pwd)
       data.mail = data.mail.trim().toLowerCase()
     } catch (ex) {
       data = { error: ex.message || ex }
-      user = await User.findOne({ mail: auth.usr, pwd: md5(auth.pwd) })
+      user = await User.findOne({ mail: auth.usr.toLowerCase(), pwd: md5(auth.pwd) })
     }
     if (!user && data.error) throw new Error(data.error)
     if (!user) {
@@ -130,24 +131,23 @@ router.post('/login', (req, res) => (async () => {
       }, data)).save()
     } else {
       await User.updateOne({ _id: user._id }, {
-        $set: {
-          pwd: md5(auth.pwd),
-          token: null,
-          lasted: date
-        }
+        $set: { pwd: md5(auth.pwd), token: null, lasted: date }
       })
     }
  
     let accessToken = encodeToken({ _id: user._id })
     await User.updateOne({ _id: user._id }, { $set: { token: accessToken } })
     if (user.activate && user.enabled) {
+      console.log(`[${new Date().toDateString()}] AUTH::LOGIN (success) -- ${auth.usr}`)
       await new UserHistory({ mail: auth.usr, error: data.err, token: accessToken, created: date }).save()
       res.json({ token: accessToken })
     } else {
+      console.log(`[${new Date().toDateString()}] AUTH::LOGIN (suspended) -- ${auth.usr}`)
       await new UserHistory({ mail: auth.usr, error: 'account suspended or inactivate', token: accessToken, created: date }).save()
       res.status(401).json({ error: 'Unauthorized (403)' })
     }
   } catch (ex) {
+    console.log(`[${new Date().toDateString()}] AUTH::LOGIN (fail) -- ${(ex.message || ex)}`)
     await new UserHistory({ mail: auth.usr, error: (ex.message || ex), token: null, created: date }).save()
     res.json({ error: ex.message || ex })
   }

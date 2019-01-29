@@ -84,7 +84,7 @@ let config = {
   //   { src: '~/plugins/vue-codemirror.js', ssr: false },
     { src: '~/plugins/socket.io.js', ssr: false }
   ],
-  vendor: [ 'axios', 'moment', '~/node_modules/vue-socket.io' ],
+  vendor: [ 'moment', '~/node_modules/vue-socket.io' ],
   build: {
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {
@@ -132,10 +132,4 @@ let config = {
   }
 }
 
-if (process.env.NODE_ENV === 'production') {
-  config = Object.assign({
-    serverMiddleware: [ '~/api/index.js', '~/api/authication/index.js', '~/api/socket-io.js' ]
-  }, config)
-}
-console.log(config)
 module.exports = config

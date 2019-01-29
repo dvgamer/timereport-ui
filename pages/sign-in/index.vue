@@ -69,8 +69,8 @@
         <footer class="footer">
           <div class="content text-center">
             <p>
-              <strong>{{$store.state.appName}}</strong> {{$store.state.version}} by <a href="https://dvgamerr.github.io">T. Kananek</a>. The source code is licensed
-              <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content is licensed.
+              <strong>{{$store.state.appName}}</strong> {{$store.state.version}} by <a href="https://mr.touno.io">Kananek T.</a> The source code is licensed
+              <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. <br class="d-block d-sm-none">The website content is licensed.
             </p>
           </div>
         </footer>
