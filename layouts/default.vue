@@ -82,6 +82,7 @@ export default {
   },
   created () {
     let vm = this
+    this.$store.commit('$page', false)
     this.timeout.api = setTimeout(() => vm.online.api = 0, 5000)
     this.timeout.sock = setTimeout(() => vm.online.sock = 0, 5000)
     this.$axios({

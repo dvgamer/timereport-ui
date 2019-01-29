@@ -39,18 +39,11 @@ export default {
   },
   methods: {
     start() {
-      console.log(this.$store.state)
       this.$store.commit('$page', true)
-      // this.display = 'block'
-      // if (this.timeout != null) clearTimeout(this.timeout)
     },
     finish() {
       let vm = this
       vm.$store.commit('$page', false)
-      // vm.timeout = setTimeout(() => {
-      //   vm.display = 'none'
-      //   vm.timeout = null
-      // }, 300)
     }
   }
 }

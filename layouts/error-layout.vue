@@ -13,7 +13,9 @@
 </template>
 <script>
 export default {
-
+  created () {
+    this.$store.commit('$page', false)
+  }
 }
 </script>
 
