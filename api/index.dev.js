@@ -1,7 +1,7 @@
 const app = require('express')()
 const { Nuxt, Builder } = require('nuxt')
 const consola = require('consola')
-const api = require('./index.js')
+const api = require('./api.js')
 const socket = require('./socket-io')
 const auth = require('./authication')
 const port = 3001

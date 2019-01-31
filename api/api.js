@@ -1,23 +1,12 @@
-const app = require('express')()
-const http = require('http').Server(app)
+const { Router } = require('express')
 const data = require('./data')
 
 let router = {}
-if (process.env.NODE_ENV !== 'production') {
-  const { Router } = require('express')
-  router = Router()
-} else {
-  const app = require('express')()
-  router = app
-}
+router = Router()
 
 // Require API routes
 const inspect = require('./inspect')
 const appService = require('./app-service')
-
-router.use('*', (req, res, next) => {
-  next()
-})
 
 router.get('/init', (req, res) => {
   data().then(() => {
