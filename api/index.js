@@ -8,8 +8,8 @@ const port = 3001
 const host = 'localhost'
 
 let config = require('./nuxt.config.js')
-
-if (process.env.NODE_ENV !== 'production') {
+config.dev = process.env.NODE_ENV !== 'production'
+if (config.dev) {
   app.use((req, res, next) => {
     const methodAllow = [ 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' ]
     res.setHeader('Content-Type', 'application/json')
