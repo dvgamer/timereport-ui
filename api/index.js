@@ -7,6 +7,8 @@ const auth = require('./authication')
 const port = 3001
 const host = 'localhost'
 
+let config = require('./nuxt.config.js')
+
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
     const methodAllow = [ 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' ]
@@ -19,6 +21,14 @@ if (process.env.NODE_ENV !== 'production') {
     next()
   })
 }
+
+// Build only in dev mode
+if (!config.dev) {
+  // Init Nuxt.js
+  const nuxt = new Nuxt(config)
+  app.use(nuxt.render)
+}
+
 
 app.use(socket.path, socket.handler)
 app.use(api.path, api.handler)
