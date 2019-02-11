@@ -286,7 +286,6 @@ export default {
   width: 100%;
   text-align: center;
   left: 0px;
-  height: 100%;
   vertical-align: middle;
   margin-top: 130px;
 }
