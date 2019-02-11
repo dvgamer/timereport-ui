@@ -13,3 +13,4 @@ dist
 tmp
 .env
 .vagrant
+package-lock.json

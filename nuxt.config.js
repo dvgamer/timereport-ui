@@ -1,18 +1,18 @@
 let config = {
   head: {
-    titleTemplate: title => (title ? `${title} · ` : '') + 'DevOps',
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'application-name', content: 'DevOps-UI' },
-      { name: 'description', content: 'pkg.description', id: 'desc' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
-      { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
-      { name: 'apple-mobile-web-app-capable', content: 'yes' },
-      { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
-      { name: 'MobileOptimized', content: 'width' },
-      { name: 'HandheldFriendly', content: 'true' }
-    ]
+    titleTemplate: title => `${title ? `${title} · ` : ''}DevOps`
   },
+  meta: [
+    { charset: 'utf-8' },
+    { name: 'application-name', content: 'DevOps-UI' },
+    { name: 'description', content: 'pkg.description', id: 'desc' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
+    { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
+    { name: 'apple-mobile-web-app-capable', content: 'yes' },
+    { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+    { name: 'MobileOptimized', content: 'width' },
+    { name: 'HandheldFriendly', content: 'true' }
+  ],
   icons: { },
   workbox: { },
   router: {

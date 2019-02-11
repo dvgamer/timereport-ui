@@ -5,7 +5,7 @@
   "author": "Kananek T. <info.dvgamer@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "env-cmd .env nuxt",
+    "dev": "env-cmd .env nuxt dev",
     "serv": "env-cmd .env backpack dev",
     "build": "npm run eslint && nuxt build && backpack build",
     "start": "node dist/main.js --no-deprecation --no-warnings",
@@ -23,7 +23,7 @@
     "mkdir-recursive": "^0.4.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
-    "mongoose": "^5.4.10",
+    "mongoose": "^5.4.11",
     "mssql": "^4.3.1",
     "node-cron": "^2.0.3",
     "numeral": "^2.0.6",
@@ -32,7 +32,10 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "simple-git": "^1.107.0",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "vue": "^2.5.22",
+    "vue-server-renderer": "2.3.4",
+    "vue-template-compiler": "^2.5.22"
   },
   "devDependencies": {
     "@fortawesome/fontawesome": "^1.1.8",
@@ -60,8 +63,6 @@
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "socket.io-client": "^2.2.0",
-    "source-map-support": "^0.5.10",
-    "tedious": "^4.1.3",
     "vue-burger-menu": "^2.0.0",
     "vue-codemirror": "^4.0.6",
     "vue-gravatar": "^1.3.0",
