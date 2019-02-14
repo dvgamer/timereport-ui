@@ -1,31 +1,34 @@
 <template>
-<div>
-  <no-ssr>
-    <slideout-panel v-show="true"></slideout-panel>
-  </no-ssr>
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-    <h2 class="h2">Terminal</h2>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <b-button-group class="mr-2" size="sm">
-        <b-btn variant="outline-info"><i class="fa fa-folder-open-o"></i> LOAD</b-btn>
-        <b-btn class="btn-outline-success"><i class="fa fa-play"></i></b-btn>
-      </b-button-group>
+  <div>
+    <no-ssr>
+      <slideout-panel v-show="true" />
+    </no-ssr>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+      <h2 class="h2">Terminal</h2>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <b-button-group class="mr-2" size="sm">
+          <b-btn variant="outline-info"><i class="fa fa-folder-open-o" /> LOAD</b-btn>
+          <b-btn class="btn-outline-success"><i class="fa fa-play" /></b-btn>
+        </b-button-group>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <div class="code-console border p-2">
-        <code>
-          <span class="cmd">
-            <span class="type" v-html="`${getLogTime('YYYY-MM-DD HH:mm:ss')}.xxx ` + (cmd.process ? '…' :'›')"></span>
-            <span class="msg" v-html="cmd.process ? '' : toHtml(cmd.stdin) + (cmd.dash ? '_' : '')"></span>
-          </span>
-        </code>
-        <code v-html="codeHtml"></code>
+    <div class="row">
+      <div class="col">
+        <div class="code-console border p-2">
+          <code>
+            <span class="cmd">
+              <!-- eslint-disable-next-line -->
+              <span class="type" v-html="`${getLogTime('YYYY-MM-DD HH:mm:ss')}.xxx ` + (cmd.process ? '…' :'›')" />
+              <!-- eslint-disable-next-line -->
+              <span class="msg" v-html="cmd.process ? '' : toHtml(cmd.stdin) + (cmd.dash ? '_' : '')" />
+            </span>
+          </code>
+          <!-- eslint-disable-next-line -->
+          <code v-html="codeHtml" />
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -80,8 +83,6 @@ export default {
       theme: "material"
     }
   }),
-  watch: {
-  },
   computed: {
     codeCompile () {
       return this.getCmdFormat(this.cmd.stdin, T_CMD)
@@ -89,6 +90,19 @@ export default {
     codeHtml () {
       return this.cmd.stdout.join('')
     }
+  },
+  beforeMount () {
+    window.addEventListener('keydown', this.eventTerminalKey)
+    window.addEventListener('paste', this.eventTerminalPaste)
+
+  },
+  created () {
+    iDash = setInterval((() => { this.cmd.dash = !this.cmd.dash }).bind(this), 500)
+  },
+  destroyed () {
+    clearInterval(iDash)
+    window.removeEventListener('keydown', this.eventTerminalKey)
+    window.removeEventListener('paste', this.eventTerminalPaste)
   },
   methods: {
     async axiosCompiler () {
@@ -170,20 +184,6 @@ export default {
     getLogTime (format) {
       return moment().format(format ? format :'YYYY-MM-DD HH:mm:ss.SSS')
     }
-  },
-  beforeMount () {
-    window.addEventListener('keydown', this.eventTerminalKey)
-    window.addEventListener('paste', this.eventTerminalPaste)
-
-  },
-  created () {
-    iDash = setInterval((() => { this.cmd.dash = !this.cmd.dash }).bind(this), 500)
-
-  },
-  destroyed () {
-    clearInterval(iDash)
-    window.removeEventListener('keydown', this.eventTerminalKey)
-    window.removeEventListener('paste', this.eventTerminalPaste)
   }
 }
 </script>

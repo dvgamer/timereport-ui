@@ -6,31 +6,31 @@
         <span class="ml-2" v-text="appName">NAME</span><small class="version" v-text="version">v0.0</small>
       </b-navbar-brand>
       <b-container fluid>
-        <b-collapse is-nav id="nav_collapse">
-          <nav-search/>
+        <b-collapse id="nav_collapse" is-nav>
+          <nav-search />
           <!-- Right aligned nav items -->
-          <nav-user/>
+          <nav-user />
         </b-collapse>
       </b-container>
     </b-navbar>
     <div class="container-fluid">
       <div class="row">
-        <sidebar/>
+        <sidebar />
         <div class="col-md-36 ml-sm-auto col-lg-29 pt-3 px-4 mb-3">
           <span v-if="online.sock === 2" class="badge badge-socket badge-light pull-right">
-            <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Socket.io
+            <i class="fa fa-circle-o-notch fa-spin fa-fw" /> Socket.io
           </span>
           <span v-else class="badge pull-right" :class="online.sock === 1 ? 'badge-success' : 'badge-danger'">
-            <i class="fa" :class="online.sock === 1 ? 'fa-check' : 'fa-close'"></i> Socket.io
+            <i class="fa" :class="online.sock === 1 ? 'fa-check' : 'fa-close'" /> Socket.io
           </span>
           <span v-if="online.api === 2" class="badge badge-api badge-light pull-right mr-1">
-            <i class="fa fa-circle-o-notch fa-spin fa-fw"></i> API
+            <i class="fa fa-circle-o-notch fa-spin fa-fw" /> API
           </span>
           <span v-else class="badge pull-right mr-1" :class="online.api === 1 ? 'badge-success' : 'badge-danger'">
-            <i class="fa" :class="online.api === 1 ? 'fa-check' : 'fa-close'"></i> API
+            <i class="fa" :class="online.api === 1 ? 'fa-check' : 'fa-close'" /> API
           </span>
-          <b-breadcrumb :items="breadcrumb"/>
-          <nuxt/>
+          <b-breadcrumb :items="breadcrumb" />
+          <nuxt />
         </div>
       </div>
     </div>
@@ -75,11 +75,6 @@ export default {
       }
     ]
   }),
-  methods: {
-    onSearch () {
-      console.log('search:')
-    }
-  },
   created () {
     let vm = this
     this.$store.commit('$page', false)
@@ -99,6 +94,11 @@ export default {
     // window.addEventListener('keydown', (e) => {
     //   if (e.keyCode >= 112 && e.keyCode <= 123) return e.preventDefault()
     // })
+  },
+  methods: {
+    onSearch () {
+      console.log('search:')
+    }
   }
 }
 </script>

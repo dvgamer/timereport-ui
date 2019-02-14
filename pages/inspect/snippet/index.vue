@@ -1,47 +1,47 @@
 <template>
-<div>
-  <no-ssr>
-    <slideout-panel v-show="true"></slideout-panel>
-  </no-ssr>
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-    <h1 class="h2">Snippets</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <b-button-group class="mr-2" size="sm">
-        <b-button class="btn-outline-secondary" @click="$router.push('/inspect/snippet/create')"><i class="fa fa-plus"></i> NEW</b-button>
-      </b-button-group>
+  <div>
+    <no-ssr>
+      <slideout-panel v-show="true" />
+    </no-ssr>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+      <h1 class="h2">Snippets</h1>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <b-button-group class="mr-2" size="sm">
+          <b-button class="btn-outline-secondary" @click="$router.push('/inspect/snippet/create')"><i class="fa fa-plus" /> NEW</b-button>
+        </b-button-group>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <div class="table-responsive-sm">
-        <b-table class="table table-filter" :items="items" :fields="fields" show-empty empty-text="No snippet.">
-          <template slot="table-colgroup">
-            <col style="width: 75%">
-            <col style="width: 10%">
-            <col style="width: 15%">
-          </template>
-          <template slot="file" slot-scope="data">
-            <nuxt-link class="media" :to="{ path: `/inspect/snippet/${data.item._id}` }">
-              <a href="#" class="pull-left pr-2">
-                <div class="media-photo" :style="{ backgroundImage: `url('${data.item.avatar}')` }"></div>
-              </a>
-              <div class="media-body">
-                <h4 class="title" v-text="data.value"></h4>
-                <p class="summary text-muted text-nowrap mb-0" v-text="getDetail(data.item.content)"></p>
-              </div>
-            </nuxt-link>
-          </template>
-          <template slot="private" slot-scope="data">
-            <div v-text="data.value ? 'Private' : 'Public'"></div>
-          </template>
-          <template slot="updated" slot-scope="data">
-            <div v-text="getModify(data.value)"></div>
-          </template>
-        </b-table>
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive-sm">
+          <b-table class="table table-filter" :items="items" :fields="fields" show-empty empty-text="No snippet.">
+            <template slot="table-colgroup">
+              <col style="width: 75%">
+              <col style="width: 10%">
+              <col style="width: 15%">
+            </template>
+            <template slot="file" slot-scope="data">
+              <nuxt-link class="media" :to="{ path: `/inspect/snippet/${data.item._id}` }">
+                <a href="#" class="pull-left pr-2">
+                  <div class="media-photo" :style="{ backgroundImage: `url('${data.item.avatar}')` }" />
+                </a>
+                <div class="media-body">
+                  <h4 class="title" v-text="data.value" />
+                  <p class="summary text-muted text-nowrap mb-0" v-text="getDetail(data.item.content)" />
+                </div>
+              </nuxt-link>
+            </template>
+            <template slot="private" slot-scope="data">
+              <div v-text="data.value ? 'Private' : 'Public'" />
+            </template>
+            <template slot="updated" slot-scope="data">
+              <div v-text="getModify(data.value)" />
+            </template>
+          </b-table>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -98,8 +98,6 @@ export default {
     onCmBlur(codemirror) {
       console.log('onCmBlur', codemirror)
     }
-  },
-  created () {
   }
 }
 </script>

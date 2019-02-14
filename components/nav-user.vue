@@ -1,19 +1,19 @@
 <template>
-<b-navbar-nav v-if="$auth.loggedIn" class="ml-auto">
-  <b-nav-item-dropdown right>
-    <template slot="button-content">
-      <span class="user-avatar">
-        <v-gravatar class="rounded-circle" :email="$auth.user.mail" :size="32" default-img="retro" />
-        <span class="user-info">
-          <div class="name text-nowrap">{{$auth.user.name}}</div>
-          <div class="title text-nowrap">{{$auth.user.title}}</div>
+  <b-navbar-nav v-if="$auth.loggedIn" class="ml-auto">
+    <b-nav-item-dropdown right>
+      <template slot="button-content">
+        <span class="user-avatar">
+          <v-gravatar class="rounded-circle" :email="$auth.user.mail" :size="32" default-img="retro" />
+          <span class="user-info">
+            <div class="name text-nowrap">{{ $auth.user.name }}</div>
+            <div class="title text-nowrap">{{ $auth.user.title }}</div>
+          </span>
         </span>
-      </span>
-    </template>
-    <b-dropdown-item href="#">Setting</b-dropdown-item>
-    <b-dropdown-item href="#">Sign-Out</b-dropdown-item>
-  </b-nav-item-dropdown>
-</b-navbar-nav>
+      </template>
+      <b-dropdown-item href="#">Setting</b-dropdown-item>
+      <b-dropdown-item href="#">Sign-Out</b-dropdown-item>
+    </b-nav-item-dropdown>
+  </b-navbar-nav>
 </template>
 <script>
 

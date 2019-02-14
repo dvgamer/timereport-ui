@@ -3,18 +3,18 @@
     <div class="load-bar" :style="{ opacity: !loading ? 0 : 1 }">
       <div class="load-bar-container">
         <div class="load-bar-base base1" :style="{ background: col_1 }">
-          <div class="color red" :style="{ background: col_2 }"></div>
-          <div class="color blue" :style="{ background: col_3 }"></div>
-          <div class="color yellow" :style="{ background: col_4 }"></div>
-          <div class="color green" :style="{ background: col_1 }"></div>
+          <div class="color red" :style="{ background: col_2 }" />
+          <div class="color blue" :style="{ background: col_3 }" />
+          <div class="color yellow" :style="{ background: col_4 }" />
+          <div class="color green" :style="{ background: col_1 }" />
         </div>
       </div>
       <div class="load-bar-container">
         <div class="load-bar-base base2" :style="{ background: col_1 }">
-          <div class="color red" :style="{ background: col_2 }"></div>
-          <div class="color blue" :style="{ background: col_3 }"></div>
-          <div class="color yellow" :style="{ background: col_4 }"></div>
-          <div class="color green" :style="{ background: col_1 }"></div>
+          <div class="color red" :style="{ background: col_2 }" />
+          <div class="color blue" :style="{ background: col_3 }" />
+          <div class="color yellow" :style="{ background: col_4 }" />
+          <div class="color green" :style="{ background: col_1 }" />
         </div>
       </div>
     </div>

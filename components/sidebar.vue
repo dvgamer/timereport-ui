@@ -1,54 +1,54 @@
 <template>
-<div class="col-lg-7 d-none d-lg-block bg-light sidebar">
-  <div class="sidebar-sticky">
-    <transition name="slide">
-      <ul v-if="!mainToggle" class="nav flex-column">
-        <li v-if="mainMenu != 'default'" class="nav-item" style="margin-bottom:20px;">
-          <a class="nav-link" href="#" @click.prevent="backMenu()">
-            <i class="fa fa-chevron-left" aria-hidden="true"></i> Back
-          </a>
-        </li>
-        <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
-          <span v-text="mainMenu == 'default' ? 'mainmenu' : mainMenu"></span>
-          <span class="d-flex align-items-center text-muted"><i class="fa fa-circle-o"></i></span>
-        </h5>
-        <div v-for="menu in $store.state.mainmenu[mainMenu]" :key="$store.state.mainmenu[mainMenu].indexOf(menu)">
-          <li v-if="!menu.group" class="nav-item pl-2">
-            <nuxt-link v-if="!menu.menu" class="nav-link" :to="menu.route" active-class="active" :exact="menu.exact">
-              <i :class="!menu.loading ? menu.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true"></i>
-              {{menu.name}}
-            </nuxt-link>
-            <a v-else href="#" class="nav-link dropdown-toggle" @click.prevent="nextMenu(menu.menu, menu.route)">
-              <i :class="menu.icon" aria-hidden="true"></i>
-              {{menu.name}}
+  <div class="col-lg-7 d-none d-lg-block bg-light sidebar">
+    <div class="sidebar-sticky">
+      <transition name="slide">
+        <ul v-if="!mainToggle" class="nav flex-column">
+          <li v-if="mainMenu != 'default'" class="nav-item" style="margin-bottom:20px;">
+            <a class="nav-link" href="#" @click.prevent="backMenu()">
+              <i class="fa fa-chevron-left" aria-hidden="true" /> Back
             </a>
           </li>
-          <div v-else>
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
-              <span v-text="menu.group"></span>
-            </h6>
-            <li v-for="sub in menu.items" :key="menu.items.indexOf(sub)" class="nav-item pl-2">
-              <nuxt-link v-if="sub.route" class="nav-link" :to="sub.route" active-class="active" :exact="sub.exact">
-                <i :class="!sub.loading ? sub.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true"></i>
-                {{sub.name}}
+          <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
+            <span v-text="mainMenu == 'default' ? 'mainmenu' : mainMenu" />
+            <span class="d-flex align-items-center text-muted"><i class="fa fa-circle-o" /></span>
+          </h5>
+          <div v-for="menu in $store.state.mainmenu[mainMenu]" :key="$store.state.mainmenu[mainMenu].indexOf(menu)">
+            <li v-if="!menu.group" class="nav-item pl-2">
+              <nuxt-link v-if="!menu.menu" class="nav-link" :to="menu.route" active-class="active" :exact="menu.exact">
+                <i :class="!menu.loading ? menu.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true" />
+                {{ menu.name }}
               </nuxt-link>
-              <a v-else href="#" class="nav-link dropdown-toggle" @click.prevent="nextMenu(sub.menu)">
-                <i :class="sub.icon" aria-hidden="true"></i>
-                {{sub.name}}
+              <a v-else href="#" class="nav-link dropdown-toggle" @click.prevent="nextMenu(menu.menu, menu.route)">
+                <i :class="menu.icon" aria-hidden="true" />
+                {{ menu.name }}
               </a>
             </li>
+            <div v-else>
+              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
+                <span v-text="menu.group" />
+              </h6>
+              <li v-for="sub in menu.items" :key="menu.items.indexOf(sub)" class="nav-item pl-2">
+                <nuxt-link v-if="sub.route" class="nav-link" :to="sub.route" active-class="active" :exact="sub.exact">
+                  <i :class="!sub.loading ? sub.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true" />
+                  {{ sub.name }}
+                </nuxt-link>
+                <a v-else href="#" class="nav-link dropdown-toggle" @click.prevent="nextMenu(sub.menu)">
+                  <i :class="sub.icon" aria-hidden="true" />
+                  {{ sub.name }}
+                </a>
+              </li>
+            </div>
           </div>
-        </div>
-      </ul>
-      <!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
-        <span>Services</span>
-        <a class="d-flex align-items-center text-muted" href="#">
-          <i class="fa fa-circle-o"></i>
-        </a>
-      </h6> -->
-    </transition>
+        </ul>
+        <!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
+          <span>Services</span>
+          <a class="d-flex align-items-center text-muted" href="#">
+            <i class="fa fa-circle-o" />
+          </a>
+        </h6> -->
+      </transition>
+    </div>
   </div>
-</div>
 </template>
 <script>
 export default {
@@ -58,6 +58,11 @@ export default {
       mainStack: [ ],
       mainMenu: 'default'
     }
+  },
+  created () {
+    this.mainMenu = this.$store.getters['mainmenu/getMainMenu'](this.$route.path)
+    if (this.mainMenu !== 'default') this.mainStack.push('default')
+    // console.log(this)
   },
   methods: {
     toggleSidebar () {
@@ -76,11 +81,6 @@ export default {
       this.mainMenu = this.mainStack.pop()
       this.toggleSidebar()
     }
-  },
-  created () {
-    this.mainMenu = this.$store.getters['mainmenu/getMainMenu'](this.$route.path)
-    if (this.mainMenu !== 'default') this.mainStack.push('default')
-    // console.log(this)
   }
 }
 </script>

@@ -1,10 +1,10 @@
 <template>
-<b-nav-form @submit.prevent="onSearch">
-  <div class="form-group form-icon">
-    <b-form-input size="sm" type="text" placeholder="Search" style="width:260px;"/>
-    <i class="fa fa-search"></i>
-  </div>
-</b-nav-form>
+  <b-nav-form @submit.prevent="onSearch">
+    <div class="form-group form-icon">
+      <b-form-input size="sm" type="text" placeholder="Search" style="width:260px;" />
+      <i class="fa fa-search" />
+    </div>
+  </b-nav-form>
 </template>
 
 <script>

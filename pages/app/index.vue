@@ -1,40 +1,39 @@
 <template>
-<div>
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-    <h1 class="h2">Application</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <b-button-group class="mr-2" size="sm">
-        <b-button class="btn-outline-warning">Manual Re-Check</b-button>
-      </b-button-group>
+  <div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+      <h1 class="h2">Application</h1>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <b-button-group class="mr-2" size="sm">
+          <b-button class="btn-outline-warning">Manual Re-Check</b-button>
+        </b-button-group>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-24 mb-3" />
+      <div class="col-sm-12 mb-3">
+        <h6 class="border-bottom pb-1">IIS <small class="text-secondary">(updated last at seconds.)</small></h6>
+        <ul class="stats">
+          <li v-for="item in online" :key="item.key" class="d-flex stats-online mb-2">
+            <i class="fa fa-server m-1" :class="item.online ? 'text-success' : 'text-danger'" aria-hidden="true" />
+            <div class="d-flex flex-column pl-2">
+              <span class="text" v-text="item.label" />
+              <span class="subtext" v-text="item.msg" />
+            </div>
+          </li>
+        </ul>
+        <h6 class="border-bottom pb-1">FTP <small class="text-secondary">(updated last at seconds.)</small></h6>
+        <ul class="stats">
+          <li v-for="item in ftp" :key="item.key" class="d-flex stats-online mb-2">
+            <i class="fa fa-cloud m-1" :class="item.online ? 'text-success' : 'text-danger'" aria-hidden="true" />
+            <div class="d-flex flex-column pl-2">
+              <span class="text" v-text="item.label" />
+              <span class="subtext" v-text="item.msg" />
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-sm-24 mb-3">
-    </div>
-    <div class="col-sm-12 mb-3">
-      <h6 class="border-bottom pb-1">IIS <small class="text-secondary">(updated last at seconds.)</small></h6>
-      <ul class="stats">
-        <li v-for="item in online" :key="item.key" class="d-flex stats-online mb-2">
-          <i class="fa fa-server m-1" :class="item.online ? 'text-success' : 'text-danger'" aria-hidden="true"></i>
-          <div class="d-flex flex-column pl-2">
-            <span class="text" v-text="item.label"></span>
-            <span class="subtext" v-text="item.msg"></span>
-          </div>
-        </li>
-      </ul>
-      <h6 class="border-bottom pb-1">FTP <small class="text-secondary">(updated last at seconds.)</small></h6>
-      <ul class="stats">
-        <li v-for="item in ftp" :key="item.key" class="d-flex stats-online mb-2">
-          <i class="fa fa-cloud m-1" :class="item.online ? 'text-success' : 'text-danger'" aria-hidden="true"></i>
-          <div class="d-flex flex-column pl-2">
-            <span class="text" v-text="item.label"></span>
-            <span class="subtext" v-text="item.msg"></span>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
 </template>
 
 <script>

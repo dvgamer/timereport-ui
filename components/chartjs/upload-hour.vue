@@ -1,12 +1,25 @@
 <template>
-  <highcharts :options="options" ref="high" :style="{ minHeight: height }"></highcharts>
+  <highcharts ref="high" :options="options" :style="{ minHeight: height }" />
 </template>
 
 <script>
 const nFormater = (n) => n.value > 900 ? (n.value / 1000).toFixed(n.value % 1000 == 0 ? 0 : 1) + 'k': n.value
 
 export default {
-  props: [ 'data', 'label', 'height' ],
+  props: {
+    data: {
+      type: Object,
+      default: () => {}
+    },
+    label: {
+      type: String,
+      default: ''
+    },
+    height: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       options: {

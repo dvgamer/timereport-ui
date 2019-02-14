@@ -15,19 +15,19 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-14">
-                <i class="fa fa-big fa-check-circle text-muted"></i>
+                <i class="fa fa-big fa-check-circle text-muted" />
                 <div class="files-status">COMPLETED <small>(CURRENT DAY)</small></div>
-                <div class="files-count"><span v-html="toTextNumber(total.complete)"></span> <small>file(s)</small></div>
+                <div class="files-count"><span v-text="toTextNumber(total.complete)" /> <small>file(s)</small></div>
               </div>
               <div class="col-md-12">
-                <i class="fa fa-big fa-clock-o text-muted"></i>
+                <i class="fa fa-big fa-clock-o text-muted" />
                 <div class="files-status">TASK WAIT <small>(TOTAL)</small></div>
-                <div class="files-count"><span v-html="toTextNumber(total.wait)"></span> <small>file(s)</small></div>
+                <div class="files-count"><span v-text="toTextNumber(total.wait)" /> <small>file(s)</small></div>
               </div>
               <div class="col-md-10">
-                <i class="fa fa-big fa-times-circle text-muted"></i>
+                <i class="fa fa-big fa-times-circle text-muted" />
                 <div class="files-status">FAIL <small>(LAST 7 DAY)</small></div>
-                <div class="files-count"><span v-html="toTextNumber(total.fail)"></span> <small>file(s)</small></div>
+                <div class="files-count"><span v-text="toTextNumber(total.fail)" /> <small>file(s)</small></div>
               </div>
             </div>
             <hr>
@@ -37,9 +37,9 @@
                   <h5 class="h5 mb-md-0 ml-2">TLInDGenSales <small class="text-muted">at 11-12-2018</small></h5>
                   <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group btn-group-sm mr-2">
-                      <button type="button" class="btn btn-outline-primary"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+                      <button type="button" class="btn btn-outline-primary"><i class="fa fa-chevron-left" aria-hidden="true" /></button>
                       <button type="button" class="btn btn-outline-primary">Today</button>
-                      <button type="button" class="btn btn-outline-primary" disabled><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+                      <button type="button" class="btn btn-outline-primary" disabled><i class="fa fa-chevron-right" aria-hidden="true" /></button>
                     </div>
                   </div>
                 </div>
@@ -80,20 +80,22 @@
       <div class="col-md-12 mb-3">
         <div class="card card-seq" style="min-height: 300px;">
           <div class="card-header bg-info">
-            <h3 class="card-title"><i class="fa fa-clock-o"></i> Sequence Transfer <small>(WAIT)</small></h3>
+            <h3 class="card-title"><i class="fa fa-clock-o" /> Sequence Transfer <small>(WAIT)</small></h3>
           </div>
           <table class="table table-sm card-table">
             <colgroup>
-              <col class="text-center"/>
-              <col class="text-left"/>
-              <col class="text-right"/>
+              <col class="text-center">
+              <col class="text-left">
+              <col class="text-right">
             </colgroup>
             <tbody>
               <tr v-for="(file, index) in zip" :key="index">
-                <th class="text-center" scope="row" v-text="index+1"></th>
-                <td v-text="file.sTable"></td>
-                <th v-if="file.nTotal > 0" class="text-center" :class="file.nTotal < 90 ? 'text-warning' : 'text-danger'" v-text="file.nTotal"></th>
-                <th v-else class="text-center text-success"><i class="fa fa-check" aria-hidden="true"></i></th>
+                <th class="text-center" scope="row" v-text="index+1" />
+                <td v-text="file.sTable" />
+                <th v-if="file.nTotal > 0" class="text-center" :class="file.nTotal < 90 ? 'text-warning' : 'text-danger'" v-text="file.nTotal" />
+                <th v-else class="text-center text-success">
+                  <i class="fa fa-check" aria-hidden="true" />
+                </th>
               </tr>
               <tr v-if="zip.length == 0">
                 <th class="text-center" colspan="3"><b>Loading...</b></th>
@@ -104,8 +106,8 @@
       </div>
       <!-- <div class="col-lg-26">
         <chart-upload-hour :data="hour.data" ref="chartupload"></chart-upload-hour>
-      </div> -->
-        <!-- <table class="table table-sm">
+      </div>
+        <table class="table table-sm">
           <thead>
             <tr>
               <th class="text-center" scope="col">#</th>
@@ -128,10 +130,10 @@
     </div>
     <div class="row">
       <div class="col-lg-18">
-        <chart-upload-hour :data="hour.data" :label="hour.label" :height="200" ref="chartupload"></chart-upload-hour>
+        <chart-upload-hour ref="chartupload" :data="hour.data" :label="hour.label" :height="200" />
       </div>
       <div class="col-lg-18">
-        <chart-upload-hour :data="hour.data" :label="hour.label" :height="200" ref="chartupload"></chart-upload-hour>
+        <!-- <chart-upload-hour ref="chartupload" :data="hour.data" :label="hour.label" :height="200" /> -->
       </div>
     </div>
   </div>

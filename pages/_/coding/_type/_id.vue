@@ -1,12 +1,12 @@
 <template>
-<div class="embed-fullscreen">
-  <no-ssr>
-    <div class="code-placeholder" slot="placeholder">
-      <div class="code-loading"><spinner-socket size="75px"/></div>
-    </div>
-    <codemirror class="code-terminal" v-model="code" :options="cmOption"></codemirror>
-  </no-ssr>
-</div>
+  <div class="embed-fullscreen">
+    <no-ssr>
+      <div slot="placeholder" class="code-placeholder">
+        <div class="code-loading"><spinner-socket size="75px" /></div>
+      </div>
+      <codemirror v-model="code" class="code-terminal" :options="cmOption" />
+    </no-ssr>
+  </div>
 </template>
 <script>
 import spinnerSocket from '~/components/loading/spinner-socket.vue'
@@ -63,8 +63,6 @@ export default {
     onCmBlur(codemirror) {
       console.log('onCmBlur', codemirror)
     }
-  },
-  created () {
   }
 }
 </script>

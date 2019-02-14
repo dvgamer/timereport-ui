@@ -1,35 +1,35 @@
 <template>
-<div>
-  <no-ssr>
-    <slideout-panel v-show="true"></slideout-panel>
-  </no-ssr>
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-    <h1 class="h2">Snippet</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <b-button-group class="mr-2" size="sm">
-        <b-button class="btn-outline-secondary"><i class="fa fa-floppy-o"></i> SAVE</b-button>
-        <b-button class="btn-outline-secondary" @click="onShowPanel"><i class="fa fa-folder-open-o"></i> LOAD</b-button>
-      </b-button-group>
+  <div>
+    <no-ssr>
+      <slideout-panel v-show="true" />
+    </no-ssr>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+      <h1 class="h2">Snippet</h1>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <b-button-group class="mr-2" size="sm">
+          <b-button class="btn-outline-secondary"><i class="fa fa-floppy-o" /> SAVE</b-button>
+          <b-button class="btn-outline-secondary" @click="onShowPanel"><i class="fa fa-folder-open-o" /> LOAD</b-button>
+        </b-button-group>
 
-      <b-button-group class="mr-2" size="sm">
-        <b-button class="btn-outline-secondary" @click="$router.push('/inspect/snippet')"><i class="fa fa-back"></i> BACK</b-button>
-      </b-button-group>
+        <b-button-group class="mr-2" size="sm">
+          <b-button class="btn-outline-secondary" @click="$router.push('/inspect/snippet')"><i class="fa fa-back" /> BACK</b-button>
+        </b-button-group>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <iframe ref="code" frameborder="0" class="embed-responsive-item code-terminal border" width="100%" height="100%" :src="coding"></iframe>
-      <!-- <no-ssr>
-        <div class="code-placeholder border" slot="placeholder">
-          <div class="code-loading">
-            <spinner-socket size="75px"/>
+    <div class="row">
+      <div class="col">
+        <iframe ref="code" frameborder="0" class="embed-responsive-item code-terminal border" width="100%" height="100%" :src="coding" />
+        <!-- <no-ssr>
+          <div class="code-placeholder border" slot="placeholder">
+            <div class="code-loading">
+              <spinner-socket size="75px"/>
+            </div>
           </div>
-        </div>
-        <codemirror class="code-terminal border" v-model="code" :options="cmOption"></codemirror>
-      </no-ssr> -->
+          <codemirror class="code-terminal border" v-model="code" :options="cmOption"></codemirror>
+        </no-ssr> -->
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -101,8 +101,6 @@ export default {
     onCmBlur(codemirror) {
       console.log('onCmBlur', codemirror)
     }
-  },
-  created () {
   }
 }
 </script>
@@ -115,7 +113,6 @@ export default {
       font-size: 9px;
     }
   }
-  
 }
 .table th {
   border-top: none;

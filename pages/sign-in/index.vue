@@ -102,6 +102,12 @@ export default {
       }
     }
   },
+  async asyncData ({ $axios }) {
+    const { data } = await $axios.post('/auth/recheck')
+    if (data.error) return {}
+
+    return data
+  },
   data () {
     return {
       sing_out: false,
@@ -118,6 +124,11 @@ export default {
     }
   },
   async created () {
+    if (!this.$auth.loggedIn) {
+      this.updatedInputFocus()
+    } else {
+      this.$router.push('/')
+    }
     // let vm = this
     // if (!vm.$auth.loggedIn) {
     //   const login = this.$auth.$storage.getLocalStorage('login.saved', true)
