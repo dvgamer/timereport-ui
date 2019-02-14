@@ -22,6 +22,10 @@ if (config.dev) {
   })
 }
 
+app.use(socket.path, socket.handler)
+app.use(api.path, api.handler)
+app.use(auth.path, auth.handler)
+
 // Build only in dev mode
 if (!config.dev) {
   // Init Nuxt.js
@@ -29,9 +33,11 @@ if (!config.dev) {
   app.use(nuxt.render)
 }
 
-
-app.use(socket.path, socket.handler)
-app.use(api.path, api.handler)
-app.use(auth.path, auth.handler)
-
-app.listen(port, () => consola.ready({ message: `Server listening on http://${host}:${port}`, badge: true }))
+app.listen(port, () => {
+  if (!config.dev) {
+    const debuger = require('./debuger')('listen')
+    debuger.start(`Server listening on http://${host}:${port}`)
+  } else {
+    consola.ready({ message: `Server listening on http://${host}:${port}`, badge: true })
+  }
+})
