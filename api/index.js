@@ -4,7 +4,7 @@ const consola = require('consola')
 const api = require('./api.js')
 const socket = require('./socket-io')
 const auth = require('./authication')
-const port = 3001
+const port = process.env.AXIOS_PORT || 25081
 const host = 'localhost'
 
 let config = require('../nuxt.config.js')

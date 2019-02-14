@@ -11,6 +11,8 @@ npm-debug.log
 build
 dist
 tmp
+.zip
 .env
 .vagrant
 package-lock.json
+static/sw.js

@@ -124,11 +124,8 @@ export default {
     }
   },
   async created () {
-    if (!this.$auth.loggedIn) {
-      this.updatedInputFocus()
-    } else {
-      this.$router.push('/')
-    }
+    if (this.$auth.loggedIn) this.$router.push('/')
+    this.updatedInputFocus()
     // let vm = this
     // if (!vm.$auth.loggedIn) {
     //   const login = this.$auth.$storage.getLocalStorage('login.saved', true)
@@ -149,8 +146,12 @@ export default {
       let vm = this
       vm.account.sing = true
       try {
-        await vm.$auth.loginWith('local', { data: { user, pass, saved } })
+        console.log('local:', { user, pass, saved })
+        let data = await vm.$auth.loginWith('local', { data: { user, pass, saved } })
+        console.log('loginWith:', data)
+        console.log('$auth', this.$auth)
       } catch (ex) {
+        console.log('catch:', noerr, ex)
         if (!noerr) {
           vm.account.sing = false
           vm.account.btn_sign = `Sign-In`
@@ -163,6 +164,12 @@ export default {
         vm.$auth.$storage.setLocalStorage('login.saved', { user, pass, saved }, true)
         vm.$router.go()
       } else {
+        if (!noerr) {
+          vm.account.sing = false
+          vm.account.btn_sign = `Sign-In`
+          vm.account.error = 'Email or Password worng.'
+        }
+
         let { data } = await vm.$axios.post('/auth/recheck', { user })
         if (!data.error) {
           vm.activate = data.activate
