@@ -1,9 +1,6 @@
 const app = require('express')()
-const consola = require('consola')
-const chalk = require('chalk')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
-
 const db = require('./mongodb')
 
 let router = {}
@@ -16,18 +13,15 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Require API routes
-const debuger = require('./debuger')('SocketIO')
+const logger = require('./debuger')('HTTP')
 const host = process.env.SOCKET_HOST || '0.0.0.0'
 const port = process.env.SOCKET_PORT || 25082
 // sql.close()
 http.listen(port, host, () => (async () => {
   if (process.env.NODE_ENV !== 'production') {
-    consola.ready({ message: `Socket.IO listening on http://${host}:${port}`, badge: true })
+    logger.start(`Socket.IO listening on http://${host}:${port}`)
     io.on('connection', socket => {
-      consola.info('socket.io user connected')
-      socket.on('disconnect', () => {
-        consola.info('socket.io user disconnected')
-      })
+      socket.on('disconnect', () => { })
     })
   } else {
     debuger.start(`Socket.IO listening on http://${host}:${port}`)
@@ -39,7 +33,7 @@ http.listen(port, host, () => (async () => {
     if (change.operationType !== 'update') return
     let { updatedFields } = change.updateDescription
     if (!updatedFields.activate && !updatedFields.enabled) return
-    console.log('changeUser', updatedFields.activate, updatedFields.enabled)
+    logger.log('changeUser', updatedFields.activate, updatedFields.enabled)
     let { activate, enabled, mail }  = await User.findOne({ _id: change.documentKey._id })
     io.emit(`sign-in|status`, { activate, enabled, mail })
   })
@@ -51,7 +45,7 @@ http.listen(port, host, () => (async () => {
     io.emit(`${route}|${module}`, data)
   })
 })().catch(ex => {
-  console.log('socket.io::', ex)
+  logger.error(ex)
 }))
 
 // Export the server middleware

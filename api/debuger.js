@@ -85,16 +85,9 @@ module.exports = scopeName => {
     async error (ex) {
       if (!ex) return
       if (ex instanceof Error) {
-        if (isDev) {
-          const Youch = require('youch')
-          let output = await new Youch(ex, {}).toJSON()
-          console.log(require('youch-terminal')(output))
-        } else {
-          let excep = /at.*?\((.*?)\)/i.exec(ex.stack) || []
-          logLinux(scopeName, 'х', [ ex.message.indexOf('Error:') === 0 ? ex.message.replace('Error:', 'ERROR-Message:') : `ERROR-Message: ${ex.message}` ])
-          logLinux(scopeName, 'х', [ `ERROR-File: ${excep[1] ? excep[1] : 'N/A'}`, ex.message ])
-          // require('../raven').error(ex)
-        }
+        let excep = /at.*?\((.*?)\)/i.exec(ex.stack) || []
+        logLinux(scopeName, 'х', [ ex.message.indexOf('Error:') === 0 ? ex.message.replace('Error:', 'ERROR-Message:') : `ERROR-Message: ${ex.message}` ])
+        logLinux(scopeName, 'х', [ `ERROR-File: ${excep[1] ? excep[1] : 'N/A'}`, ex.message ])
       } else {
         let msg = [ ex.toString() ]
         if (measure) msg.push(`(${measure.total()})`)

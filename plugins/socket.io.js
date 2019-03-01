@@ -4,7 +4,7 @@ const store = require('../store')
 
 export default ({ env, app }) => {
   Vue.use(new VueSocketIO({
-    debug: true,
+    debug: env.dev,
     connection: env.SOCKET_HOST_URL,
     vuex: {
       store,

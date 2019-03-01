@@ -4,6 +4,7 @@ const consola = require('consola')
 const api = require('./api.js')
 const socket = require('./socket-io')
 const auth = require('./authication')
+const logger = require('./debuger')('API')
 const port = process.env.AXIOS_PORT || 25081
 const host = 'localhost'
 
@@ -35,9 +36,8 @@ if (!config.dev) {
 
 app.listen(port, () => {
   if (!config.dev) {
-    const debuger = require('./debuger')('listen')
-    debuger.start(`Server listening on http://${host}:${port}`)
+    logger.start(`Server listening on http://${host}:${port}`)
   } else {
-    consola.ready({ message: `Server listening on http://${host}:${port}`, badge: true })
+    logger.start(`Server listening on http://${host}:${port}`)
   }
 })

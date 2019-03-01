@@ -2,6 +2,7 @@ const ldapAuth = require('./ldap')
 const db = require('../mongodb')
 const bodyParser = require('body-parser')
 const jsonwebtoken = require('jsonwebtoken')
+const logger = require('../debuger')('AUTH')
 const md5 = require('md5')
 
 let router = {}
@@ -48,22 +49,23 @@ router.get('/user', (req, res) => (async () => {
     res.json({})
   }
 })().catch((ex) => {
+  logger.warning(ex)
   res.json({})
 }))
 
-const encodeToken = (data) => {
+const encodeToken = data => {
   const hashId = md5(data.mail + (+(new Date())))
   return jsonwebtoken.sign({ hash: hashId, ...data }, process.env.JWT_KEYHASH)
 } 
 
-const decodeToken = (data) => {
+const decodeToken = data => {
   return jsonwebtoken.verify(data, process.env.JWT_KEYHASH)
 }
 
 router.post('/recheck', (req, res) => (async () => {
   let { user } = req.body
 
-  console.log(`[${new Date().toDateString()}] AUTH::RECHECK -- ${user}`)
+  logger.log(`re-checking ${user ? `(${user})` : ''}`)
   let { User } = await db.open()
   try {
     if (!user) throw new Error('Unauthorized 402')
@@ -76,6 +78,7 @@ router.post('/recheck', (req, res) => (async () => {
     res.json({ error: ex.message || ex })
   }
 })().catch(ex => {
+  logger.warning(ex)
   res.json({ error: ex.message || ex })
 }))
 
@@ -94,7 +97,7 @@ router.post('/login', (req, res) => (async () => {
     } finally { /* decode but user random charector and send to server. */}
 
     if (!IsEncode) {
-      console.log(`[${new Date().toDateString()}] AUTH::LOGIN -- Unauthorized (401)`)
+      logger.log(`Login -- Unauthorized (401)`)
       return res.status(401).json({ error: 'Unauthorized (401)'})
     }
   } else {
@@ -138,32 +141,33 @@ router.post('/login', (req, res) => (async () => {
     let accessToken = encodeToken({ _id: user._id })
     await User.updateOne({ _id: user._id }, { $set: { token: accessToken } })
     if (user.activate && user.enabled) {
-      console.log(`[${new Date().toDateString()}] AUTH::LOGIN (success) -- ${auth.usr}`)
+      logger.log(`Login (success) -- ${auth.usr}`)
       await new UserHistory({ mail: auth.usr, error: data.err, token: accessToken, created: date }).save()
       res.json({ token: accessToken })
     } else {
-      console.log(`[${new Date().toDateString()}] AUTH::LOGIN (suspended) -- ${auth.usr}`)
+      logger.log(`Login (suspended) -- ${auth.usr}`)
       await new UserHistory({ mail: auth.usr, error: 'account suspended or inactivate', token: accessToken, created: date }).save()
       res.status(401).json({ error: 'Unauthorized (403)' })
     }
   } catch (ex) {
-    console.log(`[${new Date().toDateString()}] AUTH::LOGIN (fail) -- ${(ex.message || ex)}`)
+    logger.log(`Login (fail) -- ${(ex.message || ex)}`)
     await new UserHistory({ mail: auth.usr, error: (ex.message || ex), token: null, created: date }).save()
     res.json({ error: ex.message || ex })
   }
 })().catch(ex => {
+  logger.warning(ex)
   res.status(401).json({ error: ex.message || ex })
 }))
 
 router.post('/logout', (req, res) => (async () => {
   res.json({})
 })().catch((ex) => {
+  logger.warning(ex)
   res.status(401).json({})
 }))
 
 if (process.env.NODE_ENV === 'production') {
-  const debuger = require('../debuger')('Auth')
-  debuger.start(`Authentication listening on ${process.env.AXIOS_BASE_URL}`)
+  logger.start(`Authentication listening on ${process.env.AXIOS_BASE_URL}`)
 }
 // Export the server middleware
 module.exports = {

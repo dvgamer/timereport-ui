@@ -4,7 +4,7 @@ const moment = require('moment-timezone')
 mongoose.Promise = Promise
 moment.tz.setDefault(process.env.TZ || 'Asia/Bangkok')
 
-const debuger = require('../debuger')('MongoDB')
+const logger = require('../debuger')('MongoDB')
 let mongodb = {
   MongoConnection: async (dbname, account, server) => {
     const IsAdmin = !!process.env.MONGODB_ADMIN
@@ -15,11 +15,11 @@ let mongodb = {
     // mongodb://user:password@host:port,replicaSetHost:replicaSetPort/database?replicaSet=rs0.
     let MONGODB_URI = `mongodb://${MONGODB_ACCOUNT ? `${MONGODB_ACCOUNT}@` : ''}${MONGODB_SERVER}/${dbname}?authMode=scram-sha1${IsAdmin ? '&authSource=admin' : ''}`
     let conn = await mongoose.createConnection(MONGODB_URI, { useCreateIndex: true, useNewUrlParser: true, connectTimeoutMS: 10000 })
-    debuger.log(`Connected. mongodb://${MONGODB_SERVER}/${dbname} (State is ${conn.readyState})`)
+    logger.log(`Connected. mongodb://${MONGODB_SERVER}/${dbname} (State is ${conn.readyState})`)
     conn.connected = () => conn.readyState === 1
     conn.close = async () => {
       await conn.close()
-      debuger.log(`Closed. mongodb://${MONGODB_SERVER}/${dbname} (State is ${conn.readyState})`)
+      logger.log(`Closed. mongodb://${MONGODB_SERVER}/${dbname} (State is ${conn.readyState})`)
     }
     conn.Schema = {
       ObjectId: mongoose.Schema.ObjectId

@@ -41,7 +41,6 @@ module.exports = (usr, pwd, filter) => {
     }, timeout)
 
     // console.log('auth:', username, password)
-    manualTimeout
     client.bind(username, password, err => {
       // console.log('bind:', !err)
       if (err) return resolveClient({ err: err.lde_message })
