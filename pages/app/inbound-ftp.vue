@@ -181,14 +181,6 @@ export default {
       this.total.complete = data.complete
     }
   },
-  async asyncData({ $api }) {
-    let data = await $api.get('app/inbound-transfer')
-    return {
-      zip: data.sequence,
-      total: data.status,
-      hour: graphData(data.graph)
-    }
-  },
   components: { ChartUploadHour },
   data () {
     return {
@@ -212,6 +204,14 @@ export default {
         data: [],
         label: []
       }
+    }
+  },
+  async asyncData({ $api }) {
+    let data = await $api.get('app/inbound-transfer')
+    return {
+      zip: data.sequence,
+      total: data.status,
+      hour: graphData(data.graph)
     }
   },
   methods: {

@@ -42,16 +42,6 @@ export default {
   head: {
     title: 'Snippets',
   },
-  async asyncData ({ params }) {
-    let { id } = params
-    let uri = 'javascript'
-    if (id === 'create') {
-
-    }
-    return {
-      coding: `/_/coding/${uri}`
-    }
-  },
   data () {
     return {
       sortBy: 'no',
@@ -79,6 +69,16 @@ export default {
         keyMap: "sublime",
         theme: "material"
       }
+    }
+  },
+  async asyncData ({ params }) {
+    let { id } = params
+    let uri = 'javascript'
+    if (id === 'create') {
+
+    }
+    return {
+      coding: `/_/coding/${uri}`
     }
   },
   methods: {

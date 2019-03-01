@@ -102,12 +102,6 @@ export default {
       }
     }
   },
-  async asyncData ({ $axios }) {
-    const { data } = await $axios.post('/auth/recheck')
-    if (data.error) return {}
-
-    return data
-  },
   data () {
     return {
       sing_out: false,
@@ -122,6 +116,12 @@ export default {
         saved: false
       }
     }
+  },
+  async asyncData ({ $axios }) {
+    const { data } = await $axios.post('/auth/recheck')
+    if (data.error) return {}
+
+    return data
   },
   async created () {
     if (this.$auth.loggedIn) this.$router.push('/')

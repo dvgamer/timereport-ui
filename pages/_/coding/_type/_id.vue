@@ -24,6 +24,9 @@ export default {
   components: {
     'spinner-socket': spinnerSocket
   },
+  data: () => ({
+    code: ''
+  }),
   async asyncData ({ params }) {
     let { type, id } = params
     let mode = 'text/javascript'
@@ -40,9 +43,6 @@ export default {
       }
     }
   },
-  data: () => ({
-    code: ''
-  }),
   methods: {
     onShowPanel () {
       // this.$showPanel({

@@ -51,10 +51,6 @@ export default {
   head: {
     title: 'Snippets',
   },
-  async asyncData ({ $api, env, $axios, store, params }) {
-    let data = await $api.get('/inspect/snippet')
-    return { items: data }
-  },
   data: () => ({
     sortBy: 'no',
     sortDesc: false,
@@ -78,6 +74,10 @@ export default {
       theme: "material"
     }
   }),
+  async asyncData ({ $api, env, $axios, store, params }) {
+    let data = await $api.get('/inspect/snippet')
+    return { items: data }
+  },
   methods: {
     getDetail (data) {
       let [ raw, line ] = /(.*?)\n/ig.exec(data) || []

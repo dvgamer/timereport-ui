@@ -10,8 +10,8 @@
           </span>
         </span>
       </template>
-      <b-dropdown-item href="#">Setting</b-dropdown-item>
-      <b-dropdown-item href="#">Sign-Out</b-dropdown-item>
+      <b-dropdown-item to="/profile">Profile</b-dropdown-item>
+      <b-dropdown-item @click="onLogout">Sign-Out</b-dropdown-item>
     </b-nav-item-dropdown>
   </b-navbar-nav>
 </template>
@@ -21,6 +21,9 @@ export default {
   methods: {
     onSearch () {
       console.log('search:')
+    },
+    async onLogout () {
+      await this.$auth.logout()
     }
   }
 }
