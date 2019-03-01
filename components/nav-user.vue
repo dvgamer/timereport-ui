@@ -3,7 +3,9 @@
     <b-nav-item-dropdown right>
       <template slot="button-content">
         <span class="user-avatar">
-          <v-gravatar class="rounded-circle" :email="$auth.user.mail" :size="32" default-img="retro" />
+          <no-ssr>
+            <v-gravatar class="rounded-circle" :email="$auth.user.mail" :size="32" default-img="retro" />
+          </no-ssr>
           <span class="user-info">
             <div class="name text-nowrap">{{ $auth.user.name }}</div>
             <div class="title text-nowrap">{{ $auth.user.title }}</div>

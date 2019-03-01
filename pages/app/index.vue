@@ -4,7 +4,7 @@
       <h1 class="h2">Application</h1>
       <div class="btn-toolbar mb-2 mb-md-0">
         <b-button-group class="mr-2" size="sm">
-          <b-button class="btn-outline-warning">Manual Re-Check</b-button>
+          <b-button variant="outline-warning">Manual Re-Check</b-button>
         </b-button-group>
       </div>
     </div>

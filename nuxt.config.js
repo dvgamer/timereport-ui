@@ -26,12 +26,13 @@ let config = {
     // 'codemirror/theme/material.css'
   ],
   modules: [
-    [ 'bootstrap-vue/nuxt', { css: false } ],
+    'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
     '@nuxtjs/auth',
     '@nuxtjs/font-awesome',
     '@nuxtjs/pwa'
   ],
+  bootstrapVue: { bootstrapCSS: false },
   plugins: [
     '~/plugins/vue-api.js',
     '~/plugins/vue-installed.js',

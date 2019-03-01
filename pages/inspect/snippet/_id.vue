@@ -7,12 +7,12 @@
       <h1 class="h2">Snippet</h1>
       <div class="btn-toolbar mb-2 mb-md-0">
         <b-button-group class="mr-2" size="sm">
-          <b-button class="btn-outline-secondary"><i class="fa fa-floppy-o" /> SAVE</b-button>
-          <b-button class="btn-outline-secondary" @click="onShowPanel"><i class="fa fa-folder-open-o" /> LOAD</b-button>
+          <b-button variant="outline-secondary"><i class="fa fa-floppy-o" /> SAVE</b-button>
+          <b-button variant="outline-secondary" @click="onShowPanel"><i class="fa fa-folder-open-o" /> LOAD</b-button>
         </b-button-group>
 
         <b-button-group class="mr-2" size="sm">
-          <b-button class="btn-outline-secondary" @click="$router.push('/inspect/snippet')"><i class="fa fa-back" /> BACK</b-button>
+          <b-button variant="outline-secondary" @click="$router.push('/inspect/snippet')"><i class="fa fa-back" /> BACK</b-button>
         </b-button-group>
       </div>
     </div>

@@ -5,8 +5,8 @@
       
       <div class="btn-toolbar mb-2 mb-md-0">
         <b-button-group class="mr-2" size="sm">
-          <b-button class="btn-outline-secondary">Button 1</b-button>
-          <b-button class="btn-outline-secondary">Button 2</b-button>
+          <b-button variant="outline-secondary">Button 1</b-button>
+          <b-button variant="outline-secondary">Button 2</b-button>
         </b-button-group>
       </div>
     </div>

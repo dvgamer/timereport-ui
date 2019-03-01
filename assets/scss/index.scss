@@ -1,5 +1,6 @@
 @import 'variables';
-@import '~bootstrap/scss/bootstrap.scss';
+@import 'bootstrap/scss/bootstrap.scss';
+@import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 @import '_vue-bar';
 
@@ -38,7 +39,7 @@
 }
 
 .sidebar-sticky {
-  height: calc(100vh - 3.165rem);
+  height: calc(100vh - 3.35rem);
   padding-top: .5rem;
   overflow: hidden;
   > ul {

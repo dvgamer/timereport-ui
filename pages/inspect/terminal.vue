@@ -8,7 +8,7 @@
       <div class="btn-toolbar mb-2 mb-md-0">
         <b-button-group class="mr-2" size="sm">
           <b-btn variant="outline-info"><i class="fa fa-folder-open-o" /> LOAD</b-btn>
-          <b-btn class="btn-outline-success"><i class="fa fa-play" /></b-btn>
+          <b-btn variant="outline-success"><i class="fa fa-play" /></b-btn>
         </b-button-group>
       </div>
     </div>
