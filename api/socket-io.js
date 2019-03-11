@@ -24,7 +24,7 @@ http.listen(port, host, () => (async () => {
       socket.on('disconnect', () => { })
     })
   } else {
-    debuger.start(`Socket.IO listening on http://${host}:${port}`)
+    logger.start(`Socket.IO listening on http://${host}:${port}`)
   }
   let { PageSync, User } = await db.open()
 

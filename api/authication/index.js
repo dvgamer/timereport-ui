@@ -102,8 +102,10 @@ router.post('/login', (req, res) => (async () => {
     let IsEncode = false
     try {
       auth = new Buffer.from(raw.replace(/^basic /ig, ''), 'base64').toString('utf8')
-      auth = /(?<usr>.*?):(?<pwd>.*)/ig.exec(auth).groups || {}
-      IsEncode = true
+      if (auth) {
+        auth = /(?<usr>.*?):(?<pwd>.*)/ig.exec(auth).groups || {}
+        IsEncode = true
+      }
     } finally { /* decode but user random charector and send to server. */}
 
     if (!IsEncode) {
@@ -114,6 +116,7 @@ router.post('/login', (req, res) => (async () => {
     let { user, pass } = req.body
     auth = { usr: user, pwd: pass }
   }
+  if (!/\@central/ig.test(auth.usr)) auth.usr = `${auth.usr.trim()}@central.co.th`
 
   let { User, UserHistory } = await db.open()
   try {
