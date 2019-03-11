@@ -15,6 +15,16 @@ if (process.env.NODE_ENV !== 'production') {
 }
 router.use(bodyParser.json())
 
+router.use((req, res, next) => {
+  const methodAllow = [ 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' ]
+  res.setHeader('Content-Type', 'application/json')
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Headers', '*')
+  res.setHeader('Access-Control-Allow-Credentials', 'true')
+  res.setHeader('Access-Control-Allow-Methods', methodAllow.join(','))
+  if (req.method === 'OPTIONS') return res.sendStatus(200)
+  next()
+})
 // Import API Routes
 const userData = [
   'name',
@@ -114,7 +124,7 @@ router.post('/login', (req, res) => (async () => {
 
     let data = null
     try {
-      throw new Error('Ignore LDAP')
+      // throw new Error('Ignore LDAP')
       data = await ldapAuth(auth.usr, auth.pwd)
       data.mail = data.mail.trim().toLowerCase()
     } catch (ex) {
