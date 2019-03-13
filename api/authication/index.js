@@ -97,8 +97,12 @@ router.post('/login', (req, res) => (async () => {
   let date = new Date()
   
   let auth = {}
+  let { user, pass } = req.body
   let raw = req.headers['authorization']
-  if (raw) {
+  
+  logger.log('LDAP: auth:', !!raw)
+  logger.log('LDAP: user:', user)
+  if (raw && !user) {
     let IsEncode = false
     try {
       auth = new Buffer.from(raw.replace(/^basic /ig, ''), 'base64').toString('utf8')
@@ -113,28 +117,36 @@ router.post('/login', (req, res) => (async () => {
       return res.status(401).json({ error: 'Unauthorized (401)'})
     }
   } else {
-    let { user, pass } = req.body
     auth = { usr: user, pwd: pass }
   }
-  if (!/\@central/ig.test(auth.usr)) auth.usr = `${auth.usr.trim()}@central.co.th`
+  if (!auth.usr) {
+    logger.log(`Login -- Unauthorized (404)`)
+    return res.status(401).json({ error: 'Unauthorized (404)'})
+  }
 
   let { User, UserHistory } = await db.open()
   try {
     if (!auth) throw new Error('Unauthorized (402)')
     auth.usr = auth.usr.trim().toLowerCase()
 
-    let user = await User.findOne({ mail: auth.usr })
-
+    let fullMail = !/@/g.test(auth.usr.toLowerCase()) ? `${auth.usr.toLowerCase()}@central.co.th` : auth.usr.toLowerCase()
+    let user = await User.findOne({ $or: [ { mail: fullMail }, { user_name: auth.usr.toLowerCase() } ] })
     let data = null
     try {
-      // throw new Error('Ignore LDAP')
+      // logger.log('LDAP:', auth)
       data = await ldapAuth(auth.usr, auth.pwd)
-      data.mail = data.mail.trim().toLowerCase()
+      if (!data || !data.user_name) data = await ldapAuth(fullMail, auth.pwd)
+      // logger.log('USER:', data.user_name)
+      // logger.log('MAIL:', data.mail)
+      if (data.mail) data.mail = data.mail.trim().toLowerCase()
+      if (data.user_name) data.user_name = data.user_name.trim().toLowerCase()
     } catch (ex) {
+      // logger.log('LDAP:', ex.message)
       data = { error: ex.message || ex }
-      user = await User.findOne({ mail: auth.usr.toLowerCase(), pwd: md5(auth.pwd) })
+      user = await User.findOne({ $or: [ { mail: fullMail }, { user_name: auth.usr.toLowerCase() } ], pwd: md5(auth.pwd) })
     }
     if (!user && data.error) throw new Error(data.error)
+    if (!data || !data.user_name) throw new Error('LDAP auth unsuccessful.')
     if (!user) {
       user = await new User(Object.assign({
         pwd: md5(auth.pwd),
