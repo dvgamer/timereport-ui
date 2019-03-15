@@ -17,6 +17,18 @@
   transition: all .2s cubic-bezier(.55,0,.1,1);
 }
 
+.main-panel > .container {
+  height: calc(100vh - 50px);
+  min-height: 380px;
+  display: flex;
+  @media (min-width: 767.98px) {
+    align-items: center;
+  }
+}
+.main-panel > .container > .row {
+  width: 100%;
+}
+
 .page-enter-active, .page-leave-active {
   transition: opacity .2s
 }

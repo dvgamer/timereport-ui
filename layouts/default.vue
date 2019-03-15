@@ -51,10 +51,14 @@ export default {
     'connect' () {
       clearTimeout(this.timeout.sock)
       this.online.sock = 1
+      this.updatedNetworkConnection()
     },
     'disconnect' () {
       clearTimeout(this.timeout.sock)
       this.online.sock = 0
+      this.updatedNetworkConnection()
+    },
+    'sign-out|status' (data) {
     }
   },
   data: () => ({
@@ -80,15 +84,7 @@ export default {
     this.$store.commit('$page', false)
     this.timeout.api = setTimeout(() => vm.online.api = 0, 5000)
     this.timeout.sock = setTimeout(() => vm.online.sock = 0, 5000)
-    this.$axios({
-      url: '/api/status'
-    }).then(data => {
-      vm.online.api = data.status === 200 ? 1 : 0
-      clearTimeout(vm.timeout.api)
-    }).catch(ex => {
-      vm.online.api = 0
-      clearTimeout(vm.timeout.api)
-    })
+    this.updatedNetworkConnection()
   },
   beforeMount () {
     // window.addEventListener('keydown', (e) => {
@@ -96,6 +92,16 @@ export default {
     // })
   },
   methods: {
+    updatedNetworkConnection () {
+      let vm = this
+      vm.$axios.get('/api/status').then(data => {
+        vm.online.api = data.status === 200 ? 1 : 0
+        clearTimeout(vm.timeout.api)
+      }).catch(ex => {
+        vm.online.api = 0
+        clearTimeout(vm.timeout.api)
+      })
+    },
     onSearch () {
       console.log('search:')
     }

@@ -25,6 +25,12 @@ export default {
       console.log('search:')
     },
     async onLogout () {
+      let { user, saved } = this.$auth.$storage.getLocalStorage('login.saved', true)
+      if (!saved) {
+        this.$auth.$storage.setLocalStorage('login.saved', null, true)
+      } else {
+        this.$auth.$storage.setLocalStorage('login.saved', { user, pass: '', saved }, true)
+      }
       await this.$auth.logout()
     }
   }

@@ -27,27 +27,27 @@
                     </no-ssr>
                   </transition>
                   <div class="mb-3 mt-2">
-                    <button v-if="!activate || !enabled" :disabled="sing_out" type="button" class="btn btn-warning btn-sm btn-logout pull-right" @click="onSignOut" />
+                    <button v-if="!activate || !enabled" :disabled="sing_out" type="button" class="btn btn-warning btn-sm btn-logout pull-right" @click="onSignOut" v-text="'Sign-Out'" />
                     <h3 class="mb-0">Sign-In</h3>
                     <small>central.co.th</small>
                   </div>
-                  <div v-if="activate && enabled">
+                  <div v-if="activate && enabled && !success">
                     <div class="form-group">
-                      <label class="form-label">Email address</label>
-                      <input ref="email" v-model="account.username" :readonly="account.sing" type="text" tabindex="1" class="form-control" maxlength="30" placeholder="Enter email">
+                      <label class="form-label">Email or Username</label>
+                      <input ref="email" v-model="account.username" :readonly="account.signon" type="text" tabindex="1" class="form-control" maxlength="30" placeholder="Enter email">
                     </div>
                     <div class="form-group">
                       <label class="form-label">Password</label>
-                      <input ref="password" v-model="account.password" :readonly="account.sing" tabindex="2" type="password" class="form-control" maxlength="12" placeholder="Password">
+                      <input ref="password" v-model="account.password" :readonly="account.signon" tabindex="2" type="password" class="form-control" maxlength="12" placeholder="Password">
                     </div>
                     <div class="form-group">
                       <label class="custom-control custom-checkbox">
-                        <input v-model="account.saved" :disabled="account.sing" tabindex="3" type="checkbox" class="custom-control-input">
+                        <input v-model="account.saved" :disabled="account.signon" tabindex="3" type="checkbox" class="custom-control-input">
                         <span class="custom-control-label">Remember me</span>
                       </label>
                     </div>
                     <div class="form-footer">
-                      <button type="submit" tabindex="4" class="btn btn-primary btn-block" :disabled="account.sing">{{ account.btn_sign }}</button>
+                      <button type="submit" tabindex="4" class="btn btn-primary btn-block" :disabled="account.signon">{{ account.btn_sign }}</button>
                     </div>
                     <small>
                       <b><div v-if="!!account.error" class="pt-3 text-danger text-nowrap text-center" v-text="account.error" /></b>
@@ -55,11 +55,12 @@
                   </div>
                   <div v-else class="text-center">
                     <div class="avatar-thumbnail">
-                      <v-gravatar class="rounded-circle" :email="account.username" :size="160" default-img="retro" />
+                      <v-gravatar class="rounded-circle" :email="account.mail" :size="160" default-img="retro" />
                     </div>
-                    <h5 class="pt-3">Walcome, {{ account.username }}</h5>
-                    <div v-if="!enabled"><b class="text-danger">Your Account is Suspended.</b><br>Please contact administrator.</div>
-                    <div v-else><b class="text-danger">Your Account is Inactivate.</b><br>Please wait a moment...</div>
+                    <h5 class="pt-3">Walcome, {{ account.name }}</h5>
+                    <div v-if="success"><b class="text-success">Hi, Your access token generated. </b><br>and I will take you to dashboard.</div>
+                    <div v-else-if="!enabled"><b class="text-danger">Your Account is Suspended.</b><br>Please contact administrator.</div>
+                    <div v-else-if="!activate"><b class="text-danger">Your Account is Inactivate.</b><br>Please wait a moment...</div>
                   </div>
                 </div>
               </div>
@@ -69,6 +70,13 @@
       </div>
       <div class="row mt-3">
         <div class="col-md-28 col-lg-24 mx-auto">
+          <no-ssr>
+            <cookie-law button-text="I AGREE" @:accept="onAgreeCookie">
+              <div slot="message">
+                DevOps's Progressive Web Appilication uses cookies. By proceeding, you consent to our cookie usage. Please see <router-link to="legal-notes">DevOps Cookie Policy</router-link>.
+              </div>
+            </cookie-law>
+          </no-ssr>
           <footer class="footer">
             <div class="content text-center">
               <p>
@@ -84,6 +92,8 @@
 </template>
 
 <script>
+import CookieLaw from 'vue-cookie-law'
+
 export default {
   auth: false,
   layout: 'guest',
@@ -93,137 +103,152 @@ export default {
   },
   sockets: {
     'sign-in|status' (data) {
-      const login = this.$auth.$storage.getLocalStorage('login.saved', true)
-      if (login && login.user === data.mail) {
-        this.enabled = data.enabled
-        if (data.activate) {
-          this.onAuth(login.user, login.pass, login.saved, true)
-        }
-      }
+      this.onReSignIn(data)
     }
   },
+  components: { CookieLaw },
   data () {
     return {
+      cookieAllow: false,
       sing_out: false,
       activate: true,
       enabled: true,
+      success: false,
       account: {
-        sign: false,
+        signon: false,
         error: '',
         btn_sign: 'Sign-In',
+        name: 'Guest',
+        mail: '',
         username: '',
         password: '',
         saved: false
       }
     }
   },
-  async asyncData ({ $axios }) {
-    const { data } = await $axios.post('/auth/recheck')
-    if (data.error) return {}
-
-    return data
-  },
   async created () {
-    if (this.$auth.loggedIn) this.$router.push('/')
+    if (process.client) {
+      this.cookieAllow = window.localStorage.getItem('cookie:accepted') || false
+    }
+    if (!this.$auth.loggedIn) {
+      const login = this.$auth.$storage.getLocalStorage('login.saved', true)
+      if (login) {
+        let { data } = await this.$axios.post('/auth/activate', { user: login.user, pass: login.pass })
+        if (!data.error) {
+          this.activate = data.activate
+          this.enabled = data.enabled
+          this.account.name = data.name
+          this.account.mail = data.mail
+          this.onReSignIn(data)
+        }
+      }
+    } else {
+      this.$router.push('/')
+    }
     this.updatedInputFocus()
-    // let vm = this
-    // if (!vm.$auth.loggedIn) {
-    //   const login = this.$auth.$storage.getLocalStorage('login.saved', true)
-    //   if (login) {
-    //     let { data } = await vm.$axios.post('/auth/recheck', { user: login.user })
-    //     if (!data.error) {
-    //       vm.activate = data.activate
-    //       vm.enabled = data.enabled
-    //     }
-    //   }
-    //   this.updatedInputFocus()
-    // } else {
-    //   this.$router.push('/')
-    // }
   },
   methods: {
     async onAuth (user, pass, saved, noerr = false) {
-      let vm = this
-      vm.account.sing = true
+      if (!this.cookieAllow) return
+      this.account.signon = true
       try {
-        console.log('local:', { user, pass, saved })
-        let data = await vm.$auth.loginWith('local', { data: { user, pass, saved } })
-        console.log('loginWith:', data)
-        console.log('$auth', this.$auth)
+        // console.log('local:', { user, pass, saved })
+        await this.$auth.loginWith('local', { data: { user, pass, saved } })
+        // console.log('loginWith:', data)
+        // console.log('$auth', this.$auth.user)
       } catch (ex) {
-        console.log('catch:', noerr, ex)
+        // console.log('catch:', noerr, ex)
         if (!noerr) {
-          vm.account.sing = false
-          vm.account.btn_sign = `Sign-In`
-          vm.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : 'Email or Password worng.'}`
+          this.account.signon = false
+          this.account.btn_sign = `Sign-In`
+          this.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : 'Email or Password worng.'}`
         }
       }
 
-      if (vm.$auth.loggedIn) {
-        vm.account.btn_sign = `Hi, Welcome Back.`
-        vm.$auth.$storage.setLocalStorage('login.saved', { user, pass, saved }, true)
-        vm.$router.go()
+      if (this.$auth.loggedIn) {
+        this.success = true
+        this.account.mail = this.$auth.user.mail
+        this.account.name = this.$auth.user.display_name
+        this.$auth.$storage.setLocalStorage('login.saved', { user, pass: '', saved }, true)
+        this.$nextTick(() => this.$router.go())
       } else {
         if (!noerr) {
-          vm.account.sing = false
-          vm.account.btn_sign = `Sign-In`
-          vm.account.error = 'Email or Password worng.'
+          this.account.signon = false
+          this.account.btn_sign = `Sign-In`
+          this.account.error = 'Email or Password worng.'
         }
 
-        let { data } = await vm.$axios.post('/auth/recheck', { user })
+        let { data } = await this.$axios.post('/auth/activate', { user, pass })
         if (!data.error) {
-          vm.activate = data.activate
-          vm.enabled = data.enabled
+          this.activate = data.activate
+          this.enabled = data.enabled
+          this.account.name = data.name
+          this.account.mail = data.mail
         } else {
-          vm.account.sing = false
-          vm.account.btn_sign = `Sign-In`
-          vm.account.error = data.error
-          vm.$auth.$storage.setLocalStorage('login.saved', {}, true)
+          this.account.signon = false
+          this.account.btn_sign = `Sign-In`
+          this.account.error = data.error
+          this.$auth.$storage.setLocalStorage('login.saved', {}, true)
         }
       }
     },
     async onSignOut () {
       this.sing_out = true
-      this.$auth.$storage.setLocalStorage('login.saved', null, true)
+      let { user, saved } = this.$auth.$storage.getLocalStorage('login.saved', true)
+      if (!saved) {
+        this.$auth.$storage.setLocalStorage('login.saved', null, true)
+      } else {
+        this.$auth.$storage.setLocalStorage('login.saved', { user, pass: '', saved }, true)
+      }
       this.$router.go()
     },
     async onSignIn () {
-      let vm = this
+      if (!this.cookieAllow) return
       let { username, password, saved } = this.account
 
-      if (!/\w{5,}@central.co.th$/ig.test(username)) {
-        vm.account.sing = false
-        vm.account.btn_sign = `Sign-In`
-        vm.account.error = `Domain name not central.co.th`
-        return
-      }
+      // if (!/\w{5,}@central.co.th$/ig.test(username)) {
+      //   vm.account.signon = false
+      //   vm.account.btn_sign = `Sign-In`
+      //   vm.account.error = `Domain name not central.co.th`
+      //   return
+      // }
 
       if (password.length <= 3) {
-        vm.account.sing = false
-        vm.account.btn_sign = `Sign-In`
-        vm.account.error = `Password worng.`
+        this.account.signon = false
+        this.account.btn_sign = `Sign-In`
+        this.account.error = `Password short.`
         return
       }
 
-      vm.$auth.$storage.setLocalStorage('login.saved', { user: username, pass: password, saved: saved }, true)
-      vm.account.sing = true
-      vm.account.btn_sign = `Signing LDAP...`
-      vm.account.error = ''
+      this.$auth.$storage.setLocalStorage('login.saved', { user: username, pass: password, saved: saved }, true)
+      this.account.signon = true
+      this.account.btn_sign = `Signing LDAP...`
+      this.account.error = ''
       try {
         if (!username) {
-          vm.$refs.email.focus()
+          this.$refs.email.focus()
           throw new Error('Username is empty.')
         }
         if (!password) {
-          vm.$refs.password.focus()
+          this.$refs.password.focus()
           throw new Error('Password is empty.')
         }
-        await vm.onAuth(username, password, saved)
+        await this.onAuth(username, password, saved)
       } catch (ex) {
-        vm.account.sing = false
-        vm.account.btn_sign = `Sign-In`
-        vm.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : ex.message}`
+        this.account.signon = false
+        this.account.btn_sign = `Sign-In`
+        this.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : ex.message}`
       }
+    },
+    onReSignIn (data) {
+      if (!this.cookieAllow) return
+      this.enabled = data.enabled
+      if (data.activate) {
+        const login = this.$auth.$storage.getLocalStorage('login.saved', true)
+        this.onAuth(login.user, login.pass, login.saved, true)
+      }
+    },
+    onAgreeCookie () {
     },
     updatedInputFocus () {
       let vm = this
