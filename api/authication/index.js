@@ -1,6 +1,7 @@
 const ldapAuth = require('./ldap')
 const db = require('../mongodb')
 const bodyParser = require('body-parser')
+// const session = require('express-session')
 const jsonwebtoken = require('jsonwebtoken')
 const logger = require('../debuger')('AUTH')
 const md5 = require('md5')
@@ -25,6 +26,15 @@ router.use((req, res, next) => {
   if (req.method === 'OPTIONS') return res.sendStatus(200)
   next()
 })
+// Sessions to create `req.session`
+if (!process.env.JWT_KEYHASH) throw new Error('Environment `JWT_KEYHASH` is undefined.')
+// app.use(session({
+//   secret: process.env.JWT_KEYHASH,
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: { maxAge: 4320000 }
+// }))
+
 // Import API Routes
 const userData = [
   'name',
@@ -40,119 +50,114 @@ const userData = [
   'user_name',
   'user_type',
   'lasted',
+  'enabled',
+  'activate',
   'created'
 ]
-router.get('/user', (req, res) => (async () => {
-  let raw = req.headers['authorization']
-  if (!raw) return res.json({})
-
-  try {
-    let { User } = await db.open()
-    raw = raw.replace(/^bearer /ig, '')
-    if (raw === 'undefined') throw new Error('user data not found.')
-
-    let decode = decodeToken(raw)
-    let data = await User.findById(decode._id, userData.join(' '))
-    if (!data) throw new Error('user data not found.')
-    res.json({ user: data })
-  } catch (ex) {
-    res.json({})
-  }
-})().catch((ex) => {
-  logger.warning(ex)
-  res.json({})
-}))
 
 const encodeToken = data => {
   const hashId = md5(data.mail + (+(new Date())))
   return jsonwebtoken.sign({ hash: hashId, ...data }, process.env.JWT_KEYHASH)
 } 
 
-const decodeToken = data => {
-  return jsonwebtoken.verify(data, process.env.JWT_KEYHASH)
+const decodeBearer = req => {
+  let auth = req.headers['authorization'] || ''
+  if (!/^bearer./ig.test(auth)) return {}
+  auth = auth.replace(/^bearer./ig, '')
+  if (auth === 'undefined' || auth === 'false') {
+    logger.warning('User authorization is undefined.')
+    return {}
+  }
+
+  return jsonwebtoken.verify(auth, process.env.JWT_KEYHASH)
+}
+const decodeBasic = req => {
+  let auth = req.headers['authorization'] || ''
+  if (!/^basic./ig.test(auth)) return {}
+  try {
+    auth = new Buffer.from(auth.replace(/^basic./ig, ''), 'base64').toString('utf8')
+    return /(?<usr>.*?):(?<pwd>.*)/ig.exec(auth).groups || {}
+  } catch (ex) {
+    logger.warning(ex)
+    return {}
+  }
 }
 
-router.post('/recheck', (req, res) => (async () => {
-  let { user } = req.body
+router.get('/user', async (req, res) => {
+  try {
+    let { User } = await db.open()
+    let decode = decodeBearer(req)
+    if (!decode._id) return res.json({})
 
-  logger.log(`re-checking ${user ? `(${user})` : ''}`)
+    let data = await User.findById(decode._id, userData.join(' '))
+    return res.json({ user: data })
+  } catch (ex) {
+    logger.warning(ex)
+    return res.json({})
+  }
+})
+
+router.post('/activate', async (req, res) => {
   let { User } = await db.open()
   try {
+    let { user, pass } = req.body
     if (!user) throw new Error('Unauthorized 402')
     user = user.trim().toLowerCase()
 
-    let acc = await User.findOne({ mail: user })
+    let acc = await User.findOne({
+      $or: [ { mail: `${user}${!/@/g.test(user) ? '@central.co.th' : ''}` }, { user_name: user } ],
+      pwd: md5(pass)
+    }, 'enabled activate mail display_name')
     if (!acc) throw new Error('Unauthorized 403')
-    res.json({ enabled: acc.enabled, activate: acc.activate })
+    return res.json({ mail: acc.mail, name: acc.display_name, enabled: acc.enabled, activate: acc.activate })
   } catch (ex) {
-    res.json({ error: ex.message || ex })
+    return res.json({ error: ex.message || ex })
   }
-})().catch(ex => {
-  logger.warning(ex)
-  res.json({ error: ex.message || ex })
-}))
+})
 
-
-router.post('/login', (req, res) => (async () => {
+router.post('/login', async (req, res) => {
   let date = new Date()
-  
-  let auth = {}
   let { user, pass } = req.body
-  let raw = req.headers['authorization']
-  
-  logger.log('LDAP: auth:', !!raw)
-  logger.log('LDAP: user:', user)
-  if (raw && !user) {
-    let IsEncode = false
-    try {
-      auth = new Buffer.from(raw.replace(/^basic /ig, ''), 'base64').toString('utf8')
-      if (auth) {
-        auth = /(?<usr>.*?):(?<pwd>.*)/ig.exec(auth).groups || {}
-        IsEncode = true
-      }
-    } finally { /* decode but user random charector and send to server. */}
-
-    if (!IsEncode) {
+  let auth = { usr: user, pwd: pass }
+  if (req.headers['authorization'] && !user) {
+    auth = decodeBasic(req)
+    if (!auth || !auth.usr) {
       logger.log(`Login -- Unauthorized (401)`)
       return res.status(401).json({ error: 'Unauthorized (401)'})
     }
-  } else {
-    auth = { usr: user, pwd: pass }
   }
-  if (!auth.usr) {
-    logger.log(`Login -- Unauthorized (404)`)
-    return res.status(401).json({ error: 'Unauthorized (404)'})
-  }
-
+  auth.usr = auth.usr.trim().toLowerCase()
+  
   let { User, UserHistory } = await db.open()
   try {
-    if (!auth) throw new Error('Unauthorized (402)')
-    auth.usr = auth.usr.trim().toLowerCase()
+    let user = await User.findOne({
+      $or: [ { mail: `${auth.usr}${!/@/g.test(auth.usr) ? '@central.co.th' : ''}` }, { user_name: auth.usr } ]
+    })
 
-    let fullMail = !/@/g.test(auth.usr.toLowerCase()) ? `${auth.usr.toLowerCase()}@central.co.th` : auth.usr.toLowerCase()
-    let user = await User.findOne({ $or: [ { mail: fullMail }, { user_name: auth.usr.toLowerCase() } ] })
     let data = null
     try {
-      // logger.log('LDAP:', auth)
+      // logger.log('LDAP:', auth.usr,)
       data = await ldapAuth(auth.usr, auth.pwd)
-      if (!data || !data.user_name) data = await ldapAuth(fullMail, auth.pwd)
-      // logger.log('USER:', data.user_name)
-      // logger.log('MAIL:', data.mail)
-      if (data.mail) data.mail = data.mail.trim().toLowerCase()
-      if (data.user_name) data.user_name = data.user_name.trim().toLowerCase()
+      if (!data.user_name) throw new Error('LDAP auth unsuccessful.')
+      data = Object.assign(data, {
+        mail: data.mail.trim().toLowerCase(),
+        user_name: data.user_name.trim().toLowerCase()
+      })
+      // logger.log('email:', data.mail)
+      // logger.log('title:', data.title)
+      // logger.log('Company:', data.company)
     } catch (ex) {
       // logger.log('LDAP:', ex.message)
       data = { error: ex.message || ex }
-      user = await User.findOne({ $or: [ { mail: fullMail }, { user_name: auth.usr.toLowerCase() } ], pwd: md5(auth.pwd) })
     }
     if (!user && data.error) throw new Error(data.error)
-    if (!data || !data.user_name) throw new Error('LDAP auth unsuccessful.')
+
     if (!user) {
       user = await new User(Object.assign({
         pwd: md5(auth.pwd),
         token: null,
         activate: false,
-        enabled: false,
+        enabled: true,
         lasted: date,
         updated: date,
         created: date
@@ -168,28 +173,23 @@ router.post('/login', (req, res) => (async () => {
     if (user.activate && user.enabled) {
       logger.log(`Login (success) -- ${auth.usr}`)
       await new UserHistory({ mail: auth.usr, error: data.err, token: accessToken, created: date }).save()
-      res.json({ token: accessToken })
+      return res.json({ token: accessToken })
     } else {
       logger.log(`Login (suspended) -- ${auth.usr}`)
       await new UserHistory({ mail: auth.usr, error: 'account suspended or inactivate', token: accessToken, created: date }).save()
-      res.status(401).json({ error: 'Unauthorized (403)' })
+      return res.status(401).json({ error: 'Unauthorized (403)' })
     }
+
   } catch (ex) {
     logger.log(`Login (fail) -- ${(ex.message || ex)}`)
     await new UserHistory({ mail: auth.usr, error: (ex.message || ex), token: null, created: date }).save()
-    res.json({ error: ex.message || ex })
+    return res.status(404).json({ error: ex.message || ex })
   }
-})().catch(ex => {
-  logger.warning(ex)
-  res.status(401).json({ error: ex.message || ex })
-}))
+})
 
-router.post('/logout', (req, res) => (async () => {
-  res.json({})
-})().catch((ex) => {
-  logger.warning(ex)
-  res.status(401).json({})
-}))
+router.post('/logout', async (req, res) => {
+  res.json({ ok: true })
+})
 
 if (process.env.NODE_ENV === 'production') {
   logger.start(`Authentication listening on ${process.env.AXIOS_BASE_URL}`)
