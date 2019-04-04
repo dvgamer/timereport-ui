@@ -12,7 +12,7 @@
             <span v-text="mainMenu == 'default' ? 'mainmenu' : mainMenu" />
             <span class="d-flex align-items-center text-muted"><i class="fa fa-circle-o" /></span>
           </h5>
-          <div v-for="menu in $store.state.mainmenu[mainMenu]" :key="$store.state.mainmenu[mainMenu].indexOf(menu)">
+          <div v-for="menu in $store.state.mainmenu[mainMenu].filter(e => !e.permission || e.permission <= $auth.user.user_level)" :key="$store.state.mainmenu[mainMenu].indexOf(menu)">
             <li v-if="!menu.group" class="nav-item pl-2">
               <nuxt-link v-if="!menu.menu" class="nav-link" :to="menu.route" active-class="active" :exact="menu.exact">
                 <i :class="!menu.loading ? menu.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true" />
@@ -24,10 +24,10 @@
               </a>
             </li>
             <div v-else>
-              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
+              <h6 v-if="menu.items.filter(e => !e.permission || e.permission <= $auth.user.user_level).length > 0" class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
                 <span v-text="menu.group" />
               </h6>
-              <li v-for="sub in menu.items" :key="menu.items.indexOf(sub)" class="nav-item pl-2">
+              <li v-for="sub in menu.items.filter(e => !e.permission || e.permission <= $auth.user.user_level)" :key="menu.items.indexOf(sub)" class="nav-item pl-2">
                 <nuxt-link v-if="sub.route" class="nav-link" :to="sub.route" active-class="active" :exact="sub.exact">
                   <i :class="!sub.loading ? sub.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true" />
                   {{ sub.name }}
@@ -62,7 +62,6 @@ export default {
   created () {
     this.mainMenu = this.$store.getters['mainmenu/getMainMenu'](this.$route.path)
     if (this.mainMenu !== 'default') this.mainStack.push('default')
-    // console.log(this)
   },
   methods: {
     toggleSidebar () {

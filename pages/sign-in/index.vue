@@ -249,6 +249,7 @@ export default {
       }
     },
     onAgreeCookie () {
+      this.cookieAllow = true
     },
     updatedInputFocus () {
       let vm = this
