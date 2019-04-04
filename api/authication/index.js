@@ -1,9 +1,9 @@
 const ldapAuth = require('./ldap')
-const db = require('../mongodb')
+const db = require('@mongo')
 const bodyParser = require('body-parser')
 // const session = require('express-session')
 const jsonwebtoken = require('jsonwebtoken')
-const logger = require('../debuger')('AUTH')
+const logger = require('@debuger')('AUTH')
 const md5 = require('md5')
 
 let router = {}
@@ -178,7 +178,7 @@ router.post('/logout', async (req, res) => {
 })
 
 if (process.env.NODE_ENV === 'production') {
-  logger.start(`Authentication listening on ${process.env.AXIOS_BASE_URL}`)
+  logger.start(`Authentication created.`)
 }
 // Export the server middleware
 module.exports = {
