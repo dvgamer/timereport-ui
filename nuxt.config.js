@@ -35,7 +35,7 @@ let config = {
     theme_color: '#ffffff',
     background_color: '#ffffff',
     browser_action: {
-      default_icon: '/favicon.ico',
+      default_icon: '/icon-16.png',
       default_popup: '/'
     }
   },
@@ -53,15 +53,16 @@ let config = {
     // 'codemirror/theme/material.css'
   ],
   modules: [
+    'nuxt-fontawesome',
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
     '@nuxtjs/auth',
-    '@nuxtjs/font-awesome',
     '@nuxtjs/pwa'
   ],
   bootstrapVue: { bootstrapCSS: false },
   plugins: [
     '~/plugins/vue-api.js',
+    './plugins/vue-toast.js',
     '~/plugins/vue-installed.js',
     { src: '~/plugins/vue-component.js', ssr: false },
   //   { src: '~/plugins/vue-codemirror.js', ssr: false },
@@ -106,6 +107,12 @@ let config = {
       logout: '/sign-in',
       home: '/'
     }
+  },
+  fontawesome: {
+    component: 'fa',
+    imports: [
+      { icons: ['fas'], set: '@fortawesome/free-solid-svg-icons' }
+    ]
   },
   axios: { baseURL: process.env.AXIOS_BASE_URL || 'http://10.0.80.52:25081/' },
   env: {

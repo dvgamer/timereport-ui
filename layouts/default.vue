@@ -17,17 +17,17 @@
       <div class="row">
         <sidebar />
         <div class="col-md-36 ml-sm-auto col-lg-29 pt-3 px-4 mb-3">
-          <span v-if="online.sock === 2" class="badge badge-socket badge-light pull-right">
-            <i class="fa fa-circle-o-notch fa-spin fa-fw" /> Socket.io
+          <span v-if="online.sock === 2" class="badge badge-socket badge-light float-right">
+            <fa icon="circle-notch" /> Socket.io
           </span>
-          <span v-else class="badge pull-right" :class="online.sock === 1 ? 'badge-success' : 'badge-danger'">
-            <i class="fa" :class="online.sock === 1 ? 'fa-check' : 'fa-close'" /> Socket.io
+          <span v-else class="badge float-right" :class="online.sock === 1 ? 'badge-success' : 'badge-danger'">
+            <fa :icon="online.sock === 1 ? 'check' : 'close'" /> Socket.io
           </span>
-          <span v-if="online.api === 2" class="badge badge-api badge-light pull-right mr-1">
-            <i class="fa fa-circle-o-notch fa-spin fa-fw" /> API
+          <span v-if="online.api === 2" class="badge badge-api badge-light float-right mr-1">
+            <fa icon="circle-notch" /> API
           </span>
-          <span v-else class="badge pull-right mr-1" :class="online.api === 1 ? 'badge-success' : 'badge-danger'">
-            <i class="fa" :class="online.api === 1 ? 'fa-check' : 'fa-close'" /> API
+          <span v-else class="badge float-right mr-1" :class="online.api === 1 ? 'badge-success' : 'badge-danger'">
+            <fa :icon="online.api === 1 ? 'check' : 'close'" /> API
           </span>
           <b-breadcrumb :items="breadcrumb" />
           <nuxt />

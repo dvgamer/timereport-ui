@@ -5,21 +5,21 @@
         <ul v-if="!mainToggle" class="nav flex-column">
           <li v-if="mainMenu != 'default'" class="nav-item" style="margin-bottom:20px;">
             <a class="nav-link" href="#" @click.prevent="backMenu()">
-              <i class="fa fa-chevron-left" aria-hidden="true" /> Back
+              <fa icon="chevron-left" /> Back
             </a>
           </li>
           <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
             <span v-text="mainMenu == 'default' ? 'mainmenu' : mainMenu" />
-            <span class="d-flex align-items-center text-muted"><i class="fa fa-circle-o" /></span>
+            <span class="d-flex align-items-center text-muted"><fa icon="circle-notch" /></span>
           </h5>
           <div v-for="menu in $store.state.mainmenu[mainMenu].filter(e => !e.permission || e.permission <= $auth.user.user_level)" :key="$store.state.mainmenu[mainMenu].indexOf(menu)">
             <li v-if="!menu.group" class="nav-item pl-2">
               <nuxt-link v-if="!menu.menu" class="nav-link" :to="menu.route" active-class="active" :exact="menu.exact">
-                <i :class="!menu.loading ? menu.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true" />
+                <fa :icon="!menu.loading ? menu.icon : ['circle-o-notch','fa-spin', 'fa-fw']" />
                 {{ menu.name }}
               </nuxt-link>
               <a v-else href="#" class="nav-link dropdown-toggle" @click.prevent="nextMenu(menu.menu, menu.route)">
-                <i :class="menu.icon" aria-hidden="true" />
+                <fa :icon="menu.icon" />
                 {{ menu.name }}
               </a>
             </li>
@@ -29,11 +29,11 @@
               </h6>
               <li v-for="sub in menu.items.filter(e => !e.permission || e.permission <= $auth.user.user_level)" :key="menu.items.indexOf(sub)" class="nav-item pl-2">
                 <nuxt-link v-if="sub.route" class="nav-link" :to="sub.route" active-class="active" :exact="sub.exact">
-                  <i :class="!sub.loading ? sub.icon : 'fa fa-circle-o-notch fa-spin fa-fw'" aria-hidden="true" />
+                  <fa :icon="!sub.loading ? sub.icon : ['circle-o-notch','fa-spin', 'fa-fw']" />
                   {{ sub.name }}
                 </nuxt-link>
                 <a v-else href="#" class="nav-link dropdown-toggle" @click.prevent="nextMenu(sub.menu)">
-                  <i :class="sub.icon" aria-hidden="true" />
+                  <fa :icon="sub.icon" />
                   {{ sub.name }}
                 </a>
               </li>
@@ -43,7 +43,7 @@
         <!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
           <span>Services</span>
           <a class="d-flex align-items-center text-muted" href="#">
-            <i class="fa fa-circle-o" />
+            <fa class="fa fa-circle-o" />
           </a>
         </h6> -->
       </transition>

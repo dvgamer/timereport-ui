@@ -2,57 +2,57 @@
 
 // export const state = () => ({
 //   default: [
-//     { permission: 0, name: 'Dashboard', route: '/', icon: 'fa fa-home', exact: true },
-//     { permission: 2, name: 'Inspection', menu: 'inspection', icon: 'fa fa-bug' },
-//     { permission: 1, name: 'Application', menu: 'application', icon: 'fa fa-tasks' },
-//     { permission: 3, name: 'Setting', menu: 'setting', icon: 'fa fa-gear' },
-//     { permission: 0, name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' },
+//     { permission: 0, name: 'Dashboard', route: '/', icon: 'home', exact: true },
+//     { permission: 2, name: 'Inspection', menu: 'inspection', icon: 'bug' },
+//     { permission: 1, name: 'Application', menu: 'application', icon: 'tasks' },
+//     { permission: 3, name: 'Setting', menu: 'setting', icon: 'gear' },
+//     { permission: 0, name: 'Audit', route: '/audit', icon: 'align-justify' },
 //   ],
 //   application: [
-//     { name: 'Dashboard', route: '/app', icon: 'fa fa-home', exact: true },
+//     { name: 'Dashboard', route: '/app', icon: 'home', exact: true },
 //     { group: 'Service', items: [
-//       { name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'fa fa-tasks' },
-//       { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'fa fa-file-text-o' }
+//       { name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'tasks' },
+//       { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'file-text-o' }
 //     ] },
 //     { group: 'SSIS', items: [
-//       { name: 'SSIS Staging', route: '/app/ssis-staging', icon: 'fa fa-file-o' },
+//       { name: 'SSIS Staging', route: '/app/ssis-staging', icon: 'file-o' },
 //     ] },
 //     { group: 'Schedule', items: [
-//       { name: 'File FCCR', route: '/app/file-fccr', icon: 'fa fa-file-o' }
+//       { name: 'File FCCR', route: '/app/file-fccr', icon: 'file-o' }
 //     ] }
 //   ],
 //   setting: [
-//     { name: 'Configuration', route: '/setting/configuration', icon: 'fa fa-tasks' },
-//     { name: 'Database', route: '/setting/database', icon: 'fa fa-file-text-o' }
+//     { name: 'Configuration', route: '/setting/configuration', icon: 'tasks' },
+//     { name: 'Database', route: '/setting/database', icon: 'file-text-o' }
 //   ],
 //   inspection: [
-//     { name: 'Snippet', route: '/inspect/snippet', icon: 'fa fa-hdd-o' },
-//     { name: 'Terminal', route: '/inspect/terminal', icon: 'fa fa-terminal' }
+//     { name: 'Snippet', route: '/inspect/snippet', icon: 'hdd-o' },
+//     { name: 'Terminal', route: '/inspect/terminal', icon: 'terminal' }
 //   ]
 // })
 export const state = () => ({
   default: [
-    { permission: 0, name: 'Dashboard', route: '/', icon: 'fa fa-home', exact: true },
-    { permission: 0, name: 'Survey', menu: 'survey', icon: 'fa fa-bug', exact: true },
-    // { permission: 3, name: 'Application', route: '/app', icon: 'fa fa-bug', exact: true },
+    { permission: 0, name: 'Dashboard', route: '/', icon: 'home', exact: true },
+    { permission: 0, name: 'Survey', menu: 'survey', icon: 'bug', exact: true },
+    // { permission: 3, name: 'Application', route: '/app', icon: 'bug', exact: true },
     { permission: 3, group: 'Service', items: [
-      { name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'fa fa-tasks' },
-      { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'fa fa-file-text-o' }
+      { name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'tasks' },
+      { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'file-text-o' }
     ] },
     { permission: 4, group: 'SSIS', items: [
-      { name: 'SSIS Staging', route: '/app/ssis-staging', icon: 'fa fa-file-o' },
+      { name: 'SSIS Staging', route: '/app/ssis-staging', icon: 'file-o' },
     ] },
     { permission: 4, group: 'Schedule', items: [
-      { name: 'File FCCR', route: '/app/file-fccr', icon: 'fa fa-file-o' }
+      { name: 'File FCCR', route: '/app/file-fccr', icon: 'file-o' }
     ] },
     { permission: 0, group: 'setting', items: [
-      { permission: 3, name: 'Configuration', route: '/setting/configuration', icon: 'fa fa-tasks' },
-      { permission: 0, name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' }
+      { permission: 3, name: 'Configuration', route: '/setting/configuration', icon: 'tasks' },
+      { permission: 0, name: 'Audit', route: '/audit', icon: 'align-justify' }
     ] }
   ],
   survey: [
-    { name: 'Dashboard', route: '/survey', icon: 'fa fa-bug', exact: true },
-    { name: 'History', route: '/survey/history', icon: 'fa fa-server', exact: true }
+    { name: 'Dashboard', route: '/survey', icon: 'bug', exact: true },
+    { name: 'History', route: '/survey/history', icon: 'server', exact: true }
   ],
 })
 export const getters = {

@@ -144,3 +144,89 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
+
+pre {
+  background: #e4e4e4;
+  padding: 5px 10px;
+  border: #ccc solid 1px;
+  border-radius: 2px;
+  margin: 8px 0;
+}
+.form-group .problem {
+  z-index: 3;
+  font-size: 11px;
+  padding: 2px 9px;
+}
+.form-group > label {
+  font-weight: bold !important;
+}
+
+.main-head{
+  height: 150px;
+  background: #FFF;
+}
+
+.sidenav {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background-color: #000;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.main {
+  padding: 0px 10px;
+  margin-right: 0px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+textarea.reason {
+  min-width: 290px;
+  max-width: 600px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+}
+
+@media screen and (max-width: 450px) {
+  .register-form{
+    margin-top: 10%;
+  }
+
+  textarea.reason {
+    width: 290px;
+  }
+
+}
+
+@media screen and (min-width: 450px) {
+  textarea.reason {
+    width: 380px;
+  }
+
+}
+
+@media screen and (min-width: 768px){
+  .main {
+    margin-left: 40%; 
+  }
+
+  textarea.reason {
+    width: 600px;
+  }
+
+  .sidenav{
+    width: 40%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+  }
+  .register-form{
+    margin-top: 20%;
+  }
+}

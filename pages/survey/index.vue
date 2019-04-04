@@ -1,16 +1,19 @@
 <template>
-  <div class="container pt-5 pb-3">
-    <div class="row">
-      <div class="col-sm-36">
-        <h3>History</h3>
-        <small>History group by date and lastet 100 rows.</small>
-        <hr>
+  <div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+      <h1 class="h2">History Survey</h1>
+      
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <b-button-group class="mr-2" size="sm">
+          <b-button variant="outline-secondary">E-mail</b-button>
+          <b-button variant="outline-secondary">Button 2</b-button>
+        </b-button-group>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-36">
         <div v-for="(day, i) in getGroupHistory()" :key="day" class="group-history">
-          <h6 v-text="parseDays(day)" />
+          <h5 v-text="parseDays(day)" />
           <div v-for="e in filterHistory(day)" :key="e.nRow" class="text-inline">
             <button v-if="$auth.user.user_level >= 4" type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e.sKey)">
               <fa icon="trash-alt" />
@@ -74,7 +77,7 @@ export default {
     editor: false
   }),
   async asyncData ({ $axios }) {
-    let { data } = await $axios('/api/history')
+    let { data } = await $axios('/api/survey/task/history')
     return { history: data }
   },
   created () {
@@ -153,12 +156,10 @@ export default {
   padding-bottom: 10px;
 }
 .text-inline {
-  font-size: 14px;
   padding: 3px 9px;
 }
 .btn-icon {
-  font-size: 11px;
-  padding: 0rem 0.1rem;
+  padding: 0rem 0.2rem;
   margin-top: -2px;
 }
 tbody > tr {
