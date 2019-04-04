@@ -4,7 +4,7 @@ const moment = require('moment-timezone')
 mongoose.Promise = Promise
 moment.tz.setDefault(process.env.TZ || 'Asia/Bangkok')
 
-const logger = require('../debuger')('MongoDB')
+const logger = require('@debuger')('MongoDB')
 let mongodb = {
   MongoConnection: async (dbname, account, server) => {
     const IsAdmin = !!process.env.MONGODB_ADMIN

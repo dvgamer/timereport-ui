@@ -1,35 +1,6 @@
 const chalk = require('chalk')
 const moment = require('moment')
-const numeral = require('numeral')
 const isDev = process.env.NODE_ENV !== 'production'
-
-class Time {
-  constructor () {
-    this._core = process.hrtime()
-    this._total = 0
-  }
-  nanoseconds () {
-    let hr = process.hrtime(this._core)
-    const nanoseconds = (hr[0] * 1e9) + hr[1]
-    this._core = process.hrtime()
-    this._total += nanoseconds
-    return `${numeral((nanoseconds / 1e6)).format('0,0')}ms`
-  }
-  seconds () {
-    let hr = process.hrtime(this._core)
-    const nanoseconds = (hr[0] * 1e9) + hr[1]
-    this._core = process.hrtime()
-    this._total += nanoseconds
-    return `${numeral((nanoseconds / 1e9)).format('0,0.00')}s`
-  }
-  total () {
-    let hr = process.hrtime(this._core)
-    const nanoseconds = (hr[0] * 1e9) + hr[1]
-    this._core = process.hrtime()
-    this._total += nanoseconds
-    return `${numeral((this._total / 1e9)).format('0,0.00')}s`
-  }
-}
 
 const groupSize = 7
 const scopeSize = 4
@@ -57,27 +28,16 @@ module.exports = scopeName => {
   let measure = null
   return {
     log (...msg) {
-      // let msg2 = [ chalk.gray(moment().format('HH:mm:ss.SSS')), chalk.gray.bold('…') ]
-      // msg2.push(measure ? groupPadding(measure.nanoseconds(), groupSize, 'padStart') : chalk.gray.bold(groupPadding('debug', groupSize, 'padStart')))
-      // if (scopeName) {
-      //   msg2.push(groupPadding(scopeName, scopeSize, 'padEnd'))
-      //   msg2.push(chalk.cyan('»'))
-      // }
-      // console.log(...(msg2.concat(msg)))
       if (isDev) logWindows(scopeName, '…', 'debug', chalk.gray.bold, msg); else logLinux(scopeName, '…', msg)
     },
     start (...msg) {
-      // measure = new Time()
       if (isDev) logWindows(scopeName, '○', 'start', chalk.cyan.bold, msg); else logLinux(scopeName, '○', msg)
     },
     success (...msg) {
-      // if (measure) msg.push(`(${measure.total()})`)
       if (isDev) logWindows(scopeName, '●', 'success', chalk.green.bold, msg); else logLinux(scopeName, '●', msg)
-      // measure = null
     },
     warning (...msg) {
       if (isDev) logWindows(scopeName, '▲', 'warning', chalk.yellow.bold, msg); else logLinux(scopeName, '▲', msg)
-      // measure = null
     },
     info (...msg) {
       if (isDev) logWindows(scopeName, '╍', 'info', chalk.blue.bold, msg); else logLinux(scopeName, null, msg)

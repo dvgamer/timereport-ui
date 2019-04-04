@@ -1,10 +1,6 @@
 const app = require('express')()
-const { Nuxt } = require('nuxt')
-const api = require('./api.js')
-const socket = require('./socket-io')
 const dataSync = require('./data-sync')
-const auth = require('./authication')
-const logger = require('./debuger')('API')
+const logger = require('@debuger')('API')
 const port = process.env.PORT || 3001
 const host = process.env.HOST || 'localhost'
 
@@ -22,11 +18,20 @@ app.use((req, res, next) => {
   next()
 })
 
+const api = require('./router')
+const socket = require('./socket-io')
+const auth = require('./authication')
+const hook = require('./webhook')
+
 app.use(socket.path, socket.handler)
 app.use(api.path, api.handler)
 app.use(auth.path, auth.handler)
+app.use(hook.path, hook.handler)
+
+app.put('/log/:app/:group/:status/:msg?', require('./logs'))
 
 // Build only in dev mode
+const { Nuxt } = require('nuxt')
 const InitializeExpress = async () => {
   if (!config.dev) {
     // Init Nuxt.js

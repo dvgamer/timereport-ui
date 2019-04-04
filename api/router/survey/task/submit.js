@@ -1,9 +1,10 @@
 const logger = require('@debuger')('SERVER')
-const lineMonitor = require('@line-flex-monitor')
+const flex = require('@line-flex')
 const mssql = require('@mssql')
 const moment = require('moment')
 const LINE = require('@line')
 
+const SURVEY = 'Ca2338af8e1ae465a2541acde69cd4e0c'
 module.exports = async (req, res) => {
   let pool = { close: () => {} }
   try {
@@ -49,17 +50,16 @@ module.exports = async (req, res) => {
     let totalWarn = tasks.filter(e => e.status === 'WARN').length
     let totalInfo = tasks.filter(e => e.status === 'INFO').length
   
-    let topName = `Summary Monitor DailyClose`
-    let topStatus = (totalFail > 0) ? 'FAIL' : totalWarn > 0 ? 'WARN' : totalInfo > 0 ? 'INFO' : 'PASS'
-    let topDate = moment().format('HH:mm, DD MMM YYYY')
+    // let topName = `Summary Monitor DailyClose`
+    // let topStatus = (totalFail > 0) ? 'FAIL' : totalWarn > 0 ? 'WARN' : totalInfo > 0 ? 'INFO' : 'PASS'
+    // let topDate = moment().format('HH:mm, DD MMM YYYY')
 
     let logText = `Monitor ${updated.length > 0 ? updated.length : tasks.length} (F:${totalFail} W:${totalWarn}  I:${totalInfo})`
     logger.info(logText, created.format('YYYY-MM-DD HH:mm:ss.SSS'), key ? 'Updated.' : 'Insterted.')
     if (!key) { // สรุป Monitor DailyClose 21.03.2019 Time 22.30
-      LINE(lineMonitor(name, tasks))
-      // LINE(`*[${topStatus}] ${topName}*\n${msg}\n\n(${name} at ${topDate})`, req.body)
+      LINE('cmgpos-bot', flex.monitor(name, tasks), SURVEY)
     } else if (updated.length > 0) {
-      LINE(lineMonitor(name, updated, `http://10.0.80.52:3001/history/version/${key}`))
+      LINE('cmgpos-bot', flex.monitor(name, updated, `http://10.0.80.52:3001/history/version/${key}`), SURVEY)
     }
     res.json({ success: true })
   } catch (ex) {

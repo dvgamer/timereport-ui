@@ -1,16 +1,11 @@
-
 const { Router } = require('express')
 const router = Router()
 
-router.get('/history/detail/:id', require('./history/detail'))
-router.get('/history', require('./history'))
-router.get('/history/:id', require('./history/id'))
-router.post('/history/del/:id', require('./history/delete'))
-router.get('/history/version/:id', require('./history/version'))
-
-router.post('/history/submit', require('./history/submit'))
-
-router.get('/monitor/check-hour/:hour', require('./monitor/check-hour'))
-router.put('/logs/:app/:group/:status/:msg?', require('./logs/append'))
+router.get('/task/history', require('./task'))
+router.get('/task/detail/:checkin', require('./task/detail'))
+router.get('/task/edit/:checkin', require('./task/id'))
+router.post('/task/del/:checkin', require('./task/delete'))
+router.get('/task/version/:checkin', require('./task/version'))
+router.post('/task/submit', require('./task/submit'))
 
 module.exports = router

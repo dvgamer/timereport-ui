@@ -1,5 +1,3 @@
-
-
 module.exports = [
   {
     route: 'app-inbound-transfer',

@@ -1,4 +1,3 @@
-
 module.exports = [
   { segment: 'server.reboot_data-sync', field: 'toggle', type: 'bool', created: new Date(), value: true },
   { segment: 'server.reboot_data-sync', field: 'rebooted', type: 'date', created: new Date(), value: null },

@@ -1,10 +1,10 @@
 const { Router } = require('express')
-const db = require('../mongodb')
+const mongo = require('@mongo')
 const router = Router()
 const fs = require('fs')
 const fx = require('mkdir-recursive')
 const path = require('path')
-const simpleGit = require('simple-git/promise')
+// const simpleGit = require('simple-git/promise')
 
 const repositories = process.env.GIT_REPOS || './tmp'
 const project = path.resolve(path.join(repositories, 'app_terminal.git'))
@@ -17,7 +17,7 @@ router.get('/', (req, res) => (async () => {
 }))
 
 router.get('/snippet', (req, res) => (async () => {
-  let { Snippet } = await db.open()
+  let { Snippet } = await mongo.open()
   let data = await Snippet.find({})
   res.json(data)
 })().catch((ex) => {
@@ -25,12 +25,12 @@ router.get('/snippet', (req, res) => (async () => {
 }))
 
 router.get('/snippet/new', (req, res) => (async () => {
-  let { Snippet } = await db.open()
-  let data = require('../data/snippet')
-  await Snippet.deleteMany({})
-  for (let i = 0; i < data.length; i++) {
-    await new Snippet(data[i]).save()
-  }
+  let { Snippet } = await mongo.open()
+  // let data = require('../data/snippet')
+  // await Snippet.deleteMany({})
+  // for (let i = 0; i < data.length; i++) {
+  //   await new Snippet(data[i]).save()
+  // }
 
   res.json({})
 })().catch((ex) => {

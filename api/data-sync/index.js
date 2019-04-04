@@ -1,9 +1,9 @@
 const sql = require('mssql')
 const moment = require('moment')
-const db = require('../mongodb')
+const mongo = require('@mongo')
 const cron = require('node-cron')
-const prod = require('../config-prod.js')
-const logger = require('../debuger')('SYNC')
+const config = require('@config')
+const logger = require('@debuger')('SYNC')
  
 const dbNormalize = {
   'app-inbound-transfer|panel-status': (data, records) => {
@@ -12,7 +12,7 @@ const dbNormalize = {
 }
 
 const sqlConnectionPool = () => new Promise((resolve, reject) => {
-  const conn = new sql.ConnectionPool(prod['posdb'])
+  const conn = new sql.ConnectionPool(config['posdb'])
   conn.connect(err => {
     if (err) return reject(err)
     resolve(conn)
@@ -22,7 +22,7 @@ const sqlConnectionPool = () => new Promise((resolve, reject) => {
 let cronJobs = {}
 
 module.exports = async () => {
-  let { PageSync } = await db.open()
+  let { PageSync } = await mongo.open()
   let pool = await sqlConnectionPool()
   
   let sync = await PageSync.find({ crontab: { $ne: null } })

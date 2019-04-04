@@ -3,12 +3,12 @@ const router = Router()
 
 const request = require('request-promise')
 const PromiseFtp = require('promise-ftp')
-const db = require('../mongodb')
+const mongo = require('@mongo')
 
 /* GET users listing. */
 router.get('/', (req, res) => (async () => {
   try {
-    const { PageSync } = await db.open()
+    const { PageSync } = await mongo.open()
     const iis = await PageSync.find({ route: 'app-inbound-transfer', module: 'iis-online' })
     const ftp = await PageSync.find({ route: 'app-inbound-transfer', module: 'ftp-online' })
     
@@ -41,7 +41,7 @@ router.get('/', (req, res) => (async () => {
 
 router.get('/inbound-online', (req, res) => (async () => {
   try {
-    const { GlobalConfig, PageSync } = await db.open()
+    const { GlobalConfig, PageSync } = await mongo.open()
     const iis = await PageSync.find({ route: 'app-inbound-transfer', module: 'iis-online' })
     const ftp = await PageSync.find({ route: 'app-inbound-transfer', module: 'ftp-online' })
     
@@ -83,7 +83,7 @@ router.get('/inbound-online', (req, res) => (async () => {
 
 router.get('/inbound-transfer', (req, res) => (async () => {
   try {
-    const { PageSync } = await db.open()
+    const { PageSync } = await mongo.open()
     let result = {
       graph: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-graph-hour' })).data || [],
       sequence: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-sequence' })).data || [],
