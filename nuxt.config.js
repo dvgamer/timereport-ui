@@ -13,8 +13,35 @@ let config = {
     { name: 'MobileOptimized', content: 'width' },
     { name: 'HandheldFriendly', content: 'true' }
   ],
-  icons: { },
-  workbox: { },
+
+  icons: {
+    sizes: [ 32, 57, 72, 144, 512 ]
+  },
+  manifest: {
+    name: 'DevOps',
+    lang: 'en',
+    dir: 'rtl',
+    description: '',
+    short_name: 'DevOps',
+    icons: [
+      { src: '/favicon.ico', sizes: '64x64' },
+      { src: '/favicon.ico', sizes: '128x128' },
+      { src: '/favicon.ico', sizes: '144x144' }
+    ], 
+    scope: '/',
+    start_url: '/',
+    display: 'fullscreen',
+    orientation: 'portrait',
+    theme_color: '#ffffff',
+    background_color: '#ffffff',
+    browser_action: {
+      default_icon: '/favicon.ico',
+      default_popup: '/'
+    }
+  },
+  workbox: {
+    // Workbox options
+  },
   router: {
     middleware: ['auth']
   },

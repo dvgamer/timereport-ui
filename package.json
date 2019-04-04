@@ -10,7 +10,17 @@
     "serv": "env-cmd .env backpack dev",
     "build": "npm run eslint && env-cmd api/build.env nuxt build && env-cmd api/build.env backpack build",
     "start": "node dist/main.js --no-deprecation --no-warnings",
-    "eslint": "eslint --ext .js,.vue --ignore-path .gitignore ."
+    "eslint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "prepare": "link-module-alias"
+  },
+  "_moduleAliases": {
+    "@debuger": "/api/debuger.js",
+    "@mssql": "/api/mssql.js",
+    "@config": "/api/config.js",
+    "@mongo": "/api/mongodb/index.js",
+    "@line": "/api/line/index.js",
+    "@line-flex-monitor": "/api/line/flex-monitor.js",
+    "@line-flex-none": "/api/line/flex-none.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
