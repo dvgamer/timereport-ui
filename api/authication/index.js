@@ -14,26 +14,11 @@ if (process.env.NODE_ENV !== 'production') {
   const app = require('express')()
   router = app
 }
+
 router.use(bodyParser.json())
 
-router.use((req, res, next) => {
-  const methodAllow = [ 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT' ]
-  res.setHeader('Content-Type', 'application/json')
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Headers', '*')
-  res.setHeader('Access-Control-Allow-Credentials', 'true')
-  res.setHeader('Access-Control-Allow-Methods', methodAllow.join(','))
-  if (req.method === 'OPTIONS') return res.sendStatus(200)
-  next()
-})
 // Sessions to create `req.session`
 if (!process.env.JWT_KEYHASH) throw new Error('Environment `JWT_KEYHASH` is undefined.')
-// app.use(session({
-//   secret: process.env.JWT_KEYHASH,
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: { maxAge: 4320000 }
-// }))
 
 // Import API Routes
 const userData = [
@@ -156,7 +141,8 @@ router.post('/login', async (req, res) => {
       user = await new User(Object.assign({
         pwd: md5(auth.pwd),
         token: null,
-        activate: false,
+        user_level: 0,
+        activate: true,
         enabled: true,
         lasted: date,
         updated: date,

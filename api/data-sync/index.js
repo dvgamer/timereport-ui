@@ -3,6 +3,7 @@ const moment = require('moment')
 const db = require('../mongodb')
 const cron = require('node-cron')
 const prod = require('../config-prod.js')
+const logger = require('../debuger')('SYNC')
  
 const dbNormalize = {
   'app-inbound-transfer|panel-status': (data, records) => {
@@ -20,14 +21,14 @@ const sqlConnectionPool = () => new Promise((resolve, reject) => {
 
 let cronJobs = {}
 
-const dbDataSync = async () => {
+module.exports = async () => {
   let { PageSync } = await db.open()
   let pool = await sqlConnectionPool()
   
   let sync = await PageSync.find({ crontab: { $ne: null } })
   let retryLimit = 3
 
-  console.log(`Data-Sync ${sync.length} jobs.`)
+  logger.log(`Data-Sync ${sync.length} jobs.`)
   for (let i = 0; i < sync.length; i++) {
     const data = sync[i]
     const key = `${data.route}|${data.module}`
@@ -46,13 +47,12 @@ const dbDataSync = async () => {
             $set: { data: newData, updated: new Date() }
           })
           recheck = await PageSync.findOne({ _id: data._id })
-          console.log(`[${retry}/${retryLimit}] Sync '${key}' updated: ${!(!recheck || !recheck.data)}`)
+          // logger.log(`[${retry}/${retryLimit}] Sync '${key}' updated: ${!(!recheck || !recheck.data)}`)
         } while (retry <= retryLimit && (!recheck || !recheck.data))
       } catch (ex) {
-        console.log('taskJob-Name: ', key)
-        console.log('taskJob-Message: ', ex.message)
-        console.log(ex.stack)
-        console.log('')
+        logger.error('taskJob-Name: ', key)
+        logger.error('taskJob-Message: ', ex.message)
+        logger.error(ex.stack)
       }
       if (retry > retryLimit) process.exit(1)
       // pool.close()
@@ -61,14 +61,12 @@ const dbDataSync = async () => {
       await taskJob()
       cronJobs[key] = cron.schedule(data.crontab, () => {
         taskJob().catch(ex => {
-          console.log(` - ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} fail::${ex.message}`)
+          logger.log(` - ${moment().format('YYYY-MM-DD HH:mm:ss')} - ${key} fail::${ex.message}`)
         })
       })
-      console.log(`Crontab: ${data.crontab}, Sync '${key}' created.`)
+      logger.log(`Crontab: ${data.crontab}, Sync '${key}' created.`)
     } catch (ex) {
-      console.log(`Crontab: ${data.crontab}, Sync '${key}' fail::${ex.message}.`)
+      logger.log(`Crontab: ${data.crontab}, Sync '${key}' fail::${ex.message}.`)
     }
   }
 }
-
-dbDataSync()

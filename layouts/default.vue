@@ -64,19 +64,10 @@ export default {
   data: () => ({
     appName: 'DevOps',
     version: 'v1.1',
-    timeout: {
-      api: 0,
-      sock: 0
-    },
-    online: {
-      api: 2,
-      sock: 2 // 0=offline, 1=online, 2=wait
-    },
+    timeout: { api: 0, sock: 0 },
+    online: { api: 2, sock: 2 },
     breadcrumb: [
-      {
-        text: 'Home',
-        active: true
-      }
+      { text: 'Home', active: true }
     ]
   }),
   created () {
