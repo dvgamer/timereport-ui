@@ -33,22 +33,27 @@
 export const state = () => ({
   default: [
     { permission: 0, name: 'Dashboard', route: '/', icon: 'fa fa-home', exact: true },
-    { permission: 0, name: 'Application', route: '/app', icon: 'fa fa-bug', exact: true },
-    { permission: 0, group: 'Service', items: [
+    { permission: 0, name: 'Survey', menu: 'survey', icon: 'fa fa-bug', exact: true },
+    // { permission: 3, name: 'Application', route: '/app', icon: 'fa fa-bug', exact: true },
+    { permission: 3, group: 'Service', items: [
       { name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'fa fa-tasks' },
       { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'fa fa-file-text-o' }
     ] },
-    { permission: 0, group: 'SSIS', items: [
+    { permission: 4, group: 'SSIS', items: [
       { name: 'SSIS Staging', route: '/app/ssis-staging', icon: 'fa fa-file-o' },
     ] },
-    { permission: 0, group: 'Schedule', items: [
+    { permission: 4, group: 'Schedule', items: [
       { name: 'File FCCR', route: '/app/file-fccr', icon: 'fa fa-file-o' }
     ] },
-    { permission: 3, group: 'setting', items: [
-      { name: 'Configuration', route: '/setting/configuration', icon: 'fa fa-tasks' },
-      { name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' }
+    { permission: 0, group: 'setting', items: [
+      { permission: 3, name: 'Configuration', route: '/setting/configuration', icon: 'fa fa-tasks' },
+      { permission: 0, name: 'Audit', route: '/audit', icon: 'fa fa-align-justify' }
     ] }
-  ]
+  ],
+  survey: [
+    { name: 'Dashboard', route: '/survey', icon: 'fa fa-bug', exact: true },
+    { name: 'History', route: '/survey/history', icon: 'fa fa-server', exact: true }
+  ],
 })
 export const getters = {
   getMainMenu: (state, getters) => (path) => {
