@@ -4,7 +4,7 @@
       <div class="nav flex-column">
         <no-ssr>
           <h5 slot="placeholder" class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
-            <span />
+            <span>LOADING...</span>
             <span class="d-flex align-items-center text-muted"><fa icon="circle-notch" spin /></span>
           </h5>
           <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
