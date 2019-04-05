@@ -1,9 +1,13 @@
 import Vue from 'vue'
-import { VueSlideoutPanel } from 'vue2-slideout-panel'
+// import { VueSlideoutPanel } from 'vue2-slideout-panel'
 import Gravatar from 'vue-gravatar'
+import { Scrolly, ScrollyViewport, ScrollyBar } from 'vue-scrolly'
 
+Vue.component('scrolly', Scrolly)
+Vue.component('scrolly-viewport', ScrollyViewport)
+Vue.component('scrolly-bar', ScrollyBar)
 Vue.component('v-gravatar', Gravatar)
-Vue.component('slideout-panel', VueSlideoutPanel)
+// Vue.component('slideout-panel', VueSlideoutPanel)
 
 const elemKeydown = (element, $elem, settings, event) => {
   const isTab = event.which == 9

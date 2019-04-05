@@ -12,7 +12,7 @@
 //     { name: 'Dashboard', route: '/app', icon: 'home', exact: true },
 //     { group: 'Service', items: [
 //       { name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'tasks' },
-//       { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'file-text-o' }
+//       { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'file-alt' }
 //     ] },
 //     { group: 'SSIS', items: [
 //       { name: 'SSIS Staging', route: '/app/ssis-staging', icon: 'file-o' },
@@ -23,7 +23,7 @@
 //   ],
 //   setting: [
 //     { name: 'Configuration', route: '/setting/configuration', icon: 'tasks' },
-//     { name: 'Database', route: '/setting/database', icon: 'file-text-o' }
+//     { name: 'Database', route: '/setting/database', icon: 'file-alt' }
 //   ],
 //   inspection: [
 //     { name: 'Snippet', route: '/inspect/snippet', icon: 'hdd-o' },
@@ -33,27 +33,22 @@
 export const state = () => ({
   default: [
     { permission: 0, name: 'Dashboard', route: '/', icon: 'home', exact: true },
-    { permission: 0, name: 'Survey', menu: 'survey', icon: 'bug', exact: true },
+    { permission: 0, name: 'Survey', menu: 'survey', icon: 'bug', exact: true, api: '/api/survey/task' },
     // { permission: 3, name: 'Application', route: '/app', icon: 'bug', exact: true },
-    { permission: 3, group: 'Service', items: [
-      { name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'tasks' },
-      { name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'file-text-o' }
-    ] },
-    { permission: 4, group: 'SSIS', items: [
-      { name: 'SSIS Staging', route: '/app/ssis-staging', icon: 'file-o' },
-    ] },
-    { permission: 4, group: 'Schedule', items: [
-      { name: 'File FCCR', route: '/app/file-fccr', icon: 'file-o' }
-    ] },
-    { permission: 0, group: 'setting', items: [
-      { permission: 3, name: 'Configuration', route: '/setting/configuration', icon: 'tasks' },
-      { permission: 0, name: 'Audit', route: '/audit', icon: 'align-justify' }
-    ] }
+    { permission: 3, group: 'Service' },
+    { permission: 3,name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'tasks' },
+    { permission: 3,name: 'Inbound FTP', route: '/app/inbound-ftp', icon: 'file-alt' },
+    { permission: 4, group: 'SSIS' },
+    { permission: 4,name: 'SSIS Staging', route: '/app/ssis-staging', icon: 'file-o' },
+    { permission: 4, group: 'Schedule' },
+    { permission: 4, name: 'File FCCR', route: '/app/file-fccr', icon: 'file-o' },
+    { permission: 0, group: 'setting' },
+    { permission: 3, name: 'Configuration', route: '/setting/configuration', icon: 'tasks' },
+    { permission: 0, name: 'Audit', route: '/audit', icon: 'align-justify' }
   ],
   survey: [
-    { name: 'Dashboard', route: '/survey', icon: 'bug', exact: true },
-    { name: 'History', route: '/survey/history', icon: 'server', exact: true }
-  ],
+    { permission: 0, name: 'Survey Dashboard', route: '/survey', icon: 'bug', exact: true }
+  ]
 })
 export const getters = {
   getMainMenu: (state, getters) => (path) => {
@@ -80,5 +75,11 @@ export const getters = {
       if (IsStop) break;
     }
     return sResult
+  }
+}
+
+export const mutations = {
+  add (state, { menu, item }) {
+    state[menu].push(item)
   }
 }
