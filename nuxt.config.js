@@ -15,7 +15,7 @@ let config = {
   ],
 
   icons: {
-    sizes: [ 32, 57, 72, 144, 512 ]
+    sizes: [ 16, 120, 144, 152, 192, 384, 512 ]
   },
   manifest: {
     name: 'DevOps',
@@ -24,9 +24,7 @@ let config = {
     description: '',
     short_name: 'DevOps',
     icons: [
-      { src: '/favicon.ico', sizes: '64x64' },
-      { src: '/favicon.ico', sizes: '128x128' },
-      { src: '/favicon.ico', sizes: '144x144' }
+      { src: '/icon-120.png', sizes: '120x120' }
     ], 
     scope: '/',
     start_url: '/',
