@@ -72,6 +72,9 @@
 import moment from 'moment'
 
 export default {
+  head: {
+    title: 'Survey',
+  },
   data: () => ({
     history: [],
     editor: false

@@ -1,27 +1,32 @@
 <template>
-  <div class="container pt-5 pb-3">
+  <div>
     <b-form @submit.prevent="onSubmit" @reset.prevent="onReset">
-      <div v-if="taskKey" class="row">
-        <div class="col-sm-36">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <div v-if="taskKey">
           <h3>History Survey</h3>
           <small>by <b>{{ editor }}</b> at {{ getTaskDateTime }}</small>
-          <hr>
         </div>
-      </div>
-      <div v-else class="row">
-        <div class="col-sm-36">
+        <div v-else>
           <h3>{{ title }}</h3>
-          <b-button
-            type="button"
-            size="ssm"
-            :variant="tasks.length !== tasks.filter(e => e.selected).length ? 'outline-info' : 'outline-secondary'"
-            @click="onCheckAll"
-            v-text="tasks.length !== tasks.filter(e => e.selected).length ? 'Checked All' : 'Unchecked All'"
-          />
-          <hr>
+          <small>
+            <span><b>Pass:</b> {{ getTaskSuccess }}</span>
+            <span><b>Fail:</b> {{ getTaskProblem }}</span>
+            <span :class="getTaskUncheck ? 'text-danger' : ''">{{ !getTaskUncheck ? '' : `(${getTaskUncheck} Uncheck)` }}</span>
+          </small>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <b-button-group class="mr-2 pt-2 pt-md-0" size="sm">
+            <b-button
+              type="button"
+              size="ssm"
+              :variant="tasks.length !== tasks.filter(e => e.selected).length ? 'outline-info' : 'outline-secondary'"
+              @click="onCheckAll"
+              v-text="tasks.length !== tasks.filter(e => e.selected).length ? 'Checked All' : 'Unchecked All'"
+            />
+          </b-button-group>
         </div>
       </div>
-      <div class="row mb-5 pb-5">
+      <div class="row pb-5">
         <div class="col-sm-36">
           <div v-for="(e, i) in tasks" :key="e.nTaskDetailId">
             <b-form-group :label-for="'chkTaskList' + e.nTaskDetailId">
@@ -92,24 +97,12 @@
             No Transaction
           </div>
         </div>
-        <div class="survey-submit">
-          <div class="container">
-            <div class="row">
-              <div class="col-md-18">
-                <div v-if="!taskKey">
-                  <span><b>Pass:</b> {{ getTaskSuccess }}</span>
-                  <span><b>Fail:</b> {{ getTaskProblem }}</span>
-                  <span :class="getTaskUncheck ? 'text-danger' : ''">{{ !getTaskUncheck ? '' : `(${getTaskUncheck} Uncheck)` }}</span>
-                </div>
-              </div>
-              <div class="col-md-18 text-right">
-                <b-button type="submit" :disabled="submited" variant="primary" v-text="submited ? 'Approving...' : taskKey ? 'Save' : 'Submit'" />
-                <b-button v-if="!taskKey" type="reset" :disabled="submited" variant="danger">Reset</b-button>
-                <nuxt-link v-else tag="button" to="/history" type="button" class="btn btn-secondary">Back</nuxt-link>
-              </div>
-            </div>
-          </div>
-        </div> 
+        <div class="col-md-36">
+          <hr>
+          <b-button type="submit" :disabled="submited" variant="primary" v-text="submited ? 'Approving...' : taskKey ? 'Save' : 'Submit'" />
+          <b-button v-if="!taskKey" type="reset" :disabled="submited" variant="danger">Reset</b-button>
+          <nuxt-link v-else tag="button" to="/history" type="button" class="btn btn-secondary">Back</nuxt-link>
+        </div>
       </div>
     </b-form>
   </div>
@@ -118,6 +111,9 @@
 <script>
 import moment from 'moment'
 export default {
+  head: {
+    title: 'Task',
+  },
   data: () => ({
     taskKey: null,
     editor: 'Guest',
@@ -145,18 +141,18 @@ export default {
     }
   },
   async asyncData ({ redirect, params, $axios }) {
-    // if (params.id) {
-    //   let sKey = parseInt(params.id)
-    //   if (sKey == NaN) return redirect('/history')
+    if (params.checkin) {
+      let sKey = parseInt(params.checkin)
+      if (sKey == NaN) return redirect('/survey')
 
-    //   let { data } = await $axios('/api/history/' + params.id)
-    //   if (!data.records) return redirect('/history')
+      let { data } = await $axios('/api/survey/task/edit/' + params.id)
+      if (!data.records) return redirect('/survey')
       
-    //   return { editor: data.editor, tasks: data.records, taskKey: params.id }
-    // } else {
-    //   let { data } = await $axios('/api/history/detail/1')
-    //   return { title: data.title, tasks: data.tasks, taskKey: null }
-    // }
+      return { editor: data.editor, tasks: data.records, taskKey: params.id }
+    } else {
+      let { data } = await $axios('/api/survey/task/detail/' + params.id)
+      return { title: data.title, tasks: data.tasks, taskKey: null }
+    }
   },
   created () {
     if (!this.taskKey) {
@@ -168,11 +164,7 @@ export default {
         if (survey) {
           survey = JSON.parse(survey)
           if (this.tasks.length === survey.length && survey.filter(s => s.reason !== '' || s.selected).length > 0) this.tasks = survey
-          this.problem = 0
-          for (const i of this.tasks) {
-            this.problem += i.problem ? 1 : 0
-          }
-          this.$forceUpdate()
+          this.getProblemUpdate()
         }
       }
     }
@@ -189,13 +181,15 @@ export default {
       let checkAll = this.tasks.length ===  this.tasks.filter(e => e.selected).length
       if (checkAll) return this.onReset()
       
-      for (const e of this.tasks) {
-        e.selected = true
-        e.problem = false
-        e.reason = ''
-        e.status = ''
-      }
       this.problem = 0
+      for (const e of this.tasks) {
+        this.$set(this.tasks, this.tasks.indexOf(e), Object.assign(e, {
+          selected: true,
+          problem: false,
+          reason: '',
+          status: ''
+        }))
+      }
       this.$forceUpdate()
       this.onSave()
     },
@@ -203,10 +197,12 @@ export default {
       if (!this.taskKey) {
         this.problem = 0
         for (const e of this.tasks) {
-          e.selected = false
-          e.problem = false
-          e.reason = ''
-          e.status = ''
+          this.$set(this.tasks, this.tasks.indexOf(e), Object.assign(e, {
+            selected: false,
+            problem: false,
+            reason: '',
+            status: ''
+          }))
         }
         this.$forceUpdate()
         if (process.client && this.tasks) window.localStorage.removeItem('survey.tasks')
@@ -273,6 +269,13 @@ export default {
       this.$forceUpdate()
       if (this.taskKey) return
       this.onSave()
+    },
+    getProblemUpdate () {
+      this.problem = 0
+      for (const i of this.tasks) {
+        this.problem += i.problem ? 1 : 0
+      }
+      this.$forceUpdate()
     }
   }
 }
@@ -291,15 +294,5 @@ button.status {
 }
 button[type=submit] {
   min-width: 120px;
-}
-.survey-submit {
-  position: fixed;
-  padding: 25px;
-  width: 100vw;
-  bottom: 0px;
-  left: 0px;
-  min-height: 80px;
-  background-color: #f8f9fa;
-  border-top:1px solid rgba(0, 0, 0, 0.1);
 }
 </style>
