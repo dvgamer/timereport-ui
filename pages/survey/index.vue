@@ -1,26 +1,27 @@
 <template>
   <div>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-      <h1 class="h2">History Survey</h1>
-      
+      <div>
+        <h2>Survey Overview</h2>
+        <small>History group by date and lastet 100 rows.</small>
+      </div>
       <div class="btn-toolbar mb-2 mb-md-0">
         <b-button-group class="mr-2" size="sm">
-          <b-button variant="outline-secondary">E-mail</b-button>
-          <b-button variant="outline-secondary">Button 2</b-button>
+          <b-button variant="outline-secondary">Export</b-button>
         </b-button-group>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-36">
-        <div v-for="(day, i) in getGroupHistory()" :key="day" class="group-history">
+        <div v-for="(day, i) in getGroupHistory()" :key="i" class="group-history">
           <h5 v-text="parseDays(day)" />
           <div v-for="e in filterHistory(day)" :key="e.nRow" class="text-inline">
-            <button v-if="$auth.user.user_level >= 4" type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e.sKey)">
+            <!-- <button v-if="$auth.user.user_level >= 4" type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e.sKey)">
               <fa icon="trash-alt" />
             </button>
             <button type="button" class="btn btn-sm btn-icon" @click.prevent="onEdit(e.sKey)">
               <fa icon="edit" />
-            </button>
+            </button> -->
             <span><fa :icon="getIcon(e)" :class="'text-'+getColor(e)" /></span>
             <b><a href="#" @click.prevent="onView(e.sKey)" v-text="e.sTitleName" /></b>
             <b v-text="toTime(e.dCreated, i)" />
@@ -127,11 +128,11 @@ export default {
       }
     },
     onView (e) {
-      if (!this.editor) this.$router.push({ name: 'history-version-id', params: { id: e } })
+      // if (!this.editor) this.$router.push({ name: 'survey-task-version', params: { id: e } })
     },
     onEdit (e) {
       this.editor = true
-      this.$router.push({ name: 'history-edit-id', params: { id: e } })
+      // this.$router.push({ name: 'survey-task-id-edit', params: { id: e } })
     },
     onDelete (e) {
       let vm = this

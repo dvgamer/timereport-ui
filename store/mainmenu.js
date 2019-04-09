@@ -47,7 +47,7 @@ export const state = () => ({
     { permission: 0, name: 'Audit', route: '/audit', icon: 'align-justify' }
   ],
   survey: [
-    { permission: 0, name: 'Survey Dashboard', route: '/survey', icon: 'bug', exact: true }
+    { permission: 0, name: 'Overview', route: '/survey', icon: 'bug', exact: true }
   ]
 })
 export const getters = {

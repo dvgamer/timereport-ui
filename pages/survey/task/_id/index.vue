@@ -141,14 +141,14 @@ export default {
     }
   },
   async asyncData ({ redirect, params, $axios }) {
-    if (params.checkin) {
-      let sKey = parseInt(params.checkin)
+    if (params.edit) {
+      let sKey = parseInt(params.edit)
       if (sKey == NaN) return redirect('/survey')
 
-      let { data } = await $axios('/api/survey/task/edit/' + params.id)
+      let { data } = await $axios('/api/survey/task/edit/' + params.edit)
       if (!data.records) return redirect('/survey')
       
-      return { editor: data.editor, tasks: data.records, taskKey: params.id }
+      return { editor: data.editor, tasks: data.records, taskKey: params.edit }
     } else {
       let { data } = await $axios('/api/survey/task/detail/' + params.id)
       return { title: data.title, tasks: data.tasks, taskKey: null }

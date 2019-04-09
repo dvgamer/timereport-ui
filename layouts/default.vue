@@ -16,22 +16,27 @@
     <div class="container-fluid">
       <div class="row">
         <navSidebar />
-        <div class="col-md-36 ml-sm-auto col-lg-29 pt-3 px-4 mb-3">
-          <span v-if="online.sock === 2" class="badge badge-socket badge-light float-right">
-            <fa icon="circle-notch" spin /> Socket.io
-          </span>
-          <span v-else class="badge float-right" :class="online.sock === 1 ? 'badge-success' : 'badge-danger'">
-            <fa :icon="online.sock === 1 ? 'check' : 'close'" /> Socket.io
-          </span>
-          <span v-if="online.api === 2" class="badge badge-api badge-light float-right mr-1">
-            <fa icon="circle-notch" spin /> API
-          </span>
-          <span v-else class="badge float-right mr-1" :class="online.api === 1 ? 'badge-success' : 'badge-danger'">
-            <fa :icon="online.api === 1 ? 'check' : 'close'" /> API
-          </span>
-          <b-breadcrumb :items="breadcrumb" />
-          <nuxt />
-        </div>
+        <no-ssr>
+          <scrolly class="col-md-36 ml-sm-auto col-lg-29 pt-3 px-4">
+            <scrolly-viewport class="scrolly-fixed">
+              <span v-if="online.sock === 2" class="badge badge-socket badge-light float-right">
+                <fa icon="circle-notch" spin /> Socket.io
+              </span>
+              <span v-else class="badge float-right" :class="online.sock === 1 ? 'badge-success' : 'badge-danger'">
+                <fa :icon="online.sock === 1 ? 'check' : 'close'" /> Socket.io
+              </span>
+              <span v-if="online.api === 2" class="badge badge-api badge-light float-right mr-1">
+                <fa icon="circle-notch" spin /> API
+              </span>
+              <span v-else class="badge float-right mr-1" :class="online.api === 1 ? 'badge-success' : 'badge-danger'">
+                <fa :icon="online.api === 1 ? 'check' : 'close'" /> API
+              </span>
+              <b-breadcrumb :items="breadcrumb" />
+              <nuxt />
+            </scrolly-viewport>
+            <scrolly-bar axis="y" />
+          </scrolly>
+        </no-ssr>
       </div>
     </div>
   </div>

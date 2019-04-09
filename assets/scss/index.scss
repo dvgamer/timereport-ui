@@ -11,22 +11,35 @@
   display: flex !important;
   > div.main-panel {
     width: 100vw;
+    > .container {
+      transition: all .2s cubic-bezier(.55,0,.1,1);
+      height: calc(100vh - 50px);
+      min-height: 380px;
+      display: flex;
+      @media (min-width: 767.98px) {
+        align-items: center;
+      }
+      .row {
+        width: 100%;
+      }
+    }
+    > .container-fluid {
+      overflow-y: hidden;
+      height: calc(100vh - 50px);
+      > .row {
+        height: 100%;
+      }
+      .scrolly-fixed {
+        width: calc(100% - 50px) !important;
+      }
+      
+      @media screen and (max-width: 991px) {
+        .scrolly {
+          height: calc(100vh - 50px);
+        }
+      }
+    }
   }
-}
-.container {
-  transition: all .2s cubic-bezier(.55,0,.1,1);
-}
-
-.main-panel > .container {
-  height: calc(100vh - 50px);
-  min-height: 380px;
-  display: flex;
-  @media (min-width: 767.98px) {
-    align-items: center;
-  }
-}
-.main-panel > .container > .row {
-  width: 100%;
 }
 
 .page-enter-active, .page-leave-active {
@@ -118,6 +131,7 @@
 }
 
 .sticky-top {
+  height: 50px;
   .form-icon > .form-control {
     padding-right: 18px;
     border: none !important;
