@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
     let { text } = req.body
     msg = msg || (!text ? JSON.stringify(req.body) : text)
     if (msg === '{}' || msg === '[]') return res.end()
-    if (!app || !group || !status || !logger[status]) return res.end()
+    if (!app || !group || !status) return res.end()
 
     let logger = debuger(app)
     const { ServiceLog } = await mongo.open()
@@ -15,9 +15,16 @@ module.exports = async (req, res) => {
     if (process.env.NODE_ENV === 'production' && (status === 'error' || status === 'warn')) {
       logger[status](`${group !== 'null' ? `[${group}]` : ''} ${msg}`)
     }
-    new ServiceLog({ app, group: (group !== 'null' ? group : ''), status, message: msg, created: new Date() }).save()
+    new ServiceLog({
+      app,
+      group: (group !== 'null' ? group : ''),
+      status,
+      message: msg,
+      created: new Date(),
+      permission: 1
+    }).save()
   } catch {
-    res.statusCode(404)
+    res.status(404)
   } finally {
     res.end()
   }

@@ -114,6 +114,18 @@ module.exports = [
     })
   },
   {
+    id: 'ServiceLog',
+    name: 'db-service-log',
+    schema: Schema({
+      app: { type: String, index: true },
+      group: { type: String, index: true },
+      status: { type: String, index: true },
+      permission: Number,
+      message: Mixed,
+      created: { type: Date, index: true }
+    })
+  },
+  {
     id: 'TerminalLog',
     name: 'db-terminal-log',
     schema: Schema({

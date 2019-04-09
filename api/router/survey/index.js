@@ -22,7 +22,7 @@ router.get('/task', async (req, res) => {
 router.get('/task/history', require('./task'))
 router.get('/task/detail/:id', require('./task/detail'))
 router.get('/task/edit/:checkin', require('./task/id'))
-router.post('/task/del/:checkin', require('./task/delete'))
+router.delete('/task/:checkin', require('./task/delete'))
 router.get('/task/version/:checkin', require('./task/version'))
 router.post('/task/submit', require('./task/submit'))
 

@@ -4,7 +4,7 @@ const mssql = require('@mssql')
 const moment = require('moment')
 const LINE = require('@line')
 
-const SURVEY = 'Ca2338af8e1ae465a2541acde69cd4e0c'
+const SURVEY = process.env.LINE_BOT || 'Ca2338af8e1ae465a2541acde69cd4e0c'
 module.exports = async (req, res) => {
   let pool = { close: () => {} }
   try {

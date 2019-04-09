@@ -42,12 +42,12 @@ module.exports = scopeName => {
     info (...msg) {
       if (isDev) logWindows(scopeName, '╍', 'info', chalk.blue.bold, msg); else logLinux(scopeName, null, msg)
     },
-    async error (ex) {
+    error (ex) {
       if (!ex) return
       if (ex instanceof Error) {
         let excep = /at.*?\((.*?)\)/i.exec(ex.stack) || []
         logLinux(scopeName, 'х', [ ex.message.indexOf('Error:') === 0 ? ex.message.replace('Error:', 'ERROR-Message:') : `ERROR-Message: ${ex.message}` ])
-        logLinux(scopeName, 'х', [ `ERROR-File: ${excep[1] ? excep[1] : 'N/A'}`, ex.message ])
+        logLinux(scopeName, 'х', [ `stack: ${excep[1] ? excep[1] : 'N/A'}`, ex.message ])
       } else {
         let msg = [ ex.toString() ]
         if (measure) msg.push(`(${measure.total()})`)

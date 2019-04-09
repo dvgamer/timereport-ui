@@ -3,10 +3,10 @@ const mssql = require('@mssql')
 const moment = require('moment')
 
 module.exports = async (req, res) => {
-  let key = parseInt(req.params.id)
+  let key = parseInt(req.params.checkin)
   if (isNaN(key)) return res.json({})
   let pool = { close: () => {} }
-  let dCheckIn = moment(req.params.id, 'YYYYMMDDHHmmssSSS')
+  let dCheckIn = moment(req.params.checkin, 'YYYYMMDDHHmmssSSS')
   if (!moment.isMoment(dCheckIn)) return res.json({})
   try {
     let sql = `
