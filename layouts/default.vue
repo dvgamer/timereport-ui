@@ -17,7 +17,7 @@
       <div class="row">
         <navSidebar />
         <no-ssr>
-          <scrolly class="col-md-36 ml-sm-auto pt-3 px-4" :class="{ 'col-lg-29': $auth.loggedIn }">
+          <scrolly class="col-md-36 ml-sm-auto pt-3 px-4" :class="{ 'col-lg-29': $auth.loggedIn && $store.state.menu !== 'none' }">
             <scrolly-viewport class="scrolly-fixed pb-3">
               <span v-if="online.sock === 2" class="badge badge-socket badge-light float-right">
                 <fa icon="circle-notch" spin /> Socket.io

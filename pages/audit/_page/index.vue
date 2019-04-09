@@ -118,6 +118,7 @@ export default {
         if (!document.fullscreenElement && !document.mozFullScreenElement &&
           !document.webkitFullscreenElement && !document.msFullscreenElement) {
           this.fullscreenToggle = true
+          this.$store.commit('$menu', 'none')
           if (document.body.requestFullscreen) {
             await document.body.requestFullscreen();
           } else if (document.body.msRequestFullscreen) {
@@ -129,6 +130,7 @@ export default {
           }
         } else {
           this.fullscreenToggle = false
+          this.$store.commit('$menu', 'full')
           if (document.exitFullscreen) {
             await document.exitFullscreen();
           } else if (document.msExitFullscreen) {

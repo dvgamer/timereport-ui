@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$auth.loggedIn" class="col-lg-7 d-none d-lg-block bg-light sidebar">
+  <div v-if="$auth.loggedIn" class="col-lg-7 bg-light sidebar" :class="$store.state.menu !== 'none' ? 'd-none d-lg-block' : 'd-none'">
     <div class="sidebar-sticky">
       <div class="nav flex-column">
         <no-ssr>
