@@ -11,8 +11,5 @@ export default ({ env, app }) => {
       actionPrefix: '__io_',
       mutationPrefix: '__io_'
     }
-}))
-
-
-
+  }))
 }

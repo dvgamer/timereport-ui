@@ -29,14 +29,14 @@ $scrolly-bar-size: 7px;
   overflow: hidden;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 0;
 }
 
 .scrolly-bar {
   position: absolute;
   border: $scrolly-bar-size solid transparent;
   cursor: pointer;
-  z-index: 2;
+  z-index: 1;
   transition: opacity .1s ease;
 
   &:before {

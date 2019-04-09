@@ -320,9 +320,7 @@ export default {
       this.touchStartX = event.touches[0].pageX
       this.touchStartY = event.touches[0].pageY
 
-      const { x: scrollLayoutX, y: scrollLayoutY } =
-        // after refreshing scroll layout
-        this.refreshScrollLayout(dx, dy)
+      const { x: scrollLayoutX, y: scrollLayoutY } = this.refreshScrollLayout(dx, dy)
 
       // If using passive scrolling, stop.
       if (this.passiveScroll) return
@@ -332,8 +330,7 @@ export default {
       let canScrollParentY = scrollLayoutY && scrollLayoutY.canScrollParent
 
       // If scrolling parent is not possible, prevent it.
-      (!this.parentScroll || !(canScrollParentX || canScrollParentY)) &&
-        event.preventDefault()
+      if (!this.parentScroll || !(canScrollParentX || canScrollParentY)) event.preventDefault()
     },
 
     onMouseWheel(event) {
@@ -341,9 +338,7 @@ export default {
       const { pixelX: dx, pixelY: dy } = normalizeWheel(event)
 
       // Get scroll layout
-      const { x: scrollLayoutX, y: scrollLayoutY } =
-        // after refreshing scroll layout
-        this.refreshScrollLayout(dx, dy)
+      const { x: scrollLayoutX, y: scrollLayoutY } = this.refreshScrollLayout(dx, dy)
 
       // If using passive scrolling, stop.
       if (this.passiveScroll) return
