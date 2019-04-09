@@ -24,6 +24,7 @@
       }
     }
     > .container-fluid {
+      background-color: #FFF !important;
       overflow-y: hidden;
       height: calc(100vh - 50px);
       > .row {
@@ -132,6 +133,7 @@
 
 .sticky-top {
   height: 50px;
+  z-index: 1 !important;
   .form-icon > .form-control {
     padding-right: 18px;
     border: none !important;
@@ -142,7 +144,27 @@
     border: none;
   }
 }
-
+.modal.fade .modal-dialog {
+  -webkit-transform: scale(0.1);
+  -moz-transform: scale(0.1);
+  -ms-transform: scale(0.1);
+  transform: scale(0.1);
+  top: 300px;
+  opacity: 0;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+  
+.modal.fade.in .modal-dialog {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+  -webkit-transform: translate3d(0, -300px, 0);
+  transform: translate3d(0, -300px, 0);
+  opacity: 1;
+}
 /*
  * Utilities
  */
@@ -236,10 +258,10 @@ textarea.reason {
     width: 600px;
   }
 
-  .sidenav{
+  .sidenav {
     width: 40%;
     position: fixed;
-    z-index: 1;
+    z-index: 0;
     top: 0;
     left: 0;
   }

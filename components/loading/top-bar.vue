@@ -63,7 +63,7 @@ export default {
   height:4px;
   width:100%;
   opacity: 1;
-  z-index: 1100;
+  z-index: 1;
   -webkit-transition: opacity 0.2s linear;
   transition: opacity 0.2s linear;
 }

@@ -2,12 +2,12 @@
   <div>
     <b-form @submit.prevent="onSubmit" @reset.prevent="onReset">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <div v-if="taskKey">
-          <h3>History Survey</h3>
+        <div v-if="taskKey" class="mb-2">
+          <h2 class="mb-0">History Survey</h2>
           <small>by <b>{{ editor }}</b> at {{ getTaskDateTime }}</small>
         </div>
-        <div v-else>
-          <h3>{{ title }}</h3>
+        <div v-else class="mb-2">
+          <h2 class="mb-0">{{ title }}</h2>
           <small>
             <span><b>Pass:</b> {{ getTaskSuccess }}</span>
             <span><b>Fail:</b> {{ getTaskProblem }}</span>
@@ -101,7 +101,7 @@
           <hr>
           <b-button type="submit" :disabled="submited" variant="primary" v-text="submited ? 'Approving...' : taskKey ? 'Save' : 'Submit'" />
           <b-button v-if="!taskKey" type="reset" :disabled="submited" variant="danger">Reset</b-button>
-          <nuxt-link v-else tag="button" to="/history" type="button" class="btn btn-secondary">Back</nuxt-link>
+          <nuxt-link v-else tag="button" to="/survey" type="button" class="btn btn-secondary">Back</nuxt-link>
         </div>
       </div>
     </b-form>
@@ -222,7 +222,7 @@ export default {
         }
       })
       this.submited = true
-      vm.$axios.post('/api/history/submit', {
+      vm.$axios.post('/api/survey/task/submit', {
         key: vm.taskKey,
         username: vm.$auth.user.user_name,
         name: vm.$auth.user.name,
@@ -232,9 +232,10 @@ export default {
           if (!this.taskKey) {
             vm.$toast.success('Thanks.')
             vm.onReset()
+            vm.$router.push('/survey')
           } else {
             vm.$toast.success('Task Updated.')
-            vm.$router.push('/history')
+            vm.$router.push('/survey')
           }
         } else {
           vm.$toast.error('Error API')

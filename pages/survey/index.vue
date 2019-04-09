@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-      <div>
-        <h2>Survey Overview</h2>
+      <div class="mb-2">
+        <h2 class="mb-0">Survey Overview</h2>
         <small>History group by date and lastet 100 rows.</small>
       </div>
       <div class="btn-toolbar mb-2 mb-md-0">
@@ -16,54 +16,31 @@
         <div v-for="(day, i) in getGroupHistory()" :key="i" class="group-history">
           <h5 v-text="parseDays(day)" />
           <div v-for="e in filterHistory(day)" :key="e.nRow" class="text-inline">
-            <!-- <button v-if="$auth.user.user_level >= 4" type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e.sKey)">
-              <fa icon="trash-alt" />
-            </button>
-            <button type="button" class="btn btn-sm btn-icon" @click.prevent="onEdit(e.sKey)">
-              <fa icon="edit" />
-            </button> -->
-            <span><fa :icon="getIcon(e)" :class="'text-'+getColor(e)" /></span>
-            <b><a href="#" @click.prevent="onView(e.sKey)" v-text="e.sTitleName" /></b>
-            <b v-text="toTime(e.dCreated, i)" />
-            <b-badge v-if="e.nFail > 0" variant="danger" v-text="'Fail ' + e.nFail" />
-            <b-badge v-if="e.nWarn > 0" variant="warning" v-text="'Warning ' + e.nWarn" />
-            <b-badge v-if="e.nInfo > 0" variant="info" v-text="'Info ' + e.nInfo" />
-            <small v-text="'by ' + e.sName" />
+            <div v-if="e.confirmDelete">
+              <button type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e)">
+                <fa class="text-danger" icon="trash-alt" />
+              </button>
+              <button type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e, false)">
+                <fa class="text-secondary" icon="times" />
+              </button>
+              <span class="delete-badge"><b>You want remove this "{{ e.sTitleName }}" survey task?</b></span>
+            </div>
+            <div v-else>
+              <button v-if="isPermissionDelete()" type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e, true)">
+                <fa icon="trash-alt" />
+              </button>
+              <button type="button" class="btn btn-sm btn-icon" @click.prevent="onEdit(e)">
+                <fa icon="edit" />
+              </button>
+              <span><fa :icon="getIcon(e)" :class="'text-'+getColor(e)" /></span>
+              <b><a href="#" @click.prevent="onView(e)" v-text="e.sTitleName" /></b>
+              <b v-text="toTime(e.dCreated, i)" />
+              <b-badge v-if="e.nFail > 0" variant="danger" v-text="'Fail ' + e.nFail" />
+              <b-badge v-if="e.nWarn > 0" variant="warning" v-text="'Warning ' + e.nWarn" />
+              <b-badge v-if="e.nInfo > 0" variant="info" v-text="'Info ' + e.nInfo" />
+              <small v-text="'by ' + e.sName" />
+            </div>
           </div>
-          <!--<table class="table table-sm table-hover">
-            <thead class="thead-light">
-              <tr>
-                <th scope="col" style="width: 40px" />
-                <th scope="col" class="text-center" style="width: 40px">#</th>
-                <th scope="col">Name</th>
-                <th scope="col" class="text-center" style="width: 80px">Fail</th>
-                <th scope="col" class="text-center" style="width: 160px">Created</th>
-                <th scope="col" class="text-center" style="width: 160px">Updated</th>
-                <th scope="col" class="text-center" style="width: 80px" />
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="e in filterHistory(day)" :key="e.nRow" :class="e.nFail > 0 ? 'table-danger' : ''" @click.prevent="onView(e.sKey)">
-                <td class="text-center"><fa :icon="getIcon(e)" :class="'text-'+getColor(e)" /></td>
-                <th class="text-center" scope="row" v-text="e.nRow" />
-                <td v-text="e.sName" />
-                <td class="text-center" v-text="e.nFail" />
-                <td class="text-center" v-text="e.dCreated" />
-                <td class="text-center" v-text="e.dModified" />
-                <td class="text-center">
-                  <button type="button" class="btn btn-sm btn-icon" @click.prevent="onEdit(e.sKey)">
-                    <fa icon="edit" />
-                  </button>
-                  <button v-if="$auth.user.user_level >= 3" type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e.sKey)">
-                    <fa icon="trash-alt" />
-                  </button>
-                </td>
-              </div>
-              <tr v-if="history.length === 0" class="text-center">
-                <th colspan="7" class="text-center">No Transaction</th>
-              </tr>
-            </tbody>
-          </table> -->
         </div>
       </div>
     </div>
@@ -89,6 +66,9 @@ export default {
   methods: {
     toTime (datetime, i) {
       return (i > 0 ? moment(datetime).format('[at] HH:mm') : moment(datetime).fromNow())
+    },
+    isPermissionDelete () {
+      return this.$auth.user && this.$auth.user.user_level >= 2
     },
     parseDays (day) {
       return moment(day).calendar(null, {
@@ -128,34 +108,40 @@ export default {
       }
     },
     onView (e) {
-      // if (!this.editor) this.$router.push({ name: 'survey-task-version', params: { id: e } })
+      if (!this.editor) this.$router.push({ name: 'survey-version-id', params: { id: e.sKey } })
     },
     onEdit (e) {
       this.editor = true
-      // this.$router.push({ name: 'survey-task-id-edit', params: { id: e } })
+      this.$router.push({ name: 'survey-task-id-edit', params: { id: e.nTaskId, edit: e.sKey } })
     },
-    onDelete (e) {
-      let vm = this
-      this.editor = true
-      let index = -1
-      let item = this.history.filter((a, i) => {
-        if (a.sKey === e) index = i
-        return a.sKey === e
-      })
-      // console.log(index, item)
-      // if (item.length > 1) return this.$toast.error(`${item.length} Tasks can't remove.`)
-      this.history.splice(item, 1)
-      vm.$axios.post('/api/history/del/' + e).then(() => {
-        vm.$toast.success('Task Delete')
-        // vm.$router.go()
-      }).catch(ex => {
-        vm.$toast.error(ex.message)
-      })
+    onDelete (e, confirmDelete) {
+      if (confirmDelete === undefined) {
+        let vm = this
+        this.editor = true
+        let index = -1
+        let item = this.history.filter((a, i) => {
+          if (a.sKey === e.sKey) index = i
+          return a.sKey === e.sKey
+        })
+        // console.log(index, item)
+        // if (item.length > 1) return this.$toast.error(`${item.length} Tasks can't remove.`)
+        this.history.splice(item, 1)
+        vm.$axios.delete('/api/survey/task/' + e.sKey).then(() => {
+          vm.$toast.success('Task Delete')
+          vm.$forceUpdate()
+          // vm.$router.go()
+        }).catch(ex => {
+          vm.$toast.error(ex.message)
+        })
+      } else {
+        e.confirmDelete = confirmDelete
+        this.$forceUpdate()
+      }
     }
   }
 }
 </script>
-<style>
+<style scoped>
 .group-history {
   padding-bottom: 10px;
 }
@@ -166,8 +152,10 @@ export default {
   padding: 0rem 0.2rem;
   margin-top: -2px;
 }
-tbody > tr {
-  cursor: pointer;
+.delete-badge {
+  border: #e0e0e0 solid 1px;
+  padding: 3px 6px;
+  border-radius: 3px;
 }
 </style>
 

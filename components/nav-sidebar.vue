@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-7 d-none d-lg-block bg-light sidebar">
+  <div v-if="$auth.loggedIn" class="col-lg-7 d-none d-lg-block bg-light sidebar">
     <div class="sidebar-sticky">
       <div class="nav flex-column">
         <no-ssr>
@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     getMenuPermission (group) {
-      return this.$store.state.mainmenu[group].filter(e => !e.permission || e.permission <= this.$auth.user.user_level)
+      return this.$auth.loggedIn ? this.$store.state.mainmenu[group].filter(e => !e.permission || e.permission <= this.$auth.user.user_level) : []
     },
     async getterMenu () {
       for (const key in this.$store.state.mainmenu) {
