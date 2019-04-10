@@ -5,6 +5,8 @@ const moment = require('moment')
 const LINE = require('@line')
 
 const SURVEY = process.env.LINE_BOT || 'Ca2338af8e1ae465a2541acde69cd4e0c'
+const SERVER_VERSION = 'http://s-thcw-posdb95.pos.cmg.co.th/survey/version/'
+
 module.exports = async (req, res) => {
   let pool = { close: () => {} }
   try {
@@ -59,7 +61,7 @@ module.exports = async (req, res) => {
     if (!key) { // สรุป Monitor DailyClose 21.03.2019 Time 22.30
       LINE('cmgpos-bot', flex.monitor(name, tasks), SURVEY)
     } else if (updated.length > 0) {
-      LINE('cmgpos-bot', flex.monitor(name, updated, `http://10.0.80.52:3001/history/version/${key}`), SURVEY)
+      LINE('cmgpos-bot', flex.monitor(name, updated, `${SERVER_VERSION}${key}`), SURVEY)
     }
     res.json({ success: true })
   } catch (ex) {

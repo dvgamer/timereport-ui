@@ -8,7 +8,7 @@ router.get('/task', async (req, res) => {
   try {
     pool = await mssql()
     let sql = `SELECT nTaskId, sTitleName, sMenu, sFaIcon, nLevelPermission
-    FROM SURVEY_CMG..UserTask WHERE bEnabled = 1 ORDER BY nTaskId ASC`
+    FROM UserTask WHERE bEnabled = 1 ORDER BY nTaskId ASC`
     let [ records ] = (await pool.request().query(sql)).recordsets
     res.json(records)
   } catch (ex) {

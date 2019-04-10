@@ -1,7 +1,6 @@
 const moment = require('moment')
 
-module.exports = (msg) => {
-  let topName = `Monitor DailyClose`
+module.exports = (topName, msg) => {
   let topDate = moment().format('HH:mm, DD MMM YYYY')
 
   let flexMessage = {
@@ -43,7 +42,7 @@ module.exports = (msg) => {
   
   return {
     type: 'flex',
-    altText: msg,
+    altText: `${topName} ${msg}`,
     contents: flexMessage
   }
 }

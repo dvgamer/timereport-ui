@@ -16,3 +16,4 @@ tmp
 .vagrant
 package-lock.json
 static/sw.js
+*.zip
