@@ -1,5 +1,5 @@
 const { createClient } = require('ldapjs')
-// const logger = require('../debuger')('LDAP')
+// const logger = require('@debuger')('LDAP')
 
 // LDAP Connection Settings
 const name = process.env.LDAP_NAME || 'central'
@@ -14,7 +14,7 @@ module.exports = async (usr, pwd, filter) => {
 
   let username = usr.trim()
   const password = pwd.trim()
-  const searchOptions = usr => ({ scope: 'sub', filter: filter || !/@/g.test(usr) ? `(sAMAccountName=${usr})` : `(userPrincipalName=${usr})` })
+  const searchOptions = usr => ({ scope: 'sub', filter: filter || (!/@/g.test(usr) ? `(sAMAccountName=${usr})` : `(userPrincipalName=${usr})`) })
 
   // Create client and bind to AD
 
@@ -64,6 +64,7 @@ module.exports = async (usr, pwd, filter) => {
       if (err) return rejectBind(err.message)
 
       let result = []
+      let resultTimeout = null
       res.on('searchEntry', entry => {
         // logger.info('search-entry:', !!entry)
         let user = entry.object
@@ -73,6 +74,7 @@ module.exports = async (usr, pwd, filter) => {
           department: user.department,
           office_name: user.physicalDeliveryOfficeName,
           description: user.description,
+          employee_id: user.extensionAttribute1,
           name: user.name,
           mail: user.mail,
           display_name: user.displayName,
@@ -80,7 +82,13 @@ module.exports = async (usr, pwd, filter) => {
           user_name: user.sAMAccountName,
           user_type: user.sAMAccountType,
         }
-        if (!filter) return resolveBind(output); else result.push(output)
+        if (!filter) {
+          return resolveBind(output)
+        } else {
+          result.push(output)
+          if (resultTimeout) clearTimeout(resultTimeout)
+          resultTimeout = setTimeout(() => resolveBind(result), 2000)
+        }
       })
 
       if (filter) res.on('search-end', () => {

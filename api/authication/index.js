@@ -20,42 +20,11 @@ router.use(bodyParser.json())
 // Sessions to create `req.session`
 if (!process.env.JWT_KEYHASH) throw new Error('Environment `JWT_KEYHASH` is undefined.')
 
-// Import API Routes
-const userData = [
-  'name',
-  'mail',
-  'title',
-  'company',
-  'department',
-  'office_name',
-  'description',
-  'display_name',
-  'telephone_no',
-  'user_name',
-  'user_type',
-  'user_level',
-  'lasted',
-  'enabled',
-  'activate',
-  'created'
-]
-
 const encodeToken = data => {
   const hashId = md5(data.mail + (+(new Date())))
   return jsonwebtoken.sign({ hash: hashId, ...data }, process.env.JWT_KEYHASH)
 } 
 
-const decodeBearer = req => {
-  let auth = req.headers['authorization'] || ''
-  if (!/^bearer./ig.test(auth)) return {}
-  auth = auth.replace(/^bearer./ig, '')
-  if (auth === 'undefined' || auth === 'false') {
-    logger.warning('User authorization is undefined.')
-    return {}
-  }
-
-  return jsonwebtoken.verify(auth, process.env.JWT_KEYHASH)
-}
 const decodeBasic = req => {
   let auth = req.headers['authorization'] || ''
   if (!/^basic./ig.test(auth)) return {}
@@ -68,14 +37,11 @@ const decodeBasic = req => {
   }
 }
 
+const getUser = require('./user')
+
 router.get('/user', async (req, res) => {
   try {
-    let { User } = await db.open()
-    let decode = decodeBearer(req)
-    if (!decode._id) return res.json({})
-
-    let data = await User.findById(decode._id, userData.join(' '))
-    return res.json({ user: data })
+    return res.json({ user: await getUser(req) })
   } catch (ex) {
     logger.warning(ex)
     return res.json({})
@@ -150,7 +116,7 @@ router.post('/login', async (req, res) => {
       }, data)).save()
     } else {
       await User.updateOne({ _id: user._id }, {
-        $set: { pwd: md5(auth.pwd), token: null, lasted: date }
+        $set: Object.assign({ pwd: md5(auth.pwd), token: null, lasted: date }, data)
       })
     }
  
