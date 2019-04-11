@@ -1,7 +1,7 @@
 <template>
-  <div class="row">
+  <div class="row mt-md-5 pt-md-3">
     <div class="col-36">
-      <div class="row mt-5 pt-3">
+      <div class="row">
         <div class="col-36 col-lg-32 col-xl-30 col-login mx-auto">
           <form v-tabindex class="card" method="post" @submit.prevent="onSignIn">
             <div class="card-body p-0">
@@ -71,7 +71,7 @@
       <div class="row mt-3">
         <div class="col-md-28 col-lg-24 mx-auto">
           <no-ssr>
-            <cookie-law button-text="I AGREE" @:accept="onAgreeCookie">
+            <cookie-law button-text="I AGREE">
               <div slot="message">
                 DevOps's Progressive Web Appilication uses cookies. By proceeding, you consent to our cookie usage. Please see <router-link to="legal-notes">DevOps Cookie Policy</router-link>.
               </div>
@@ -109,7 +109,6 @@ export default {
   components: { CookieLaw },
   data () {
     return {
-      cookieAllow: false,
       sing_out: false,
       activate: true,
       enabled: true,
@@ -127,9 +126,6 @@ export default {
     }
   },
   async created () {
-    if (process.client) {
-      this.cookieAllow = window.localStorage.getItem('cookie:accepted') || false
-    }
     if (!this.$auth.loggedIn) {
       const login = this.$auth.$storage.getLocalStorage('login.saved', true)
       if (login) {
@@ -149,7 +145,7 @@ export default {
   },
   methods: {
     async onAuth (user, pass, saved, noerr = false) {
-      if (!this.cookieAllow) return
+      if (!this.onAgreeCookie()) return this.account.error = 'Please allow cookie policy.'
       this.account.signon = true
       try {
         // console.log('local:', { user, pass, saved })
@@ -203,7 +199,7 @@ export default {
       this.$router.go()
     },
     async onSignIn () {
-      if (!this.cookieAllow) return
+      if (!this.onAgreeCookie()) return this.account.error = 'Please allow cookie policy.'
       let { username, password, saved } = this.account
 
       // if (!/\w{5,}@central.co.th$/ig.test(username)) {
@@ -241,7 +237,7 @@ export default {
       }
     },
     onReSignIn (data) {
-      if (!this.cookieAllow) return
+      if (!this.onAgreeCookie()) return this.account.error = 'Please allow cookie policy.'
       this.enabled = data.enabled
       if (data.activate) {
         const login = this.$auth.$storage.getLocalStorage('login.saved', true)
@@ -249,7 +245,7 @@ export default {
       }
     },
     onAgreeCookie () {
-      this.cookieAllow = true
+      return process.client ? window.localStorage.getItem('cookie:accepted') === 'true' :  false
     },
     updatedInputFocus () {
       let vm = this
@@ -317,7 +313,7 @@ export default {
   top: 0px;
   left: 0px;
   background-color: #fff;
-  width: calc(100% + 19px);
+  width: calc(100% + 14px);
   height: calc(100% + 30px);
   z-index: 1;
   opacity: 0.7;

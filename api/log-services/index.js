@@ -4,21 +4,22 @@ const router = Router()
 
 router.put('/:app/:group/:status/:msg?', async (req, res) => {
   try {
-    let level = parseInt(req.headers['level'] || 0)
-    level = !isNaN(level) ? level : 0
+    let getLevel = parseInt(req.headers['level'])
     let { app, group, status, msg } = req.params
-    let { text } = req.body
+    let { text, level } = req.body
+  
+    getLevel = !isNaN(getLevel) ? getLevel : level ? level : 0
     msg = msg || (!text ? JSON.stringify(req.body) : text)
     if (msg === '{}' || msg === '[]') return res.end()
     if (!app || !group || !status) return res.end()
 
-    aLog(level, app, (group !== 'null' ? group : ''), status, msg)
+    aLog(getLevel, app, (group !== 'null' ? group : ''), status, msg)
   } catch {
     res.status(404)
   } finally {
     res.end()
   }
 })
-router.post('/audit/:page?', require('./audit'))
+router.post('/audit/:page?', require('../authication/middleware'), require('./audit'))
 
 module.exports = router

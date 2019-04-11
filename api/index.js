@@ -47,7 +47,7 @@ const InitializeExpress = async () => {
     app.use(nuxt.render)
   }
   await app.listen(port)
-  if (!config.dev) await dataSync()
   logger.start(`Server initialize complated on http://${host}:${port}`)
+  if (!config.dev) await dataSync()
 }
 InitializeExpress()

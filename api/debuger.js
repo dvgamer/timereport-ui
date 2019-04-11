@@ -1,6 +1,5 @@
 const chalk = require('chalk')
 const moment = require('moment')
-const mongo = require('@mongo')
 const isDev = process.env.NODE_ENV !== 'production'
 
 const groupSize = 7

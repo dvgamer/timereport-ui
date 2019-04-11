@@ -9,7 +9,7 @@
       <div class="btn-toolbar mb-2 mb-md-0">
         <b-button-group class="mr-2" size="sm">
           <b-button variant="outline-secondary" @click.prevent="onFullscreen">
-            <fa :icon="!fullscreenToggle ? 'expand-arrows-alt' : 'compress-arrows-alt'" /> Fullscreen
+            <fa :icon="!fullscreenToggle ? 'expand-arrows-alt' : 'compress-arrows-alt'" />
           </b-button>
         </b-button-group>
       </div>
@@ -113,34 +113,13 @@ export default {
       this.audit = data.audit
       this.pagination = Math.ceil(data.total / data.limit) 
     },
-    async onFullscreen () {
-      if (process.client) {
-        if (!document.fullscreenElement && !document.mozFullScreenElement &&
-          !document.webkitFullscreenElement && !document.msFullscreenElement) {
-          this.fullscreenToggle = true
-          this.$store.commit('$menu', 'none')
-          if (document.body.requestFullscreen) {
-            await document.body.requestFullscreen();
-          } else if (document.body.msRequestFullscreen) {
-            await document.body.msRequestFullscreen();
-          } else if (document.body.mozRequestFullScreen) {
-            await document.body.mozRequestFullScreen();
-          } else if (document.body.webkitRequestFullscreen) {
-            await document.body.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-          }
-        } else {
-          this.fullscreenToggle = false
-          this.$store.commit('$menu', 'full')
-          if (document.exitFullscreen) {
-            await document.exitFullscreen();
-          } else if (document.msExitFullscreen) {
-            await document.msExitFullscreen();
-          } else if (document.mozCancelFullScreen) {
-            await document.mozCancelFullScreen();
-          } else if (document.webkitExitFullscreen) {
-            await document.webkitExitFullscreen();
-          }
-        }
+    onFullscreen () {
+      if (!this.fullscreenToggle) {
+        this.fullscreenToggle = true
+        this.$store.commit('$menu', 'none')
+      } else {
+        this.fullscreenToggle = false
+        this.$store.commit('$menu', 'full')
       }
     }
   }

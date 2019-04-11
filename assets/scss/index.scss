@@ -11,18 +11,18 @@
   display: flex !important;
   > div.main-panel {
     width: 100vw;
-    > .container {
-      transition: all .2s cubic-bezier(.55,0,.1,1);
-      height: calc(100vh - 50px);
-      min-height: 380px;
-      display: flex;
-      @media (min-width: 767.98px) {
-        align-items: center;
-      }
-      .row {
-        width: 100%;
-      }
-    }
+    // > .container {
+    //   transition: all .2s cubic-bezier(.55,0,.1,1);
+    //   height: calc(100vh - 50px);
+    //   min-height: 380px;
+    //   display: flex;
+    //   @media (min-width: 767.98px) {
+    //     align-items: center;
+    //   }
+    //   .row {
+    //     width: 100%;
+    //   }
+    // }
     > .container-fluid {
       background-color: #FFF !important;
       overflow-y: hidden;

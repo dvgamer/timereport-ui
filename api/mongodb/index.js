@@ -40,7 +40,8 @@ module.exports = {
   open: async () => {
     if (!conn.connected()) {
       conn = await mongodb.MongoConnection('app_devops', process.env.DB_USER, process.env.DB_SERVER)
-      mongodb.MongoSchemaMapping(conn, require('./schema'))
+      mongodb.MongoSchemaMapping(conn, require('./devops'))
+      mongodb.MongoSchemaMapping(conn, require('./line-bot'))
     }
     return conn
   }

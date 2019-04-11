@@ -1,6 +1,6 @@
 <template>
   <div class="main-panel">
-    <b-navbar toggleable="md" type="dark" class="sticky-top bg-dark flex-md-nowrap p-0">
+    <b-navbar toggleable="md" type="dark" class="sticky-top bg-dark flex-md-nowrap p-0" :class="{ 'd-none': $store.state.menu === 'none' }">
       <b-navbar-brand class="col-md-9 col-lg-7 d-md-block mr-0" to="/">
         <img class="d-inline-block align-top" src="~assets/icon-devops-agile.png" alt="" width="32" height="32">
         <span class="ml-2" v-text="appName">NAME</span><small class="version" v-text="version">v0.0</small>
@@ -13,25 +13,21 @@
         </b-collapse>
       </b-container>
     </b-navbar>
-    <div class="container-fluid">
+    <div class="container-fluid" :class="{ 'container-full': $store.state.menu === 'none' }">
       <div class="row">
         <navSidebar />
         <no-ssr>
           <scrolly class="col-md-36 ml-sm-auto pt-3 px-4" :class="{ 'col-lg-29': $auth.loggedIn && $store.state.menu !== 'none' }">
             <scrolly-viewport class="scrolly-fixed pb-3">
-              <span v-if="online.sock === 2" class="badge badge-socket badge-light float-right">
-                <fa icon="circle-notch" spin /> Socket.io
-              </span>
-              <span v-else class="badge float-right" :class="online.sock === 1 ? 'badge-success' : 'badge-danger'">
-                <fa :icon="online.sock === 1 ? 'check' : 'close'" /> Socket.io
-              </span>
-              <span v-if="online.api === 2" class="badge badge-api badge-light float-right mr-1">
-                <fa icon="circle-notch" spin /> API
-              </span>
-              <span v-else class="badge float-right mr-1" :class="online.api === 1 ? 'badge-success' : 'badge-danger'">
-                <fa :icon="online.api === 1 ? 'check' : 'close'" /> API
-              </span>
-              <b-breadcrumb :items="breadcrumb" />
+              <div :class="{ 'd-none': $store.state.menu === 'none' }">
+                <span v-if="isChecking" class="badge badge-socket badge-light float-right">
+                  <fa icon="circle-notch" spin /> Health Check
+                </span>
+                <span v-if="!isChecking && !isOnline" class="badge float-right badge-danger">
+                  <fa icon="close" /> Maintenance
+                </span>
+                <b-breadcrumb :items="breadcrumb" />
+              </div>
               <nuxt />
             </scrolly-viewport>
             <scrolly-bar axis="y" />
@@ -75,6 +71,14 @@ export default {
       { text: 'Home', active: true }
     ]
   }),
+  computed: {
+    isChecking () {
+      return this.online.sock === 2 || this.online.api === 2
+    },
+    isOnline () {
+      return this.online.sock === 1 && this.online.api === 1
+    }
+  },
   created () {
     let vm = this
     this.$store.commit('$page', false)
@@ -90,6 +94,7 @@ export default {
   methods: {
     updatedNetworkConnection () {
       let vm = this
+      vm.online.api = 2
       vm.$axios.get('/api/status').then(data => {
         vm.online.api = data.status === 200 ? 1 : 0
         clearTimeout(vm.timeout.api)
@@ -106,6 +111,9 @@ export default {
 </script>
 
 <style scoped>
+.container-full {
+  height: 100vh !important;
+}
 .navbar-brand {
   font-size: 1.1rem;
   font-weight: bold;

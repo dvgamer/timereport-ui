@@ -39,7 +39,6 @@ module.exports = (topName, msg) => {
     }
   }
 
-  
   return {
     type: 'flex',
     altText: `${topName} ${msg}`,
