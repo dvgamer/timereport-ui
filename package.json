@@ -7,6 +7,7 @@
   "main": "nuxt",
   "scripts": {
     "dev": "env-cmd .env nuxt",
+    "test2": "env-cmd .env node tests/ldap.js",
     "serv": "env-cmd .env backpack dev",
     "build": "npm run eslint && env-cmd api/build.env nuxt build && env-cmd api/build.env backpack build",
     "start": "node dist/main.js --no-deprecation --no-warnings",

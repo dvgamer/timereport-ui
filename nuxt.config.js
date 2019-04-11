@@ -10,12 +10,13 @@ let config = {
     { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+    { name: 'apple-mobile-web-app-title', content: 'DevOps-UI' },
+    { name: 'author', content: 'Mr. Kananek T.' },
     { name: 'MobileOptimized', content: 'width' },
     { name: 'HandheldFriendly', content: 'true' }
   ],
-
   icons: {
-    sizes: [ 16, 120, 144, 152, 192, 384, 512 ]
+    sizes: [ 16, 120, 144 ]
   },
   manifest: {
     name: 'DevOps',
@@ -24,10 +25,12 @@ let config = {
     description: '',
     short_name: 'DevOps',
     icons: [
-      { src: '/icon-120.png', sizes: '120x120' }
+      { src: '/icon-16.png', sizes: '16x16' },
+      { src: '/icon-120.png', sizes: '120x120' },
+      { src: '/icon-144.png', sizes: '144x144' }
     ], 
     scope: '/',
-    start_url: '/',
+    start_url: '/sign-in',
     display: 'fullscreen',
     orientation: 'portrait',
     theme_color: '#ffffff',
