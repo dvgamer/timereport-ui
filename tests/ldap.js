@@ -40,7 +40,7 @@ let emp = [
 let main = async () => {
   const { Employee } = await mongo.open()
   console.log('delete many')
-  await Employee.deleteMany({ })
+  await Employee.deleteMany({ id: { $ne: null} })
   console.log('begin')
   for (const e of emp) {
     let data = await ldapAuth('thkanane', 'asdasd4', `(extensionAttribute1=*${e.id})`)
