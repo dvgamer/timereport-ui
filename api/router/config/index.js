@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const router = Router()
 
-router.get('/bot/:segment', require('./bot-service'))
+router.get('/service/:segment', require('./service-config'))
 
 module.exports = router

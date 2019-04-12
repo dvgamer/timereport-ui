@@ -12,12 +12,15 @@
     "build": "npm run eslint && env-cmd api/build.env nuxt build && env-cmd api/build.env backpack build",
     "start": "node dist/main.js --no-deprecation --no-warnings",
     "eslint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "prepare": "link-module-alias"
+    "preinstall": "which link-module-alias && link-module-alias clean || echo",
+    "postinstall": "link-module-alias"
   },
+  "_moduleAliasIgnoreWarning": true,
   "_moduleAliases": {
     "@debuger": "/api/debuger.js",
     "@mssql": "/api/mssql.js",
-    "@config": "/api/router/config/data.js",
+    "@config": "/api/router/config/get-service-config.js",
+    "@global": "/api/router/config/get-global-config.js",
     "@mongo": "/api/mongodb/index.js",
     "@line": "/api/line/index.js",
     "@line-flex": "/api/line/flex/index.js"

@@ -16,7 +16,22 @@ module.exports = [
         index: true
       },
       value: Mixed,
-      type: String,
+      created: Date
+    })
+  },
+  {
+    id: 'ServiceConfig',
+    name: 'config-service',
+    schema: Schema({
+      segment: {
+        type: String,
+        index: true
+      },
+      field: {
+        type: String,
+        index: true
+      },
+      value: Mixed,
       created: Date
     })
   },

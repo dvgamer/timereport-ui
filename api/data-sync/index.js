@@ -2,7 +2,7 @@ const sql = require('mssql')
 const moment = require('moment')
 const mongo = require('@mongo')
 const cron = require('node-cron')
-const config = require('@config')
+const global = require('@global')
 const logger = require('@debuger')('SYNC')
  
 const dbNormalize = {
@@ -12,7 +12,7 @@ const dbNormalize = {
 }
 
 const sqlConnectionPool = () => new Promise((resolve, reject) => {
-  config('database.posdb').then(posdb => {
+  global('database.posdb').then(posdb => {
     const conn = new sql.ConnectionPool(posdb.rep)
     conn.connect(err => {
       if (err) return reject(err)

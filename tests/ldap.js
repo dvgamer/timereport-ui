@@ -51,7 +51,7 @@ let main = async () => {
       fullname_en: ldap.display_name,
       department: ldap.department,
       sex: e.sex,
-      birdthday: new Date(e.birthday),
+      birthday: new Date(e.birthday),
       resign: false,
       created: new Date()
     }).save()

@@ -15,7 +15,7 @@ module.exports = [
       fullname_en: String,
       sex: String,
       department: String,
-      birdthday: {
+      birthday: {
         type: Date,
         index: true
       },
@@ -23,22 +23,6 @@ module.exports = [
         type: Boolean,
         index: true
       },
-      created: Date
-    })
-  },
-  {
-    id: 'BotConfig',
-    name: 'db-bot-config',
-    schema: Schema({
-      segment: {
-        type: String,
-        index: true
-      },
-      field: {
-        type: String,
-        index: true
-      },
-      value: Mixed,
       created: Date
     })
   }
