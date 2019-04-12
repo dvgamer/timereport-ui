@@ -12,11 +12,13 @@ const dbNormalize = {
 }
 
 const sqlConnectionPool = () => new Promise((resolve, reject) => {
-  const conn = new sql.ConnectionPool(config['posdb'])
-  conn.connect(err => {
-    if (err) return reject(err)
-    resolve(conn)
-  })
+  config('database.posdb').then(posdb => {
+    const conn = new sql.ConnectionPool(posdb.rep)
+    conn.connect(err => {
+      if (err) return reject(err)
+      resolve(conn)
+    })
+  }).catch(reject)
 })
 
 let cronJobs = {}

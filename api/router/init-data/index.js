@@ -9,9 +9,10 @@ dbRemoveAllAndInsert = async (dbMongo, dataRows) => {
 }
 
 module.exports = async () => {
-  let { PageSync, Snippet, User, UserHistory, GlobalConfig } = await mongo.open()
+  let { PageSync, Snippet, User, BotConfig, GlobalConfig } = await mongo.open()
 
-  await dbRemoveAllAndInsert(GlobalConfig, require('./global-config'))
-  await dbRemoveAllAndInsert(Snippet, require('./snippet'))
-  await dbRemoveAllAndInsert(PageSync, require('./page-sync'))
+  // await dbRemoveAllAndInsert(GlobalConfig, require('./global-config'))
+  // await dbRemoveAllAndInsert(Snippet, require('./snippet'))
+  // await dbRemoveAllAndInsert(PageSync, require('./page-sync'))
+  await dbRemoveAllAndInsert(BotConfig, require('./bot-config'))
 }

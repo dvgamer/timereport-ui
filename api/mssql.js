@@ -1,5 +1,5 @@
 const sql = require('mssql')
-const db = require('@config')
+const db = require('./database')
 
 module.exports = () => new Promise((resolve, reject) => {
   const conn = new sql.ConnectionPool(db[!(process.env.NODE_ENV === 'production') ? 'dev' : 'prd'])

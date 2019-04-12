@@ -23,6 +23,7 @@ router.get('/status', (req, res) => {
 })
 // Import API Routes
 router.use('/survey', require('./survey'))
+router.use('/config', require('./config'))
 // router.use('/app', appService)
 // router.use('/inspect', inspect)
 
