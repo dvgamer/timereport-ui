@@ -1,6 +1,5 @@
 const app = require('express')()
 const bodyParser = require('body-parser')
-const dataSync = require('./data-sync')
 const logger = require('@debuger')('API')
 const port = process.env.PORT || 3001
 const host = process.env.HOST || 'localhost'
@@ -26,14 +25,10 @@ app.use((req, res, next) => {
 })
 
 const api = require('./router')
-const socket = require('./socket-io')
 const auth = require('./authication')
-const hook = require('./webhook')
 
-app.use(socket.path, socket.handler)
-app.use(api.path, api.handler)
 app.use(auth.path, auth.handler)
-app.use(hook.path, hook.handler)
+app.use(api.path, api.handler)
 
 app.use('/log', require('./log-services'))
 
@@ -48,6 +43,5 @@ const InitializeExpress = async () => {
   }
   await app.listen(port)
   logger.start(`Server initialize complated on http://${host}:${port}`)
-  if (!config.dev) await dataSync()
 }
 InitializeExpress()

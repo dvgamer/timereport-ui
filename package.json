@@ -10,7 +10,11 @@
     "test2": "env-cmd .env node tests/ldap.js",
     "serv": "env-cmd .env backpack dev",
     "build": "npm run eslint && env-cmd api/build.env nuxt build && env-cmd api/build.env backpack build",
+    "pack": "7z a devops-ui.zip api/* .nuxt/* dist/* static/* store/* nuxt.config.js package.json",
+    "pack2": "7z a node_modules.zip node_modules/*",
     "start": "node dist/main.js --no-deprecation --no-warnings",
+    "socket": "node api/socket-io",
+    "sync": "node api/data-sync",
     "eslint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "preinstall": "which link-module-alias && link-module-alias clean || echo",
     "postinstall": "link-module-alias"

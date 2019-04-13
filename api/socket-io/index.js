@@ -2,29 +2,14 @@ const app = require('express')()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const mongo = require('@mongo')
-// let router = {}
-// if (process.env.NODE_ENV !== 'production') {
-//   const { Router } = require('express')
-//   router = Router()
-// } else {
-//   const app = require('express')()
-//   router = app
-// }
 
 // Require API routes
 const logger = require('@debuger')('HTTP')
 const host = process.env.SOCKET_HOST || '0.0.0.0'
-const port = process.env.SOCKET_PORT || 25082
+const port = process.env.SOCKET_PORT || 25091
 // sql.close()
 http.listen(port, host, () => (async () => {
-  if (process.env.NODE_ENV !== 'production') {
-    logger.start(`Socket.io created listening on http://${host}:${port}`)
-    io.on('connection', socket => {
-      socket.on('disconnect', () => { })
-    })
-  } else {
-    logger.start(`Socket.io created listening on http://${host}:${port}`)
-  }
+  logger.start(`Socket.io created listening on http://${host}:${port}`)
   let { PageSync, User } = await mongo.open()
 
   const changeUser = User.watch()
@@ -46,9 +31,3 @@ http.listen(port, host, () => (async () => {
 })().catch(ex => {
   logger.error(ex)
 }))
-
-// Export the server middleware
-module.exports = {
-  path: '/socket-io',
-  handler: app
-}
