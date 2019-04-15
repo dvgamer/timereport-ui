@@ -51,7 +51,9 @@ export default {
       return ['scrolly', this.isScrolling ? 'is-scrolling' : '']
     },
   },
-
+  created () {
+    this.refreshScrollLayout()
+  },
   mounted() {
     this.$nextTick(function() {
       let container = this.$el,
@@ -137,7 +139,7 @@ export default {
 
   methods: {
     onMouseEnter() {
-      // this.refreshScrollLayout()
+      this.refreshScrollLayout()
     },
 
     onMouseDown({ target: bar, pageX: initialPageX, pageY: initialPageY }) {

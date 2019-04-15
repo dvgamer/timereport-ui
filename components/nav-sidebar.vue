@@ -2,32 +2,26 @@
   <div v-if="$auth.loggedIn" class="col-lg-7 bg-light sidebar" :class="$store.state.menu !== 'none' ? 'd-none d-lg-block' : 'd-none'">
     <div class="sidebar-sticky">
       <div class="nav flex-column">
-        <no-ssr>
-          <h5 slot="placeholder" class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
-            <span>LOADING...</span>
-            <span class="d-flex align-items-center text-muted"><fa icon="circle-notch" spin /></span>
-          </h5>
-          <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
-            <span v-text="'mainmenu'" />
-            <span class="d-flex align-items-center text-muted"><fa icon="circle-notch" /></span>
-          </h5>
-          <transition name="slide">
-            <scrolly v-if="mainToggle" class="sidebar-scroll">
-              <scrolly-viewport>
-                <div v-for="(mainItem, i) in getMenuPermission('default')" :key="i" class="sub-item" :class="{ 'sub-active': mainMenu === mainItem.menu }">
-                  <h6 v-if="mainItem.group" class="sidebar-heading pt-3 pb-1 text-muted border-bottom mx-3 mb-0" v-text="mainItem.group" />
-                  <menu-item v-else :main-menu="mainMenu" :item="mainItem" :on-click="toggleMenu" />
-                  <div v-if="mainMenu === mainItem.menu">
-                    <div v-for="(subItem, l) in getMenuPermission(mainMenu)" :key="i + '-' + l">
-                      <menu-item v-if="!subItem.group" class="pl-3" :main-menu="mainMenu" :item="subItem" :on-click="toggleMenu" />
-                    </div>
+        <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
+          <span v-text="'mainmenu'" />
+          <span class="d-flex align-items-center text-muted"><fa icon="circle-notch" /></span>
+        </h5>
+        <transition name="slide">
+          <scrolly v-if="mainToggle" class="sidebar-scroll">
+            <scrolly-viewport>
+              <div v-for="(mainItem, i) in getMenuPermission('default')" :key="i" class="sub-item" :class="{ 'sub-active': mainMenu === mainItem.menu }">
+                <h6 v-if="mainItem.group" class="sidebar-heading pt-3 pb-1 text-muted border-bottom mx-3 mb-0" v-text="mainItem.group" />
+                <menu-item v-else :main-menu="mainMenu" :item="mainItem" :on-click="toggleMenu" />
+                <div v-if="mainMenu === mainItem.menu">
+                  <div v-for="(subItem, l) in getMenuPermission(mainMenu)" :key="i + '-' + l">
+                    <menu-item v-if="!subItem.group" class="pl-3" :main-menu="mainMenu" :item="subItem" :on-click="toggleMenu" />
                   </div>
                 </div>
-              </scrolly-viewport>
-              <scrolly-bar axis="y" />
-            </scrolly>
-          </transition>
-        </no-ssr>
+              </div>
+            </scrolly-viewport>
+            <scrolly-bar axis="y" />
+          </scrolly>
+        </transition>
       </div>
     </div>
   </div>

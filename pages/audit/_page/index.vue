@@ -67,7 +67,7 @@ export default {
   //   }
   // },
   async asyncData ({ $axios }) {
-    let { data } = await $axios.post('/log/audit')
+    let { data } = await $axios.post('/api/audit')
     return { audit: data.audit, pagination: Math.ceil(data.total / data.limit) }
   },
   methods: {

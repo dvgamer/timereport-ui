@@ -33,7 +33,7 @@
 export const state = () => ({
   default: [
     { permission: 0, name: 'Dashboard', route: '/', icon: 'home', exact: true },
-    { permission: 0, name: 'Survey', menu: 'survey', icon: 'bug', exact: true, api: '/api/survey/task' },
+    { permission: 0, name: 'Survey', route: '/survey', icon: 'bug', exact: true },
     // { permission: 3, name: 'Application', route: '/app', icon: 'bug', exact: true },
     { permission: 3, group: 'Service' },
     { permission: 3,name: 'Kafka Feed', route: '/app/kafka-feed', icon: 'tasks' },
@@ -45,9 +45,6 @@ export const state = () => ({
     { permission: 0, group: 'setting' },
     { permission: 3, name: 'Configuration', route: '/setting/configuration', icon: 'tasks' },
     { permission: 0, name: 'Audit', route: '/audit', icon: 'align-justify' }
-  ],
-  survey: [
-    { permission: 0, name: 'Overview', route: '/survey', icon: 'bug', exact: true }
   ]
 })
 export const getters = {

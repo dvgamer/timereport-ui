@@ -13,12 +13,12 @@
         </b-collapse>
       </b-container>
     </b-navbar>
-    <div class="container-fluid" :class="{ 'container-full': $store.state.menu === 'none' }">
-      <div class="row">
-        <navSidebar />
-        <no-ssr>
+    <no-ssr>
+      <div class="container-fluid" :class="{ 'container-full': $store.state.menu === 'none' }">
+        <div class="row">
+          <navSidebar />
           <scrolly class="col-md-36 ml-sm-auto pt-3 px-4" :class="{ 'col-lg-29': $auth.loggedIn && $store.state.menu !== 'none' }">
-            <scrolly-viewport class="scrolly-fixed pb-3">
+            <scrolly-viewport class="scrolly-fixed pb-5">
               <div :class="{ 'd-none': $store.state.menu === 'none' }">
                 <span v-if="isChecking" class="badge badge-socket badge-light float-right">
                   <fa icon="circle-notch" spin /> Health Check
@@ -32,15 +32,15 @@
             </scrolly-viewport>
             <scrolly-bar axis="y" />
           </scrolly>
-        </no-ssr>
+        </div>
       </div>
-    </div>
+    </no-ssr>
   </div>
 </template>
 <script>
 import navSidebar from '~/components/nav-sidebar.vue'
-import navUser from '~/components/nav-user.vue';
-import navSearch from '~/components/nav-search.vue';
+import navUser from '~/components/nav-user.vue'
+import navSearch from '~/components/nav-search.vue'
 
 export default {
   components: {

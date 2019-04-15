@@ -12,33 +12,55 @@
       </div>
     </div>
     <div class="row mt-3">
-      <div class="col-36">
-        <div v-for="(day, i) in getGroupHistory()" :key="i" class="group-history">
-          <h5 v-text="parseDays(day)" />
-          <div v-for="e in filterHistory(day)" :key="e.nRow" class="text-inline">
-            <div v-if="e.confirmDelete">
-              <button type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e)">
-                <fa class="text-danger" icon="trash-alt" />
-              </button>
-              <button type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e, false)">
-                <fa class="text-secondary" icon="times" />
-              </button>
-              <span class="delete-badge"><b>You want remove this "{{ e.sTitleName }}" survey task?</b></span>
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            Survey
+          </div>
+          <div class="card-body">
+            asd
+          </div>
+        </div>
+      </div>
+      <div class="col-md-24">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-1 mb-1">
+          <h5 class="h5 mb-md-0">History <small class="text-muted">at 11-12-2018</small></h5>
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group btn-group-sm mr-2">
+              <button type="button" class="btn btn-outline-primary"><fa icon="chevron-left" /></button>
+              <button type="button" class="btn btn-outline-primary">Today</button>
+              <button type="button" class="btn btn-outline-primary" disabled><fa icon="chevron-right" /></button>
             </div>
-            <div v-else>
-              <button v-if="isPermissionDelete()" type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e, true)">
-                <fa icon="trash-alt" />
-              </button>
-              <button type="button" class="btn btn-sm btn-icon" @click.prevent="onEdit(e)">
-                <fa icon="edit" />
-              </button>
-              <span><fa :icon="getIcon(e)" :class="'text-'+getColor(e)" /></span>
-              <b><a href="#" @click.prevent="onView(e)" v-text="e.sTitleName" /></b>
-              <b v-text="toTime(e.dCreated, i)" />
-              <b-badge v-if="e.nFail > 0" variant="danger" v-text="'Fail ' + e.nFail" />
-              <b-badge v-if="e.nWarn > 0" variant="warning" v-text="'Warning ' + e.nWarn" />
-              <b-badge v-if="e.nInfo > 0" variant="info" v-text="'Info ' + e.nInfo" />
-              <small v-text="'by ' + e.sName" />
+          </div>
+        </div>
+        <div>
+          <div v-for="(day, i) in getGroupHistory()" :key="i" class="group-history">
+            <h5 v-text="parseDays(day)" />
+            <div v-for="e in filterHistory(day)" :key="e.nRow" class="text-inline">
+              <div v-if="e.confirmDelete">
+                <button type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e)">
+                  <fa class="text-danger" icon="trash-alt" />
+                </button>
+                <button type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e, false)">
+                  <fa class="text-secondary" icon="times" />
+                </button>
+                <span class="delete-badge"><b>You want remove this "{{ e.sTitleName }}" survey task?</b></span>
+              </div>
+              <div v-else>
+                <button v-if="isPermissionDelete()" type="button" class="btn btn-sm btn-icon" @click.prevent="onDelete(e, true)">
+                  <fa icon="trash-alt" />
+                </button>
+                <button type="button" class="btn btn-sm btn-icon" @click.prevent="onEdit(e)">
+                  <fa icon="edit" />
+                </button>
+                <span><fa :icon="getIcon(e)" :class="'text-'+getColor(e)" /></span>
+                <b><a href="#" @click.prevent="onView(e)" v-text="e.sTitleName" /></b>
+                <b v-text="toTime(e.dCreated, i)" />
+                <b-badge v-if="e.nFail > 0" variant="danger" v-text="'Fail ' + e.nFail" />
+                <b-badge v-if="e.nWarn > 0" variant="warning" v-text="'Warning ' + e.nWarn" />
+                <b-badge v-if="e.nInfo > 0" variant="info" v-text="'Info ' + e.nInfo" />
+                <small v-text="'by ' + e.sName" />
+              </div>
             </div>
           </div>
         </div>

@@ -20,6 +20,8 @@ router.put('/:app/:group/:status/:msg?', async (req, res) => {
     res.end()
   }
 })
-router.post('/audit/:page?', require('../authication/middleware'), require('./audit'))
 
-module.exports = router
+module.exports = {
+  path: '/log',
+  handler: router
+}

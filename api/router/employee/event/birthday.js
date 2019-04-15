@@ -4,8 +4,8 @@ const moment = require('moment')
 
 module.exports = async (req, res) => {
   try {
-    const day = moment('2019-09-30 00:00:00.000Z').date()
-    const month = moment('2019-09-30 00:00:00.000Z').month() + 1
+    const day = moment().date()
+    const month = moment().month() + 1
     const { Employee } = await mongo.open()
     let result = []
     for (const e of (await Employee.find({ resign: false }))) {

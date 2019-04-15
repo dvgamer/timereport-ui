@@ -26,6 +26,7 @@ router.use('/employee', require('./employee'))
 router.use('/survey', require('./survey'))
 router.use('/config', require('./config'))
 router.use('/monitor', require('./monitor'))
+router.use('/audit', require('./audit'))
 
 // router.use('/app', appService)
 // router.use('/inspect', inspect)

@@ -275,3 +275,12 @@ textarea.reason {
   font-size: 10px;
   padding: 2px 6px;
 }
+.card {
+  .card-header {
+    font-weight: bold;
+    padding: 0.75rem 0.55rem;
+  }
+  .card-body {
+    padding: 0.55rem;
+  }
+}
