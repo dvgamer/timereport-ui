@@ -49,6 +49,16 @@
   }
 }
 
+ul.pagination.pagination-sm > li.page-item {
+  width: 25px;
+}
+ul.pagination.pagination-sm .page-link {
+  text-align: center;
+  padding: 0.25rem;
+  font-size: 0.6825rem;
+  line-height: 1.5;
+}
+
 .page-enter-active, .page-leave-active {
   transition: opacity .2s
 }

@@ -17,7 +17,7 @@
     "start:auth": "node api/endpoint auth",
     "start:api": "node api/endpoint api",
     "start:log": "node api/endpoint log",
-    "start:sync": "node api/data-sync",
+    "start:sync": "env-cmd .env node api/data-sync",
     "eslint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "preinstall": "which link-module-alias && link-module-alias clean || echo",
     "postinstall": "link-module-alias"

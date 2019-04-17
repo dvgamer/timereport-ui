@@ -5,21 +5,18 @@ let config = {
   meta: [
     { charset: 'utf-8' },
     { name: 'application-name', content: 'DevOps-UI' },
-    { name: 'description', content: 'pkg.description', id: 'desc' },
+    { name: 'name', content: 'DevOps-UI' },
+    { name: 'description', content: 'Server automation fix and report services.', id: 'desc' },
     { name: 'viewport', content: 'width=device-width, user-scalable=no' },
     { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
-    { name: 'apple-mobile-web-app-capable', content: 'yes' },
-    { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
     { name: 'apple-mobile-web-app-title', content: 'DevOps-UI' },
-    { name: 'author', content: 'Mr. Kananek T.' },
-    { name: 'MobileOptimized', content: 'width' },
-    { name: 'HandheldFriendly', content: 'true' }
+    { name: 'author', content: 'Mr. Kananek T.' }
   ],
   icons: {
     sizes: [ 16, 120, 144 ]
   },
   manifest: {
-    name: 'DevOps',
+    name: 'DevOps-UI',
     lang: 'en',
     dir: 'rtl',
     description: '',
@@ -28,16 +25,15 @@ let config = {
       { src: '/icon-16.png', sizes: '16x16' },
       { src: '/icon-120.png', sizes: '120x120' },
       { src: '/icon-144.png', sizes: '144x144' }
-    ], 
-    scope: '/',
-    start_url: '/sign-in',
+    ],
+    start_url: '/',
     display: 'fullscreen',
     orientation: 'portrait',
     theme_color: '#ffffff',
     background_color: '#ffffff',
     browser_action: {
       default_icon: '/icon-16.png',
-      default_popup: '/'
+      default_popup: '/sign-in'
     }
   },
   workbox: {

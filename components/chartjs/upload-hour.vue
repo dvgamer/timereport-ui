@@ -8,12 +8,12 @@ const nFormater = (n) => n.value > 900 ? (n.value / 1000).toFixed(n.value % 1000
 export default {
   props: {
     data: {
-      type: Object,
-      default: () => {}
+      type: Array,
+      default: () => ([])
     },
     label: {
-      type: String,
-      default: ''
+      type: Array,
+      default: () => ([])
     },
     height: {
       type: String,
@@ -39,7 +39,7 @@ export default {
             shadow: false,
             animation: true,
             dataLabels: {
-              formatter: () => nFormater(this),
+              formatter: (v) => nFormater(v),
               style: {
                 color: 'Tahoma',
                 fontSize: '9px',
@@ -58,7 +58,7 @@ export default {
         },
         yAxis: [
           {
-            labels: { formatter: () => nFormater(this) },
+            labels: { formatter: (v) => nFormater(v) },
             title: {
               text: 'ZIP files',
               style: `{ 'color:  '#666666' }`
@@ -70,10 +70,10 @@ export default {
         ],
         xAxis: [
           {
-            lables: { formatter: () => nFormater(this) },
-            reversed: false,
             opposite: false,
-            type: 'category',
+            reversed: false,
+            labels: { enabled: false },
+            categories: this.label,
             title: {
               text: '7 days age.'
             }
@@ -106,8 +106,7 @@ export default {
         series: [{
           showInLegend: false,
           name: 'files',
-          data: this.data || [],
-          label: this.label || []
+          data: this.data || []
         }]
       }
     }

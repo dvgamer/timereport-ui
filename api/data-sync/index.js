@@ -6,6 +6,26 @@ const global = require('@global')
 const logger = require('@debuger')('SYNC')
  
 const dbNormalize = {
+  'app-inbound-transfer|panel-graph-hour': (data, records) => {
+    let aGraph = []
+    let aDay = records.map(e => e.sDay)
+    for (const day of [ ...new Set(aDay) ]) {
+      let aHour = records.filter(e => e.sDay === day)
+      for (let i = 0; i < 24; i++) {
+        let nHour = aHour.filter(e => parseInt(e.sHour) === i).length
+        if (!nHour) aGraph.push({ sDay: day, sHour: i, aa: 0 })
+      }
+    }
+    let graph = records.concat(aGraph)
+    graph = graph.map(e => Object.assign(e, {
+      sHour: parseInt(e.sHour)
+    })).sort((a, b) => {
+      return moment(a.sDay).set('hour', a.sHour) > moment(b.sDay).set('hour', b.sHour) ? 1 : -1
+    }).filter(e => {
+      return moment(e.sDay).set('hour', e.sHour) <= moment()
+    })
+    return { data: graph.map(e => e.aa), label: graph.map(e => `Hour ${e.sHour} (${e.sDay})`) }
+  },
   'app-inbound-transfer|panel-status': (data, records) => {
     return { wait: records[0]['nTotal'], fail: records[1]['nTotal'], complete: records[2]['nTotal'] }
   }
@@ -13,6 +33,7 @@ const dbNormalize = {
 
 const sqlConnectionPool = () => new Promise((resolve, reject) => {
   global('database.posdb').then(posdb => {
+    console.log(posdb)
     const conn = new sql.ConnectionPool(posdb.rep)
     conn.connect(err => {
       if (err) return reject(err)
@@ -23,7 +44,7 @@ const sqlConnectionPool = () => new Promise((resolve, reject) => {
 
 let cronJobs = {}
 
-module.exports = async () => {
+const ayncSocket = async () => {
   let { PageSync } = await mongo.open()
   let pool = await sqlConnectionPool()
   
@@ -72,3 +93,5 @@ module.exports = async () => {
     }
   }
 }
+
+ayncSocket()

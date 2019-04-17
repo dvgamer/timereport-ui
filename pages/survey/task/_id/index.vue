@@ -101,7 +101,7 @@
           <hr>
           <b-button type="submit" :disabled="submited" variant="primary" v-text="submited ? 'Approving...' : taskKey ? 'Save' : 'Submit'" />
           <b-button v-if="!taskKey" type="reset" :disabled="submited" variant="danger">Reset</b-button>
-          <nuxt-link v-else tag="button" to="/survey" type="button" class="btn btn-secondary">Back</nuxt-link>
+          <nuxt-link tag="button" to="/survey" type="button" class="btn btn-secondary float-right">Back</nuxt-link>
         </div>
       </div>
     </b-form>

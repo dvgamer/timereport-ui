@@ -81,7 +81,7 @@ export default {
         vm.audit = data.audit
         vm.pagination = Math.ceil(data.total / data.limit)
         vm.$store.commit('$page', false)
-      }, 200)()
+      }, 50)()
     },
     getAuditPage(pageNum) {
       return pageNum === 1 ? '/audit' : `/audit?page=${pageNum}`
@@ -153,14 +153,5 @@ table > tbody > tr > td > input[readonly] {
 .tr-danger td, .tr-danger input {
   color: #ec2c1e;
   font-weight: bold;
-}
-li.page-item {
-  width: 25px;
-}
-.pagination-sm .page-link {
-  text-align: center;
-  padding: 0.25rem;
-  font-size: 0.6825rem;
-  line-height: 1.5;
 }
 </style>

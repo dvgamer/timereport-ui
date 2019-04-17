@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const router = Router()
 
+const moment = require('moment')
 const request = require('request-promise')
 const PromiseFtp = require('promise-ftp')
 const mongo = require('@mongo')
@@ -85,7 +86,7 @@ router.get('/inbound-transfer', (req, res) => (async () => {
   try {
     const { PageSync } = await mongo.open()
     let result = {
-      graph: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-graph-hour' })).data || [],
+      graph: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-graph-hour'  })).data || {},
       sequence: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-sequence' })).data || [],
       status: (await PageSync.findOne({ route: 'app-inbound-transfer', module: 'panel-status' })).data || {}
     }
