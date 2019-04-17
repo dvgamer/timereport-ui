@@ -9,6 +9,12 @@
 }
 #__layout {
   display: flex !important;
+  .con {
+    > .bar {
+      background-color: #FFF
+    }
+  }
+
   > div.main-panel {
     width: 100vw;
     // > .container {

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$auth.loggedIn" class="col-lg-7 bg-light sidebar" :class="$store.state.menu !== 'none' ? 'd-none d-lg-block' : 'd-none'">
+  <div v-if="$auth.loggedIn" class="col-lg-7 bg-light sidebar" :class="$store.state.menu !== 'none' ? (!$store.state.expaned ? 'd-none d-lg-block' : '') : 'd-none'">
     <div class="sidebar-sticky">
       <div class="nav flex-column">
         <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
@@ -70,8 +70,8 @@ export default {
         }
       }
       this.mainMenu = this.$store.getters['mainmenu/getMainMenu'](this.$route.path)
-      this.$forceUpdate()
       this.mainToggle = true
+      this.$forceUpdate()
     },
     toggleMenu (name, route) {
       if (this.mainMenu === name) {

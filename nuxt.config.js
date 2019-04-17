@@ -6,7 +6,7 @@ let config = {
     { charset: 'utf-8' },
     { name: 'application-name', content: 'DevOps-UI' },
     { name: 'description', content: 'pkg.description', id: 'desc' },
-    { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
+    { name: 'viewport', content: 'width=device-width, user-scalable=no' },
     { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },

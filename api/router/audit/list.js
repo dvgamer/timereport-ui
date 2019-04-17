@@ -7,9 +7,9 @@ const isNaNZero = (parseNumber, defaultNumber = 0) => {
 
 module.exports = async (req, res) => {
   try {
-    let limit = 18
+    let limit = isNaNZero(req.body.limit, 10)
     let level = req.auth.user_level
-    let page = isNaNZero(req.params.page, 1)
+    let page = isNaNZero(req.body.page, 1)
     const { ServiceLog } = await mongo.open()
     const pagination = { sort: { created: -1 }, skip: (page - 1) * limit, limit: limit }
     const filter = { permission: { $lte: level } }

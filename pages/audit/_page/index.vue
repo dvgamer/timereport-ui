@@ -45,13 +45,15 @@
       </tbody>
     </table>
     <div class="overflow-auto">
-      <b-pagination-nav base-url="/audit/" use-router no-prefetch size="sm" :number-of-pages="pagination" @change="getAuditPage" />
+      <b-pagination-nav :link-gen="getAuditPage" use-router no-prefetch size="sm" :number-of-pages="pagination" @click.native="onAuditData" />
     </div>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
+import _ from 'lodash'
+
 export default {
   head: {
     title: 'Audit',
@@ -66,13 +68,23 @@ export default {
   //     return process.client ? window.innerHeight == screen.height : false
   //   }
   // },
-  async asyncData ({ $axios }) {
-    let { data } = await $axios.post('/api/audit')
+  async asyncData ({ $axios, query }) {
+    let { data } = await $axios.post('/api/audit', query)
     return { audit: data.audit, pagination: Math.ceil(data.total / data.limit) }
   },
   methods: {
+    onAuditData () {
+      let vm = this
+      this.$store.commit('$page', true)
+      return _.debounce(async () => {
+        let { data } = await vm.$axios.post('/api/audit', vm.$route.query)
+        vm.audit = data.audit
+        vm.pagination = Math.ceil(data.total / data.limit)
+        vm.$store.commit('$page', false)
+      }, 200)()
+    },
     getAuditPage(pageNum) {
-      console.log(pageNum === 1 ? '/audit' : `/audit/${pageNum}`)
+      return pageNum === 1 ? '/audit' : `/audit?page=${pageNum}`
     },
     getDateTime (datetime) {
       return moment(datetime).format('DD-MM-YYYY HH:mm:ss.SSS')
@@ -141,5 +153,14 @@ table > tbody > tr > td > input[readonly] {
 .tr-danger td, .tr-danger input {
   color: #ec2c1e;
   font-weight: bold;
+}
+li.page-item {
+  width: 25px;
+}
+.pagination-sm .page-link {
+  text-align: center;
+  padding: 0.25rem;
+  font-size: 0.6825rem;
+  line-height: 1.5;
 }
 </style>

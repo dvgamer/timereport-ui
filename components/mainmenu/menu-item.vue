@@ -1,6 +1,6 @@
 <template>
   <li v-if="item" class="nav-item pl-1">
-    <nuxt-link v-if="!item.menu" class="nav-link" :to="item.route || '/'" active-class="active" :exact="item.exact">
+    <nuxt-link v-if="!item.menu" class="nav-link" :to="item.route || '/'" active-class="active" :exact="item.exact" @click.native="onNuxtLink">
       <fa :icon="!item.loading ? item.icon : 'circle-o-notch'" :spin="item.loading" />
       <span v-text="item.name" />  
     </nuxt-link>
@@ -27,6 +27,11 @@ export default {
     }
   },
   created () {
+  },
+  methods: {
+    onNuxtLink () {
+      this.$store.commit('expaned')
+    }
   }
 }
 </script>
