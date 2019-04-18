@@ -1,0 +1,1 @@
+mongodump --host 10.0.80.52 --port 27017 --gzip --archive=20190417.archive
