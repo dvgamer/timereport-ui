@@ -4,7 +4,7 @@ const mssql = require('@mssql')
 const moment = require('moment')
 const LINE = require('@line')
 
-const SURVEY = process.env.LINE_BOT || 'Ca2338af8e1ae465a2541acde69cd4e0c'
+const SURVEY = process.env.LINE_BOT || 'Cbdf461dd7136e1e7b570d0cb6a2ef9f5'
 const SERVER_VERSION = 'http://s-thcw-posdb95.pos.cmg.co.th/survey/version/'
 
 module.exports = async (req, res) => {
@@ -59,9 +59,9 @@ module.exports = async (req, res) => {
     let logText = `Monitor ${updated.length > 0 ? updated.length : tasks.length} (F:${totalFail} W:${totalWarn}  I:${totalInfo})`
     logger.info(logText, created.format('YYYY-MM-DD HH:mm:ss.SSS'), key ? 'Updated.' : 'Insterted.')
     if (!key) { // สรุป Monitor DailyClose 21.03.2019 Time 22.30
-      LINE('cmgpos-bot', flex.monitor(name, tasks), SURVEY)
+      LINE('survey', flex.monitor(name, tasks), SURVEY)
     } else if (updated.length > 0) {
-      LINE('cmgpos-bot', flex.monitor(name, updated, `${SERVER_VERSION}${key}`), SURVEY)
+      LINE('survey', flex.monitor(name, updated, `${SERVER_VERSION}${key}`), SURVEY)
     }
     res.json({ success: true })
   } catch (ex) {

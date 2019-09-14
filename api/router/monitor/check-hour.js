@@ -5,7 +5,7 @@ const aLog = require('../../log-services/log-mongo')
 
 const moment = require('moment')
 
-const SURVEY = process.env.LINE_BOT || 'Ca2338af8e1ae465a2541acde69cd4e0c'
+const SURVEY = process.env.LINE_BOT || 'Cbdf461dd7136e1e7b570d0cb6a2ef9f5'
 module.exports = async (req, res) => {
   let pool = { close: () => {} }
   try {
@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
     let [ [ record ] ] = (await pool.request().query(command)).recordsets
     if (parseInt(record.nTask) === 0) {
       let msg = `ไม่มีข้อมูลในช่วงเวลา ${moment().add(hour * -1, 'hour').format('HH:mm')} - ${moment().format('HH:mm')}`
-      LINE('cmgpos-bot', flex.none('Summary Monitor DailyClose', msg), SURVEY)
+      LINE('survey', flex.none('Summary Monitor DailyClose', msg), SURVEY)
     }
     aLog(0, 'monitor-daily', 'schedule', 'success', `Checking task 'Monitor DailyClose' last ${hour} hours.`)
   } catch (ex) {
