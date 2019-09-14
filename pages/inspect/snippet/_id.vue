@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import spinnerSocket from '~/components/loading/spinner-socket.vue'
+// import spinnerSocket from '~/components/loading/spinner-socket.vue'
 
 export default {
   // components: {
@@ -71,12 +71,12 @@ export default {
       }
     }
   },
-  async asyncData ({ params }) {
-    let { id } = params
+  async asyncData () {
+    // let { id } = params
     let uri = 'javascript'
-    if (id === 'create') {
+    // if (id === 'create') {
 
-    }
+    // }
     return {
       coding: `/_/coding/${uri}`
     }

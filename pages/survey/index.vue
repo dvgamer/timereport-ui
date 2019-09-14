@@ -172,9 +172,7 @@ export default {
       if (confirmDelete === undefined) {
         let vm = this
         this.editor = true
-        let index = -1
-        let item = this.history.filter((a, i) => {
-          if (a.sKey === e.sKey) index = i
+        let item = this.history.filter(a => {
           return a.sKey === e.sKey
         })
         // console.log(index, item)

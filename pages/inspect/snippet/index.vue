@@ -74,13 +74,13 @@ export default {
       theme: "material"
     }
   }),
-  async asyncData ({ $api, env, $axios, store, params }) {
+  async asyncData ({ $api }) {
     let data = await $api.get('/inspect/snippet')
     return { items: data }
   },
   methods: {
     getDetail (data) {
-      let [ raw, line ] = /(.*?)\n/ig.exec(data) || []
+      let [ , line ] = /(.*?)\n/ig.exec(data) || []
       return line
     },
     getModify (date) {

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueSocketIO from 'vue-socket.io'
 const store = require('../store')
 
-export default ({ env, app }) => {
+export default ({ env }) => {
   Vue.use(new VueSocketIO({
     debug: env.dev,
     connection: env.SOCKET_HOST_URL,

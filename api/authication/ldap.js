@@ -93,7 +93,7 @@ module.exports = async (usr, pwd, filter) => {
 
       if (filter) res.on('search-end', () => {
         // logger.success(' - search-end:', !!entry)
-        return resolveBind(data)
+        return resolveBind()
       })
 
       res.on('search-error', err => {

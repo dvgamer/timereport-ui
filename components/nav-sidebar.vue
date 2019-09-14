@@ -73,7 +73,7 @@ export default {
       this.mainToggle = true
       this.$forceUpdate()
     },
-    toggleMenu (name, route) {
+    toggleMenu (name) {
       if (this.mainMenu === name) {
         this.backMenu()
       } else {

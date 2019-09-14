@@ -58,7 +58,6 @@ let config = {
   ],
   bootstrapVue: { bootstrapCSS: false },
   plugins: [
-    '~/plugins/vue-api.js',
     './plugins/vue-toast.js',
     '~/plugins/vue-installed.js',
     { src: '~/plugins/vue-component.js', ssr: false },

@@ -19,8 +19,5 @@ export const mutations = {
   },
   $menu(state, val) {
     state.menu = val
-  },
-  $api(state, val) {
-    state.api = val ? val : !state.api
   }
 }

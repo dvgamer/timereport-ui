@@ -5,7 +5,7 @@ let router = Router()
 // Require API routes
 const logger = require('@debuger')('API')
 const data = require('./init-data')
-const inspect = require('./inspect')
+// const inspect = require('./inspect')
 const appService = require('./app-service')
 
 router.get('/initialize', (req, res) => {

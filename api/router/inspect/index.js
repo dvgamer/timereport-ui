@@ -25,7 +25,7 @@ router.get('/snippet', (req, res) => (async () => {
 }))
 
 router.get('/snippet/new', (req, res) => (async () => {
-  let { Snippet } = await mongo.open()
+  // let { Snippet } = await mongo.open()
   // let data = require('../data/snippet')
   // await Snippet.deleteMany({})
   // for (let i = 0; i < data.length; i++) {

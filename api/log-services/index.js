@@ -14,7 +14,7 @@ router.put('/:app/:group/:status/:msg?', async (req, res) => {
     if (!app || !group || !status) return res.end()
 
     aLog(getLevel, app, (group !== 'null' ? group : ''), status, msg)
-  } catch {
+  } catch (ex) {
     res.status(404)
   } finally {
     res.end()

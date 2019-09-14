@@ -143,7 +143,7 @@ export default {
   async asyncData ({ redirect, params, $axios }) {
     if (params.edit) {
       let sKey = parseInt(params.edit)
-      if (sKey == NaN) return redirect('/survey')
+      if (isNaN(sKey)) return redirect('/survey')
 
       let { data } = await $axios('/api/survey/task/edit/' + params.edit)
       if (!data.records) return redirect('/survey')
@@ -210,17 +210,6 @@ export default {
     },
     onSubmit () {
       let vm = this
-      let data = vm.tasks.map(e => {
-        return {
-          nTaskDetailId: e.nTaskDetailId,
-          nOrder: e.nOrder,
-          sSubject: e.sSubject,
-          selected: e.selected,
-          status: e.problem ? e.status : '',
-          problem: e.problem || false,
-          reason: e.problem ? e.reason : ''
-        }
-      })
       this.submited = true
       vm.$axios.post('/api/survey/task/submit', {
         key: vm.taskKey,

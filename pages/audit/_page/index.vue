@@ -60,6 +60,8 @@ export default {
   },
   data () {
     return {
+      audit: [],
+      pagination: 1,
       fullscreenToggle: false
     }
   },
@@ -77,9 +79,9 @@ export default {
       let vm = this
       this.$store.commit('$page', true)
       return _.debounce(async () => {
-        let { data } = await vm.$axios.post('/api/audit', vm.$route.query)
-        vm.audit = data.audit
-        vm.pagination = Math.ceil(data.total / data.limit)
+        await vm.$axios.post('/api/audit', vm.$route.query)
+        // vm.audit = data.audit
+        // vm.pagination = Math.ceil(data.total / data.limit)
         vm.$store.commit('$page', false)
       }, 50)()
     },

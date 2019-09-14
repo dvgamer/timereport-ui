@@ -62,7 +62,7 @@ export default {
       this.online.sock = 0
       this.updatedNetworkConnection()
     },
-    'sign-out|status' (data) {
+    'sign-out|status' () {
     }
   },
   data: () => ({
@@ -101,7 +101,7 @@ export default {
       vm.$axios.get('/api/status').then(data => {
         vm.online.api = data.status === 200 ? 1 : 0
         clearTimeout(vm.timeout.api)
-      }).catch(ex => {
+      }).catch(() => {
         vm.online.api = 0
         clearTimeout(vm.timeout.api)
       })

@@ -1,6 +1,6 @@
 const mongo = require('@mongo')
 
-dbRemoveAllAndInsert = async (dbMongo, dataRows) => {
+const dbRemoveAllAndInsert = async (dbMongo, dataRows) => {
   await dbMongo.deleteMany()
   for (let i = 0; i < dataRows.length; i++) {
     const data = dataRows[i]
@@ -9,7 +9,7 @@ dbRemoveAllAndInsert = async (dbMongo, dataRows) => {
 }
 
 module.exports = async () => {
-  let { PageSync, Snippet, User, ServiceConfig, GlobalConfig } = await mongo.open()
+  let { ServiceConfig, GlobalConfig } = await mongo.open()
 
   await dbRemoveAllAndInsert(GlobalConfig, require('./config-global'))
   await dbRemoveAllAndInsert(ServiceConfig, require('./config-service'))

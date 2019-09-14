@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
-const { Mixed } = Schema.Types
+// const { Mixed } = Schema.Types
 
 module.exports = [
   {

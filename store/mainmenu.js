@@ -48,7 +48,7 @@ export const state = () => ({
   ]
 })
 export const getters = {
-  getMainMenu: (state, getters) => (path) => {
+  getMainMenu: (state) => (path) => {
     let IsStop = false
     let sResult = 'default'
     let compare = (menu) => {
@@ -59,17 +59,17 @@ export const getters = {
       for (let i in state[key]) {
         if (compare(state[key][i])) {
           sResult = key
-          break;
+          break
         } else if (state[key][i].items) {
           for (let l in state[key][i].items) {
             if (compare(state[key][i].items[l])) {
               sResult = key
-              break;
+              break
             }
           }
         }
       }
-      if (IsStop) break;
+      if (IsStop) break
     }
     return sResult
   }

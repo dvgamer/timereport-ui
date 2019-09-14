@@ -147,7 +147,7 @@ export default {
     title: 'InboundFTP Service',
   },
   sockets: {
-    'app-inbound-transfer|panel-graph-hour' (data) {
+    'app-inbound-transfer|panel-graph-hour' () {
       // console.log('app-inbound-transfer|panel-graph-hour', data)
     },
     'app-inbound-transfer|panel-sequence' (data) {

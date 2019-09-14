@@ -1,7 +1,6 @@
 const { Router } = require('express')
 const router = Router()
 
-const moment = require('moment')
 const request = require('request-promise')
 const PromiseFtp = require('promise-ftp')
 const mongo = require('@mongo')
@@ -56,7 +55,9 @@ router.get('/inbound-online', (req, res) => (async () => {
       let ip_res = {}
       try {
         ip_res = await request({ method: 'GET', uri: ip.value, resolveWithFullResponse: true, timeout: 3000 })
-      } catch (ex) {}
+      } catch (ex) {
+        ip_res = {}
+      }
       await PageSync.findOneAndUpdate(list._id, { 'data.online': ip_res.statusCode === 200 })
     }
  
@@ -72,7 +73,9 @@ router.get('/inbound-online', (req, res) => (async () => {
       try {
         serverMessage = await ftp.connect({ host: ip.value.addr, user: ip.value.usr, password: ip.value.pwd, connTimeout: 5000 })
         await ftp.end()
-      } catch (ex) {}
+      } catch (ex) {
+        serverMessage = null
+      }
       await PageSync.findOneAndUpdate(list._id, { 'data.online': serverMessage != null})
     }
     res.sendStatus(200).end()

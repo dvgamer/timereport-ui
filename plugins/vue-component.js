@@ -1,17 +1,17 @@
 import Vue from 'vue'
 // import { VueSlideoutPanel } from 'vue2-slideout-panel'
 import Gravatar from 'vue-gravatar'
-import { Scrolly, ScrollyViewport, ScrollyBar } from './vue-scrolly'
+// import { Scrolly, ScrollyViewport, ScrollyBar } from './vue-scrolly'
 import VueElementLoading from 'vue-element-loading'
 
 Vue.component('VueElementLoading', VueElementLoading)
-Vue.component('scrolly', Scrolly)
-Vue.component('scrolly-viewport', ScrollyViewport)
-Vue.component('scrolly-bar', ScrollyBar)
+// Vue.component('scrolly', Scrolly)
+// Vue.component('scrolly-viewport', ScrollyViewport)
+// Vue.component('scrolly-bar', ScrollyBar)
 Vue.component('v-gravatar', Gravatar)
 // Vue.component('slideout-panel', VueSlideoutPanel)
 
-const elemKeydown = (element, $elem, settings, event) => {
+const elemKeydown = ($elem, settings, event) => {
   const isTab = event.which == 9
   const isRevTab = isTab && event.shiftKey
   const isEnter = event.which == 13
@@ -52,8 +52,7 @@ const elementFind = (el, tagname) => {
 }
 
 Vue.directive('tabindex', {
-  bind: (el) => {
-  },
+  bind: () => { },
   inserted: (el, binding) => {
     el.$elem = []
     const settings = { enterKey: !!binding.modifiers.enter } // v-if="!activate || !enabled" 
@@ -62,12 +61,12 @@ Vue.directive('tabindex', {
     el.$elem.sort((a, b) => { return a.tabIndex > b.tabIndex ? 1 : -1 })
 
     for (const element of el.$elem) {
-      element.addEventListener('keydown', e => elemKeydown.bind(this, element, el.$elem, settings, e).apply())
+      element.addEventListener('keydown', e => elemKeydown.bind(this, el.$elem, settings, e).apply())
     }
   },
   unbind: (el) => {
     for (const element of el.$elem) {
-      element.removeEventListener('keydown', e => elemKeydown.bind(this, element, el.$elem, {}, e).apply())
+      element.removeEventListener('keydown', e => elemKeydown.bind(this, el.$elem, {}, e).apply())
     }
   }
 })

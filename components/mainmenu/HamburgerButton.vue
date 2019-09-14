@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-    onClick (event) {
+    onClick () {
       this._active = !this.active
     }
   }

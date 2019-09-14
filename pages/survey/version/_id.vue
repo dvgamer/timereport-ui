@@ -52,7 +52,7 @@ export default {
   },
   async asyncData ({ redirect, params, $axios }) {
     let sKey = parseInt(params.id)
-    if (sKey == NaN) return redirect('/survey')
+    if (isNaN(sKey)) return redirect('/survey')
 
     let { data } = await $axios('/api/survey/task/version/' + params.id)
     if (!data.records) return redirect('/survey')

@@ -33,13 +33,12 @@
 
 <script>
 import moment from 'moment'
-import spinnerSocket from '~/components/loading/spinner-socket.vue'
 
 let iDash = 0
 let T_CMD = 0
 let T_INFO = 1
 let T_DEBUG = 2
-let T_RUN = 3
+// let T_RUN = 3
 let T_FAIL = 4
 
 export default {
@@ -107,7 +106,7 @@ export default {
   methods: {
     async axiosCompiler () {
       let vm = this
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           vm.cmdWriteLog(T_FAIL, `'${vm.cmd.stdin}' is not recognized as command.`)
           resolve()

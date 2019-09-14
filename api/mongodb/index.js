@@ -1,3 +1,4 @@
+/* eslint require-atomic-updates: error */
 const mongoose = require('mongoose')
 const moment = require('moment-timezone')
 
@@ -17,10 +18,10 @@ let mongodb = {
     let conn = await mongoose.createConnection(MONGODB_URI, { useCreateIndex: true, useNewUrlParser: true, connectTimeoutMS: 10000 })
     logger.log(`Connected. mongodb://${MONGODB_SERVER}/${dbname} (State is ${conn.readyState})`)
     conn.connected = () => conn.readyState === 1
-    conn.close = async () => {
-      await conn.close()
-      logger.log(`Closed. mongodb://${MONGODB_SERVER}/${dbname} (State is ${conn.readyState})`)
-    }
+    // conn.close = async () => {
+    //   await conn.close()
+    //   logger.log(`Closed. mongodb://${MONGODB_SERVER}/${dbname} (State is ${conn.readyState})`)
+    // }
     conn.Schema = {
       ObjectId: mongoose.Schema.ObjectId
     }

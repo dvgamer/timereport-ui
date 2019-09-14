@@ -31,6 +31,6 @@ module.exports = async (req, res) => {
     await LINE('ris-sd3', { type: 'text', text: `Failure, ${ex.message || ex}.` }, id)
   } finally {
     jobEnabled = true
-    return res.end()
+    res.end()
   }
 }
