@@ -17,3 +17,4 @@ tmp
 package-lock.json
 static/sw.js
 *.zip
+codealike.json

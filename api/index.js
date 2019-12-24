@@ -1,50 +1,56 @@
-const app = require('express')()
-const port = process.env.PORT || 3001
-const host = process.env.HOST || 'localhost'
+const bodyParser = require('body-parser')
+const { Nuxt, Builder } = require('nuxt')
 
-let config = require('../nuxt.config.js')
+const app = require('express')()
+const logger = require('@debuger')('NUXT')
+
+const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
 
-if (config.dev) {
-  const bodyParser = require('body-parser')
-  // support parsing of application/json type post data
-  app.use(bodyParser.json())
+// Build only in dev mode
+const InitializeExpress = async () => {
+  const nuxt = new Nuxt(config)
+  if (!config.dev) {
+    await nuxt.ready()
+  } else {
+    const builder = new Builder(nuxt)
+    await builder.build()
+  }
+  app.use(nuxt.render)
 
-  //support parsing of application/x-www-form-urlencoded post data
-  app.use(bodyParser.urlencoded({ extended: true }))
+  app.listen(config.server.port)
+  logger.start(`Server initialize on http://${config.server.host}:${config.server.port}`)
+}
 
-  app.use((req, res, next) => {
-    const methodAllow = [ 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'DELETE' ]
+// support parsing of application/json type post data
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use((req, res, next) => {
+  if (config.dev) {
+    const methodAllow = ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'DELETE']
     res.setHeader('Content-Type', 'application/json')
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Access-Control-Allow-Headers', '*')
     res.setHeader('Access-Control-Allow-Credentials', 'true')
     res.setHeader('Access-Control-Allow-Methods', methodAllow.join(','))
-    if (req.method === 'OPTIONS') return res.sendStatus(200)
-    next()
-  })
-
-  const api = require('./router')
-  const auth = require('./authication')
-  const log = require('./log-services')
-
-  app.use(auth.path, auth.handler)
-  app.use(api.path, api.handler)
-  app.use(log.path, log.handler)
-
-  require('./socket-io')
-}
-// Build only in dev mode
-const { Nuxt } = require('nuxt')
-const logger = require('@debuger')('NUXT')
-const InitializeExpress = async () => {
-  if (!config.dev) {
-    // Init Nuxt.js
-    const nuxt = new Nuxt(config)
-    await nuxt.ready()
-    app.use(nuxt.render)
   }
-  await app.listen(port)
-  logger.start(`Server initialize complated on http://${host}:${port}`)
+  if (req.method === 'OPTIONS') return res.sendStatus(200)
+  next()
+})
+
+if (config.dev) {
+  // const api = require('./router')
+  // const auth = require('./authication')
+  // const log = require('./log-services')
+
+  // app.use(auth.path, auth.handler)
+  // app.use(api.path, api.handler)
+  // app.use(log.path, log.handler)
+
+  // require('./socket-io')
 }
-InitializeExpress()
+
+InitializeExpress().catch(ex => {
+  console.log(ex)
+})

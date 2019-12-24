@@ -1,4 +1,5 @@
-let config = {
+const production = !(process.env.NODE_ENV === 'development')
+const config = {
   head: {
     titleTemplate: title => `${title ? `${title} · ` : ''}DevOps`
   },
@@ -13,7 +14,7 @@ let config = {
     { name: 'author', content: 'Mr. Kananek T.' }
   ],
   icons: {
-    sizes: [ 16, 120, 144 ]
+    sizes: [16, 120, 144]
   },
   manifest: {
     name: 'DevOps-UI',
@@ -44,7 +45,7 @@ let config = {
   },
   loading: '~/components/loading/top-bar.vue',
   css: [
-    './assets/scss/index.scss',
+    './assets/scss/index.scss'
     // 'codemirror/lib/codemirror.css',
     // 'codemirror/addon/merge/merge.css',
     // 'codemirror/theme/material.css'
@@ -60,11 +61,11 @@ let config = {
   plugins: [
     './plugins/vue-toast.js',
     '~/plugins/vue-installed.js',
-    { src: '~/plugins/vue-component.js', ssr: false },
-  //   { src: '~/plugins/vue-codemirror.js', ssr: false },
-    { src: '~/plugins/socket.io.js', ssr: false }
+    { src: '~/plugins/vue-component.js', ssr: false }
+    // { src: '~/plugins/vue-codemirror.js', ssr: false },
+    // { src: '~/plugins/socket.io.js', ssr: false }
   ],
-  vendor: [ 'moment', '~/node_modules/vue-socket.io' ],
+  vendor: ['moment', '~/node_modules/vue-socket.io'],
   build: {
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {
@@ -74,6 +75,16 @@ let config = {
           loader: 'eslint-loader',
           exclude: /(node_modules)/
         })
+      }
+    },
+    parallel: !production,
+    cache: true,
+    extractCSS: production,
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          styles: { name: 'styles', test: /\.(css|vue)$/, chunks: 'all', enforce: true }
+        }
       }
     }
   },
@@ -104,6 +115,7 @@ let config = {
       home: '/'
     }
   },
+  server: { port: 3000, host: '0.0.0.0', timing: false },
   fontawesome: {
     component: 'fa',
     imports: [
@@ -112,7 +124,7 @@ let config = {
   },
   axios: { baseURL: process.env.AXIOS_BASE_URL || 'http://10.0.80.52:25081/' },
   env: {
-    dev: process.env.NODE_ENV !== 'production',
+    dev: !production,
     baseURL: process.env.AXIOS_BASE_URL || 'http://10.0.80.52:25081/',
     SOCKET_HOST_URL: process.env.SOCKET_HOST ? `http://${process.env.SOCKET_HOST}:${process.env.SOCKET_PORT}` : 'http://10.0.80.52:25082'
   }
