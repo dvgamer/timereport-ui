@@ -38,11 +38,11 @@ export default {
     }
   },
   methods: {
-    start() {
+    start () {
       this.$store.commit('$page', true)
     },
-    finish() {
-      let vm = this
+    finish () {
+      const vm = this
       vm.$store.commit('$page', false)
     }
   }

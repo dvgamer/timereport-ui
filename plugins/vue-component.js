@@ -1,14 +1,13 @@
 import Vue from 'vue'
-// import { VueSlideoutPanel } from 'vue2-slideout-panel'
 import Gravatar from 'vue-gravatar'
-// import { Scrolly, ScrollyViewport, ScrollyBar } from './vue-scrolly'
 import VueElementLoading from 'vue-element-loading'
 
 Vue.component('VueElementLoading', VueElementLoading)
+Vue.component('v-gravatar', Gravatar)
+
 // Vue.component('scrolly', Scrolly)
 // Vue.component('scrolly-viewport', ScrollyViewport)
 // Vue.component('scrolly-bar', ScrollyBar)
-Vue.component('v-gravatar', Gravatar)
 // Vue.component('slideout-panel', VueSlideoutPanel)
 
 const elemKeydown = ($elem, settings, event) => {

@@ -2,7 +2,7 @@ const bodyParser = require('body-parser')
 const { Nuxt, Builder } = require('nuxt')
 
 const app = require('express')()
-const logger = require('@debuger')('NUXT')
+const logger = require('@touno-io/debuger')('Server')
 
 const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'

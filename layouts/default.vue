@@ -39,55 +39,24 @@
   </div>
 </template>
 <script>
-import navSidebar from '~/components/nav-sidebar.vue'
-import navUser from '~/components/nav-user.vue'
-import navSearch from '~/components/nav-search.vue'
-import hamburger from "~/components/mainmenu/HamburgerButton.vue";
+// import navSidebar from '~/components/nav-sidebar.vue'
+// import navUser from '~/components/nav-user.vue'
+// import navSearch from '~/components/nav-search.vue'
+// import hamburger from "~/components/mainmenu/HamburgerButton.vue";
 
 export default {
   components: {
-    navSidebar,
-    navUser,
-    navSearch,
-    hamburger
-  },
-  sockets: {
-    'connect' () {
-      clearTimeout(this.timeout.sock)
-      this.online.sock = 1
-      this.updatedNetworkConnection()
-    },
-    'disconnect' () {
-      clearTimeout(this.timeout.sock)
-      this.online.sock = 0
-      this.updatedNetworkConnection()
-    },
-    'sign-out|status' () {
-    }
-  },
-  data: () => ({
-    appName: 'DevOps',
-    version: 'v1.1',
-    timeout: { api: 0, sock: 0 },
-    online: { api: 2, sock: 2 },
-    breadcrumb: [
-      { text: 'Home', active: true }
-    ]
-  }),
-  computed: {
-    isChecking () {
-      return this.online.sock === 2 || this.online.api === 2
-    },
-    isOnline () {
-      return this.online.sock === 1 && this.online.api === 1
-    }
+    // navSidebar,
+    // navUser,
+    // navSearch
+    // hamburger
   },
   created () {
-    let vm = this
-    this.$store.commit('$page', false)
-    this.timeout.api = setTimeout(() => vm.online.api = 0, 5000)
-    this.timeout.sock = setTimeout(() => vm.online.sock = 0, 5000)
-    this.updatedNetworkConnection()
+    // let vm = this
+    // this.$store.commit('$page', false)
+    // this.timeout.api = setTimeout(() => vm.online.api = 0, 5000)
+    // this.timeout.sock = setTimeout(() => vm.online.sock = 0, 5000)
+    // this.updatedNetworkConnection()
   },
   beforeMount () {
     // window.addEventListener('keydown', (e) => {
@@ -95,20 +64,6 @@ export default {
     // })
   },
   methods: {
-    updatedNetworkConnection () {
-      let vm = this
-      vm.online.api = 2
-      vm.$axios.get('/api/status').then(data => {
-        vm.online.api = data.status === 200 ? 1 : 0
-        clearTimeout(vm.timeout.api)
-      }).catch(() => {
-        vm.online.api = 0
-        clearTimeout(vm.timeout.api)
-      })
-    },
-    onSearch () {
-      console.log('search:')
-    }
   }
 }
 </script>

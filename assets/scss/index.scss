@@ -2,7 +2,7 @@
 @import 'bootstrap/scss/bootstrap.scss';
 @import 'bootstrap-vue/dist/bootstrap-vue.css';
 
-@import '_vue-bar';
+// @import '_vue-bar';
 
 #__nuxt, #__layout {
   height: 100vh;
@@ -17,18 +17,6 @@
 
   > div.main-panel {
     width: 100vw;
-    // > .container {
-    //   transition: all .2s cubic-bezier(.55,0,.1,1);
-    //   height: calc(100vh - 50px);
-    //   min-height: 380px;
-    //   display: flex;
-    //   @media (min-width: 767.98px) {
-    //     align-items: center;
-    //   }
-    //   .row {
-    //     width: 100%;
-    //   }
-    // }
     > .container-fluid {
       background-color: #FFF !important;
       overflow-y: hidden;
@@ -262,10 +250,20 @@ textarea.reason {
   textarea.reason {
     width: 380px;
   }
-
 }
 
 @media screen and (min-width: 768px){
+  .main-panel > .container {
+    > .v-center {
+      margin-top: 3rem;
+      // margin: 0;
+      // position: absolute;
+      // top: 45%;
+      // -ms-transform: translateY(-50%);
+      // transform: translateY(-50%);
+    }
+  }
+  
   .main {
     margin-left: 40%; 
   }

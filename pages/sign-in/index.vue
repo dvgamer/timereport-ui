@@ -1,5 +1,5 @@
 <template>
-  <div class="row mt-md-5 pt-md-3">
+  <div class="row v-center pt-md-3">
     <div class="col-36">
       <div class="row">
         <div class="col-36 col-lg-32 col-xl-30 col-login mx-auto">
@@ -17,14 +17,14 @@
                 <div class="col-xl-13 col-lg-15 col-md-19 col-sm-36 mt-3 mb-3 panel-sign">
                   <div class="d-none d-md-block" style="height: 24px;" />
                   <transition name="fade">
-                    <no-ssr>
+                    <client-only>
                       <div slot="placeholder">
                         <div class="dimmer-layout" />
                         <div class="dimmer-content">
                           <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw" />
                         </div>
                       </div>
-                    </no-ssr>
+                    </client-only>
                   </transition>
                   <div class="mb-3 mt-2">
                     <button v-if="!activate || !enabled" :disabled="sing_out" type="button" class="btn btn-warning btn-sm btn-logout pull-right" @click="onSignOut" v-text="'Sign-Out'" />
@@ -70,13 +70,13 @@
       </div>
       <div class="row mt-3">
         <div class="col-md-28 col-lg-24 mx-auto">
-          <no-ssr>
+          <client-only>
             <cookie-law button-text="I AGREE">
               <div slot="message">
                 DevOps's Progressive Web Appilication uses cookies. By proceeding, you consent to our cookie usage. Please see <router-link to="legal-notes">DevOps Cookie Policy</router-link>.
               </div>
             </cookie-law>
-          </no-ssr>
+          </client-only>
           <footer class="footer">
             <div class="content text-center">
               <p>
@@ -129,14 +129,16 @@ export default {
     if (!this.$auth.loggedIn) {
       const login = this.$auth.$storage.getLocalStorage('login.saved', true)
       if (login) {
-        let { data } = await this.$axios.post('/auth/activate', { user: login.user, pass: login.pass })
-        if (!data.error) {
+        this.$axios.post('/auth/activate', { user: login.user, pass: login.pass }).then(({ data }) => {
+          if (data.error) throw new Error(data.error)
           this.activate = data.activate
           this.enabled = data.enabled
           this.account.name = data.name
           this.account.mail = data.mail
           this.onReSignIn(data)
-        }
+        }).catch(ex => {
+
+        })
       }
     } else {
       this.$router.push('/')
@@ -145,7 +147,10 @@ export default {
   },
   methods: {
     async onAuth (user, pass, saved, noerr = false) {
-      if (!this.onAgreeCookie()) return this.account.error = 'Please allow cookie policy.'
+      if (!this.onAgreeCookie()) {
+        this.account.error = 'Please allow cookie policy.'
+        return
+      }
       this.account.signon = true
       try {
         // console.log('local:', { user, pass, saved })
@@ -156,8 +161,8 @@ export default {
         // console.log('catch:', noerr, ex)
         if (!noerr) {
           this.account.signon = false
-          this.account.btn_sign = `Sign-In`
-          this.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : 'Email or Password worng.'}`
+          this.account.btn_sign = 'Sign-In'
+          this.account.error = `${ex.message === 'Network Error' ? 'OFFLINE' : 'Email or Password worng.'}`
         }
       }
 
@@ -170,11 +175,11 @@ export default {
       } else {
         if (!noerr) {
           this.account.signon = false
-          this.account.btn_sign = `Sign-In`
+          this.account.btn_sign = 'Sign-In'
           this.account.error = 'Email or Password worng.'
         }
 
-        let { data } = await this.$axios.post('/auth/activate', { user, pass })
+        const { data } = await this.$axios.post('/auth/activate', { user, pass })
         if (!data.error) {
           this.activate = data.activate
           this.enabled = data.enabled
@@ -182,7 +187,7 @@ export default {
           this.account.mail = data.mail
         } else {
           this.account.signon = false
-          this.account.btn_sign = `Sign-In`
+          this.account.btn_sign = 'Sign-In'
           this.account.error = data.error
           this.$auth.$storage.setLocalStorage('login.saved', {}, true)
         }
@@ -190,7 +195,7 @@ export default {
     },
     async onSignOut () {
       this.sing_out = true
-      let { user, saved } = this.$auth.$storage.getLocalStorage('login.saved', true)
+      const { user, saved } = this.$auth.$storage.getLocalStorage('login.saved', true)
       if (!saved) {
         this.$auth.$storage.setLocalStorage('login.saved', null, true)
       } else {
@@ -199,8 +204,11 @@ export default {
       this.$router.go()
     },
     async onSignIn () {
-      if (!this.onAgreeCookie()) return this.account.error = 'Please allow cookie policy.'
-      let { username, password, saved } = this.account
+      if (!this.onAgreeCookie()) {
+        this.account.error = 'Please allow cookie policy.'
+        return
+      }
+      const { username, password, saved } = this.account
 
       // if (!/\w{5,}@central.co.th$/ig.test(username)) {
       //   vm.account.signon = false
@@ -211,14 +219,14 @@ export default {
 
       if (password.length <= 3) {
         this.account.signon = false
-        this.account.btn_sign = `Sign-In`
-        this.account.error = `Password short.`
+        this.account.btn_sign = 'Sign-In'
+        this.account.error = 'Password short.'
         return
       }
 
       this.$auth.$storage.setLocalStorage('login.saved', { user: username, pass: password, saved: saved }, true)
       this.account.signon = true
-      this.account.btn_sign = `Signing LDAP...`
+      this.account.btn_sign = 'Signing LDAP...'
       this.account.error = ''
       try {
         if (!username) {
@@ -232,12 +240,15 @@ export default {
         await this.onAuth(username, password, saved)
       } catch (ex) {
         this.account.signon = false
-        this.account.btn_sign = `Sign-In`
-        this.account.error = `${ex.message == 'Network Error' ? 'OFFLINE' : ex.message}`
+        this.account.btn_sign = 'Sign-In'
+        this.account.error = `${ex.message === 'Network Error' ? 'OFFLINE' : ex.message}`
       }
     },
     onReSignIn (data) {
-      if (!this.onAgreeCookie()) return this.account.error = 'Please allow cookie policy.'
+      if (!this.onAgreeCookie()) {
+        this.account.error = 'Please allow cookie policy.'
+        return
+      }
       this.enabled = data.enabled
       if (data.activate) {
         const login = this.$auth.$storage.getLocalStorage('login.saved', true)
@@ -245,10 +256,10 @@ export default {
       }
     },
     onAgreeCookie () {
-      return process.client ? window.localStorage.getItem('cookie:accepted') === 'true' :  false
+      return process.client ? window.localStorage.getItem('cookie:accepted') === 'true' : false
     },
     updatedInputFocus () {
-      let vm = this
+      const vm = this
       const login = this.$auth.$storage.getLocalStorage('login.saved', true)
 
       if (login && login.saved) {

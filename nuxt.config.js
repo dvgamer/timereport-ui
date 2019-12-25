@@ -59,13 +59,13 @@ const config = {
   ],
   bootstrapVue: { bootstrapCSS: false },
   plugins: [
-    './plugins/vue-toast.js',
-    '~/plugins/vue-installed.js',
+    // './plugins/vue-toast.js',
+    // '~/plugins/vue-installed.js',
     { src: '~/plugins/vue-component.js', ssr: false }
     // { src: '~/plugins/vue-codemirror.js', ssr: false },
     // { src: '~/plugins/socket.io.js', ssr: false }
   ],
-  vendor: ['moment', '~/node_modules/vue-socket.io'],
+  // vendor: ['moment', '~/node_modules/vue-socket.io'],
   build: {
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {
@@ -92,28 +92,13 @@ const config = {
     strategies: {
       local: {
         endpoints: {
-          login: {
-            url: '/auth/login',
-            method: 'post',
-            propertyName: 'token'
-          },
-          logout: {
-            url: '/auth/logout',
-            method: 'post'
-          },
-          user: {
-            url: '/auth/user',
-            method: 'get',
-            propertyName: 'user'
-          }
+          login: { url: '/auth/login', method: 'post', propertyName: 'token' },
+          logout: { url: '/auth/logout', method: 'post' },
+          user: { url: '/auth/user', method: 'get', propertyName: 'user' }
         }
       }
     },
-    redirect: {
-      login: '/sign-in',
-      logout: '/sign-in',
-      home: '/'
-    }
+    redirect: { login: '/sign-in', logout: '/sign-in', home: '/' }
   },
   server: { port: 3000, host: '0.0.0.0', timing: false },
   fontawesome: {

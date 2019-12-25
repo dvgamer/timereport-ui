@@ -1,15 +1,14 @@
 {
   "name": "devops-ui",
+  "display": "DevOps",
   "version": "1.3.0",
   "description": "DevOps project",
   "author": "Kananek T. <info.dvgamer@gmail.com>",
   "private": true,
   "main": "api/index.js",
   "scripts": {
-    "dev": "env-cmd nodemon --watch api api/index.js",
-    "eslint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "preinstall": "which link-module-alias && link-module-alias clean || echo",
-    "postinstall": "link-module-alias"
+    "dev": "env-cmd nodemon --watch api,nuxt.config.js api/index.js",
+    "eslint": "eslint --ext .js,.vue --ignore-path .gitignore ."
   },
   "nodemonConfig": {
     "ignore": [
@@ -18,17 +17,6 @@
       "tests/*"
     ]
   },
-  "_moduleAliasIgnoreWarning": true,
-  "_moduleAliases": {
-    "@debuger": "/api/debuger.js",
-    "@mssql": "/api/mssql.js",
-    "@auth": "/api/authication/middleware.js",
-    "@config": "/api/router/config/get-service-config.js",
-    "@global": "/api/router/config/get-global-config.js",
-    "@mongo": "/api/mongodb/index.js",
-    "@line": "/api/line/index.js",
-    "@line-flex": "/api/line/flex/index.js"
-  },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/fontawesome-free-brands": "^5.0.13",
@@ -36,6 +24,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
     "@fortawesome/free-solid-svg-icons": "^5.10.2",
     "@fortawesome/vue-fontawesome": "^0.1.7",
+    "@touno-io/debuger": "^2.2.0",
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "consola": "^2.10.1",
@@ -75,6 +64,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.0.1",
     "highcharts": "^7.2.0",
+    "imports-loader": "^0.8.0",
     "link-module-alias": "^1.2.0",
     "node-sass": "^4.12.0",
     "nodemon": "^1.19.2",
