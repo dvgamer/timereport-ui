@@ -1,3 +1,5 @@
+const { ObjectId } = require('@touno-io/db/type')
+
 module.exports = [
   {
     id: 'User',
@@ -27,8 +29,12 @@ module.exports = [
     id: 'UserSession',
     name: 'db-user-session',
     schema: {
-      mail: { type: String, index: true },
-      activate: { type: Boolean, index: true },
+      user_id: { type: ObjectId, index: true },
+      name: { type: String, index: true },
+      os: { type: String, index: true },
+      version: String,
+      versionNumber: Number,
+      mobile: Boolean,
       token: String
     }
   }

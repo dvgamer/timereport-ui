@@ -1,4 +1,5 @@
 const jsonwebtoken = require('jsonwebtoken')
+const detect = require('browser-detect')
 const mongo = require('@touno-io/db')
 const logger = require('@touno-io/debuger')('Auth')
 const md5 = require('md5')
@@ -10,10 +11,14 @@ const { Router } = require('express')
 const router = Router()
 
 const encodeTokenWithId = _id => jsonwebtoken.sign({ hash: md5(+(new Date())), _id }, process.env.JWT_KEYHASH)
+const getUser = (User, auth, param) => {
+  const u = auth.user.trim().toLowerCase()
+  return User.findOne({ $or: [{ mail: `${u}${!/@/g.test(u) ? '@central.co.th' : ''}` }, { user_name: u }], pwd: md5(auth.pass) }, param)
+}
 
 router.get('/user', async (req, res) => {
   try {
-    const user = await findUserWithAuth(req.headers.authorization)
+    const user = await findUserWithAuth(req)
     return res.json({ user })
   } catch (ex) {
     logger.warning(ex)
@@ -25,14 +30,9 @@ router.post('/activate', async (req, res) => {
   await mongo.open()
   const { User } = mongo.get()
   try {
-    let { user, pass } = req.body
-    if (!user) throw new Error('Unauthorized 402')
-    user = user.trim().toLowerCase()
+    if (!req.body.user) throw new Error('Unauthorized 402')
 
-    const checkUser = await User.findOne({
-      $or: [{ mail: `${user}${!/@/g.test(user) ? '@central.co.th' : ''}` }, { user_name: user }],
-      pwd: md5(pass)
-    }, 'enabled activate mail display_name')
+    const checkUser = await getUser(User, req.body, 'enabled activate mail display_name')
     if (!checkUser) throw new Error('Unauthorized 403')
     return res.json({ mail: checkUser.mail, name: checkUser.display_name, enabled: checkUser.enabled, activate: checkUser.activate })
   } catch (ex) {
@@ -42,19 +42,17 @@ router.post('/activate', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   let auth = req.body
-  if (!auth) {
-    auth = decodeBasic(req.headers.authorization)
-    if (!auth || !auth.user) {
-      logger.log('Login -- Unauthorized (401)')
-      return res.status(401).json({ error: 'Unauthorized (401)' })
-    }
-  }
-  auth.user = auth.user.trim().toLowerCase()
   try {
+    if (!auth) {
+      auth = decodeBasic(req.headers.authorization)
+      if (!auth || !auth.user) throw new Error('Unauthorized (401)')
+    }
+    auth.user = auth.user.trim().toLowerCase()
+
     await mongo.open()
     const { User, UserSession } = mongo.get()
 
-    let user = await User.findOne({ $or: [{ mail: `${auth.user}${!/@/g.test(auth.user) ? '@central.co.th' : ''}` }, { user_name: auth.user }] })
+    let user = await getUser(User, auth)
     let data = await ldapAuth(auth.user, auth.pass)
 
     if (!data.user_name && !user) throw new Error('LDAP auth unsuccessful.')
@@ -69,43 +67,42 @@ router.post('/login', async (req, res) => {
           pwd: md5(auth.pass),
           token: null,
           user_level: 0,
-          activate: true,
           enabled: true,
-          lasted: new Date(),
-          updated: new Date()
+          lasted: new Date()
         }, data)).save()
       } else {
         await User.updateOne({ _id: user._id }, {
-          $set: Object.assign({ pwd: md5(auth.pass), token: null, lasted: new Date() }, data)
+          $set: Object.assign({ pwd: md5(auth.pass), lasted: new Date() }, data)
         })
       }
     }
+    if (!user.enabled) throw new Error('Unauthorized (403)')
 
-    const accessToken = encodeTokenWithId(user._id)
-    await User.updateOne({ _id: user._id }, { $set: { token: accessToken } })
-    if (user.activate && user.enabled) {
-      logger.log(`Login (success) -- ${auth.user}`)
-      await new UserHistory({ mail: auth.user, error: data.err, token: accessToken, created: date }).save()
-      return res.json({ token: accessToken })
+    const browser = detect(req.headers['user-agent'])
+    const session = await UserSession.findOne({ _id: user._id, name: browser.name, os: browser.os })
+    if (!session) {
+      const token = encodeTokenWithId(user._id)
+      await new UserSession({ user_id: user._id, token, ...browser }).save()
+      res.json({ token })
     } else {
-      logger.log(`Login (suspended) -- ${auth.user}`)
-      await new UserHistory({ mail: auth.user, error: 'account suspended or inactivate', token: accessToken, created: date }).save()
-      return res.status(401).json({ error: 'Unauthorized (403)' })
+      res.json({ token: session.token })
     }
-
   } catch (ex) {
-    logger.log(`Login (fail) -- ${(ex.message || ex)}`)
-    await new UserHistory({ mail: auth.user, error: (ex.message || ex), token: null, created: date }).save()
-    return res.status(404).json({ error: ex.message || ex })
+    res.status(404).json({ error: ex.message || ex })
   }
 })
 
 router.post('/logout', async (req, res) => {
+  const auth = decodeBasic(req.headers.authorization)
+  if (auth && auth.user) {
+    await mongo.open()
+    const { User, UserSession } = mongo.get()
+    const user = await getUser(User, auth)
+    const browser = detect(req.headers['user-agent'])
+    await UserSession.deleteMany({ _id: user._id, name: browser.name, os: browser.os })
+  }
   res.json({ ok: true })
 })
 
-if (process.env.NODE_ENV === 'production') {
-  logger.start(`Authentication created.`)
-}
 // Export the server middleware
 module.exports = router

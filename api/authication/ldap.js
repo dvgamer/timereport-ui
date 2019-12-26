@@ -1,5 +1,4 @@
 const { createClient } = require('ldapjs')
-// const logger = require('@debuger')('LDAP')
 
 // LDAP Connection Settings
 const name = process.env.LDAP_NAME || 'central'
@@ -12,12 +11,11 @@ if (!server || !adSuffix) throw new Error('LDAP connection settings not found!')
 module.exports = async (usr, pwd, filter) => {
   if (!usr || !pwd) throw new Error('Username or Passoword is empty!')
 
-  let username = usr.trim()
+  const username = usr.trim()
   const password = pwd.trim()
   const searchOptions = usr => ({ scope: 'sub', filter: filter || (!/@/g.test(usr) ? `(sAMAccountName=${usr})` : `(userPrincipalName=${usr})`) })
 
   // Create client and bind to AD
-
   let client = null
   const newClient = async () => {
     client = createClient({
@@ -56,19 +54,19 @@ module.exports = async (usr, pwd, filter) => {
     })
     const rejectBind = (ex) => client.unbind(err => {
       // logger.warning('reject-unbind:', !err)
-      reject(err || ex )
+      reject(err || ex)
     })
 
     // logger.info(' - search-begin:', options.filter)
     client.search(suffix, options, (err, res) => {
       if (err) return rejectBind(err.message)
 
-      let result = []
+      const result = []
       let resultTimeout = null
       res.on('searchEntry', entry => {
         // logger.info('search-entry:', !!entry)
-        let user = entry.object
-        let output = {
+        const user = entry.object
+        const output = {
           title: user.title,
           company: user.company,
           department: user.department,
@@ -80,7 +78,7 @@ module.exports = async (usr, pwd, filter) => {
           display_name: user.displayName,
           telephone_no: user.telephoneNumber,
           user_name: user.sAMAccountName,
-          user_type: user.sAMAccountType,
+          user_type: user.sAMAccountType
         }
         if (!filter) {
           return resolveBind(output)
@@ -91,10 +89,12 @@ module.exports = async (usr, pwd, filter) => {
         }
       })
 
-      if (filter) res.on('search-end', () => {
-        // logger.success(' - search-end:', !!entry)
-        return resolveBind()
-      })
+      if (filter) {
+        res.on('search-end', () => {
+          // logger.success(' - search-end:', !!entry)
+          return resolveBind()
+        })
+      }
 
       res.on('search-error', err => {
         // logger.error(' - search-error:', !err)
@@ -103,30 +103,30 @@ module.exports = async (usr, pwd, filter) => {
     })
   })
 
-  let adUser = !/@/g.test(username)
-  let account = adUser ? `${name}\\${username}` : username
-  
+  const isADUser = !/@/g.test(username)
+  let account = isADUser ? `${name}\\${username}` : username
+  let data = null
   try {
     await newClient()
     await asyncBind(account, password)
-    let data = await asyncSearch(adSuffix, searchOptions(username))
+    data = await asyncSearch(adSuffix, searchOptions(username))
     // logger.success('search entry: pass.')
-    return data
   } catch (ex) {
     // logger.error('bind: fail, ', ex.message || ex)
-    if (!adUser) return ex.message || ex
+    if (!isADUser) data = ex.message || ex
   }
-  if (adUser) {
+  if (isADUser) {
     try {
       account = `${username}@${server}`
       await newClient()
       await asyncBind(account, password)
-      let data = await asyncSearch(adSuffix, searchOptions(account))
+      data = await asyncSearch(adSuffix, searchOptions(account))
       // logger.success('search entry: pass.', )
       return data
     } catch (ex) {
       // logger.error('bind: fail, ', ex.message || ex)
-      return ex.message || ex
+      data = ex.message || ex
     }
   }
+  return data
 }
