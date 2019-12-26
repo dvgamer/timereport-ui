@@ -9,9 +9,8 @@ const config = {
     { name: 'name', content: 'DevOps-UI' },
     { name: 'description', content: 'Server automation fix and report services.', id: 'desc' },
     { name: 'viewport', content: 'width=device-width, user-scalable=no' },
-    { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
     { name: 'apple-mobile-web-app-title', content: 'DevOps-UI' },
-    { name: 'author', content: 'Mr. Kananek T.' }
+    { name: 'author', content: 'Mr.Kananek T.' }
   ],
   icons: {
     sizes: [16, 120, 144]

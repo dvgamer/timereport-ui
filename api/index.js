@@ -1,14 +1,22 @@
-const bodyParser = require('body-parser')
-const { Nuxt, Builder } = require('nuxt')
 
-const app = require('express')()
+const mongo = require('@touno-io/db')
 const logger = require('@touno-io/debuger')('Server')
+const { Nuxt, Builder } = require('nuxt')
+const app = require('express')()
+const bodyParser = require('body-parser')
 
 const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
 
+// Sessions to create `req.session`
+if (!process.env.JWT_KEYHASH) throw new Error('Environment `JWT_KEYHASH` is undefined.')
+
 // Build only in dev mode
 const InitializeExpress = async () => {
+  mongo.set(require('./mongo/schema/user'))
+  mongo.set(require('./mongo/schema/config'))
+  mongo.set(require('./mongo/schema/terminal'))
+
   const nuxt = new Nuxt(config)
   if (!config.dev) {
     await nuxt.ready()
@@ -39,12 +47,13 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use('/auth', require('./authication'))
+
 if (config.dev) {
   // const api = require('./router')
   // const auth = require('./authication')
   // const log = require('./log-services')
 
-  // app.use(auth.path, auth.handler)
   // app.use(api.path, api.handler)
   // app.use(log.path, log.handler)
 

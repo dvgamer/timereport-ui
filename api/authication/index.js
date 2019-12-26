@@ -1,47 +1,20 @@
-const ldapAuth = require('./ldap')
-const db = require('@mongo')
-const bodyParser = require('body-parser')
-// const session = require('express-session')
 const jsonwebtoken = require('jsonwebtoken')
-const logger = require('@debuger')('AUTH')
+const mongo = require('@touno-io/db')
+const logger = require('@touno-io/debuger')('Auth')
 const md5 = require('md5')
+const ldapAuth = require('./ldap')
+const findUserWithAuth = require('./find-user')
+const decodeBasic = require('./decode-basic')
 
-let router = {}
-if (process.env.NODE_ENV !== 'production') {
-  const { Router } = require('express')
-  router = Router()
-} else {
-  const app = require('express')()
-  router = app
-}
+const { Router } = require('express')
+const router = Router()
 
-router.use(bodyParser.json())
-
-// Sessions to create `req.session`
-if (!process.env.JWT_KEYHASH) throw new Error('Environment `JWT_KEYHASH` is undefined.')
-
-const encodeToken = data => {
-  const hashId = md5(data.mail + (+(new Date())))
-  return jsonwebtoken.sign({ hash: hashId, ...data }, process.env.JWT_KEYHASH)
-} 
-
-const decodeBasic = req => {
-  let auth = req.headers['authorization'] || ''
-  if (!/^basic./ig.test(auth)) return {}
-  try {
-    auth = new Buffer.from(auth.replace(/^basic./ig, ''), 'base64').toString('utf8')
-    return /(?<usr>.*?):(?<pwd>.*)/ig.exec(auth).groups || {}
-  } catch (ex) {
-    logger.warning(ex)
-    return {}
-  }
-}
-
-const getUser = require('./user')
+const encodeTokenWithId = _id => jsonwebtoken.sign({ hash: md5(+(new Date())), _id }, process.env.JWT_KEYHASH)
 
 router.get('/user', async (req, res) => {
   try {
-    return res.json({ user: await getUser(req) })
+    const user = await findUserWithAuth(req.headers.authorization)
+    return res.json({ user })
   } catch (ex) {
     logger.warning(ex)
     return res.json({})
@@ -49,92 +22,80 @@ router.get('/user', async (req, res) => {
 })
 
 router.post('/activate', async (req, res) => {
-  let { User } = await db.open()
+  await mongo.open()
+  const { User } = mongo.get()
   try {
     let { user, pass } = req.body
     if (!user) throw new Error('Unauthorized 402')
     user = user.trim().toLowerCase()
 
-    let acc = await User.findOne({
-      $or: [ { mail: `${user}${!/@/g.test(user) ? '@central.co.th' : ''}` }, { user_name: user } ],
+    const checkUser = await User.findOne({
+      $or: [{ mail: `${user}${!/@/g.test(user) ? '@central.co.th' : ''}` }, { user_name: user }],
       pwd: md5(pass)
     }, 'enabled activate mail display_name')
-    if (!acc) throw new Error('Unauthorized 403')
-    return res.json({ mail: acc.mail, name: acc.display_name, enabled: acc.enabled, activate: acc.activate })
+    if (!checkUser) throw new Error('Unauthorized 403')
+    return res.json({ mail: checkUser.mail, name: checkUser.display_name, enabled: checkUser.enabled, activate: checkUser.activate })
   } catch (ex) {
     return res.json({ error: ex.message || ex })
   }
 })
 
 router.post('/login', async (req, res) => {
-  let date = new Date()
-  let { user, pass } = req.body
-  let auth = { usr: user, pwd: pass }
-  if (req.headers['authorization'] && !user) {
-    auth = decodeBasic(req)
-    if (!auth || !auth.usr) {
-      logger.log(`Login -- Unauthorized (401)`)
-      return res.status(401).json({ error: 'Unauthorized (401)'})
+  let auth = req.body
+  if (!auth) {
+    auth = decodeBasic(req.headers.authorization)
+    if (!auth || !auth.user) {
+      logger.log('Login -- Unauthorized (401)')
+      return res.status(401).json({ error: 'Unauthorized (401)' })
     }
   }
-  auth.usr = auth.usr.trim().toLowerCase()
-  
-  let { User, UserHistory } = await db.open()
+  auth.user = auth.user.trim().toLowerCase()
   try {
-    let user = await User.findOne({
-      $or: [ { mail: `${auth.usr}${!/@/g.test(auth.usr) ? '@central.co.th' : ''}` }, { user_name: auth.usr } ]
-    })
+    await mongo.open()
+    const { User, UserSession } = mongo.get()
 
-    let data = null
-    try {
-      // logger.log('LDAP:', auth.usr,)
-      data = await ldapAuth(auth.usr, auth.pwd)
-      if (!data.user_name) throw new Error('LDAP auth unsuccessful.')
+    let user = await User.findOne({ $or: [{ mail: `${auth.user}${!/@/g.test(auth.user) ? '@central.co.th' : ''}` }, { user_name: auth.user }] })
+    let data = await ldapAuth(auth.user, auth.pass)
+
+    if (!data.user_name && !user) throw new Error('LDAP auth unsuccessful.')
+    if (data.user_name) {
       data = Object.assign(data, {
         mail: data.mail.trim().toLowerCase(),
         user_name: data.user_name.trim().toLowerCase()
       })
-      // logger.log('email:', data.mail)
-      // logger.log('title:', data.title)
-      // logger.log('Company:', data.company)
-    } catch (ex) {
-      // logger.log('LDAP:', ex.message)
-      data = { error: ex.message || ex }
-    }
-    if (!user && data.error) throw new Error(data.error)
 
-    if (!user) {
-      user = await new User(Object.assign({
-        pwd: md5(auth.pwd),
-        token: null,
-        user_level: 0,
-        activate: true,
-        enabled: true,
-        lasted: date,
-        updated: date,
-        created: date
-      }, data)).save()
-    } else {
-      await User.updateOne({ _id: user._id }, {
-        $set: Object.assign({ pwd: md5(auth.pwd), token: null, lasted: date }, data)
-      })
+      if (!user) {
+        user = await new User(Object.assign({
+          pwd: md5(auth.pass),
+          token: null,
+          user_level: 0,
+          activate: true,
+          enabled: true,
+          lasted: new Date(),
+          updated: new Date()
+        }, data)).save()
+      } else {
+        await User.updateOne({ _id: user._id }, {
+          $set: Object.assign({ pwd: md5(auth.pass), token: null, lasted: new Date() }, data)
+        })
+      }
     }
- 
-    let accessToken = encodeToken({ _id: user._id })
+
+    const accessToken = encodeTokenWithId(user._id)
     await User.updateOne({ _id: user._id }, { $set: { token: accessToken } })
     if (user.activate && user.enabled) {
-      logger.log(`Login (success) -- ${auth.usr}`)
-      await new UserHistory({ mail: auth.usr, error: data.err, token: accessToken, created: date }).save()
+      logger.log(`Login (success) -- ${auth.user}`)
+      await new UserHistory({ mail: auth.user, error: data.err, token: accessToken, created: date }).save()
       return res.json({ token: accessToken })
     } else {
-      logger.log(`Login (suspended) -- ${auth.usr}`)
-      await new UserHistory({ mail: auth.usr, error: 'account suspended or inactivate', token: accessToken, created: date }).save()
+      logger.log(`Login (suspended) -- ${auth.user}`)
+      await new UserHistory({ mail: auth.user, error: 'account suspended or inactivate', token: accessToken, created: date }).save()
       return res.status(401).json({ error: 'Unauthorized (403)' })
     }
 
   } catch (ex) {
     logger.log(`Login (fail) -- ${(ex.message || ex)}`)
-    await new UserHistory({ mail: auth.usr, error: (ex.message || ex), token: null, created: date }).save()
+    await new UserHistory({ mail: auth.user, error: (ex.message || ex), token: null, created: date }).save()
     return res.status(404).json({ error: ex.message || ex })
   }
 })
@@ -147,7 +108,4 @@ if (process.env.NODE_ENV === 'production') {
   logger.start(`Authentication created.`)
 }
 // Export the server middleware
-module.exports = {
-  path: '/auth',
-  handler: router
-}
+module.exports = router
