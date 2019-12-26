@@ -1,6 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken')
 const detect = require('browser-detect')
-const mongo = require('@touno-io/db')
+const mongo = require('@touno-io/db')()
 const logger = require('@touno-io/debuger')('Auth')
 const md5 = require('md5')
 const ldapAuth = require('./ldap')

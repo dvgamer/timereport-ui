@@ -27,11 +27,11 @@
                     </client-only>
                   </transition>
                   <div class="mb-3 mt-2">
-                    <button v-if="!activate || !enabled" :disabled="sing_out" type="button" class="btn btn-warning btn-sm btn-logout pull-right" @click="onSignOut" v-text="'Sign-Out'" />
+                    <button v-if="!enabled" :disabled="sing_out" type="button" class="btn btn-warning btn-sm btn-logout pull-right" @click="onSignOut" v-text="'Sign-Out'" />
                     <h3 class="mb-0">Sign-In</h3>
                     <small>central.co.th</small>
                   </div>
-                  <div v-if="activate && enabled && !success">
+                  <div v-if="enabled && !success">
                     <div class="form-group">
                       <label class="form-label">Email or Username</label>
                       <input ref="email" v-model="account.username" :readonly="account.signon" type="text" tabindex="1" class="form-control" maxlength="30" placeholder="Enter email">
@@ -60,7 +60,6 @@
                     <h5 class="pt-3">Walcome, {{ account.name }}</h5>
                     <div v-if="success"><b class="text-success">Hi, Your access token generated. </b><br>and I will take you to dashboard.</div>
                     <div v-else-if="!enabled"><b class="text-danger">Your Account is Suspended.</b><br>Please contact administrator.</div>
-                    <div v-else-if="!activate"><b class="text-danger">Your Account is Inactivate.</b><br>Please wait a moment...</div>
                   </div>
                 </div>
               </div>
@@ -110,7 +109,6 @@ export default {
   data () {
     return {
       sing_out: false,
-      activate: true,
       enabled: true,
       success: false,
       account: {
@@ -131,13 +129,12 @@ export default {
       if (login) {
         this.$axios.post('/auth/activate', { user: login.user, pass: login.pass }).then(({ data }) => {
           if (data.error) throw new Error(data.error)
-          this.activate = data.activate
           this.enabled = data.enabled
           this.account.name = data.name
           this.account.mail = data.mail
           this.onReSignIn(data)
         }).catch(ex => {
-
+          this.$auth.$storage.setLocalStorage('login.saved', {}, true)
         })
       }
     } else {
@@ -181,7 +178,6 @@ export default {
 
         const { data } = await this.$axios.post('/auth/activate', { user, pass })
         if (!data.error) {
-          this.activate = data.activate
           this.enabled = data.enabled
           this.account.name = data.name
           this.account.mail = data.mail
@@ -250,7 +246,7 @@ export default {
         return
       }
       this.enabled = data.enabled
-      if (data.activate) {
+      if (data.enabled) {
         const login = this.$auth.$storage.getLocalStorage('login.saved', true)
         this.onAuth(login.user, login.pass, login.saved, true)
       }

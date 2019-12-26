@@ -1,4 +1,4 @@
-const { Mixed } = require('@touno-io/db').type
+const { Mixed } = require('@touno-io/db/type')
 
 module.exports = [
   {

@@ -1,5 +1,5 @@
 
-const mongo = require('@touno-io/db')
+const mongo = require('@touno-io/db')()
 const logger = require('@touno-io/debuger')('Server')
 const { Nuxt, Builder } = require('nuxt')
 const app = require('express')()
@@ -13,6 +13,7 @@ if (!process.env.JWT_KEYHASH) throw new Error('Environment `JWT_KEYHASH` is unde
 
 // Build only in dev mode
 const InitializeExpress = async () => {
+  await mongo.open()
   mongo.set(require('./mongo/schema/user'))
   mongo.set(require('./mongo/schema/config'))
   mongo.set(require('./mongo/schema/terminal'))

@@ -1,4 +1,4 @@
-const mongo = require('@touno-io/db')
+const mongo = require('@touno-io/db')()
 const detect = require('browser-detect')
 const decodeBearer = require('./decode-bearer')
 
