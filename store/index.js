@@ -1,24 +1,12 @@
-const pkg = require('../package.json')
+import VuexORM from '@vuex-orm/core'
+import App from '../model/app'
+// import Post from './Post'
 
-export const state = () => ({
-  appName: pkg.display,
-  version: `v${pkg.version}`,
-  expaned: false,
-  loading: false,
-  menu: 'full'
-})
+// Create a new database instance.
+const database = new VuexORM.Database()
 
-export const mutations = {
-  expaned (state) {
-    state.expaned = !state.expaned
-  },
-  $page (state, val) {
-    state.loading = val !== undefined ? val : !state.loading
-  },
-  $api (state, val) {
-    state.api = val || !state.api
-  },
-  $menu (state, val) {
-    state.menu = val
-  }
-}
+// Register Models to the database.
+database.register(App)
+// database.register(Post)
+
+export default { plugins: [VuexORM.install(database)] }

@@ -53,9 +53,12 @@ router.post('/login', async (req, res) => {
     const { User, UserSession } = mongo.get()
 
     let user = await getUser(User, auth)
-    let data = await ldapAuth(auth.user, auth.pass)
+    let data = {}
+    try {
+      data = await ldapAuth(auth.user, auth.pass)
+    } finally { }
 
-    if (!data.user_name && !user) throw new Error('LDAP auth unsuccessful.')
+    if ((!data || !data.user_name) && !user) throw new Error('LDAP auth unsuccessful.')
     if (data.user_name) {
       data = Object.assign(data, {
         mail: data.mail.trim().toLowerCase(),
@@ -67,7 +70,7 @@ router.post('/login', async (req, res) => {
           pwd: md5(auth.pass),
           token: null,
           user_level: 0,
-          enabled: true,
+          enabled: false,
           lasted: new Date()
         }, data)).save()
       } else {

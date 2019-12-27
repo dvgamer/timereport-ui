@@ -10,7 +10,7 @@
                   <div class="bg-login">
                     <div class="sign-navbar navbar-brand d-none d-md-block" to="/sign-in">
                       <img class="d-inline-block align-top" src="~assets/icon-devops-agile.png" alt="" width="32" height="32">
-                      <span class="ml-2" v-text="$store.state.appName">NAME</span><small class="version" v-text="$store.state.version">v0.0</small>
+                      <span class="ml-2" v-text="appName" /><small class="version" v-text="version" />
                     </div>
                   </div>
                 </div>
@@ -72,14 +72,14 @@
           <client-only>
             <cookie-law button-text="I AGREE">
               <div slot="message">
-                DevOps's Progressive Web Appilication uses cookies. By proceeding, you consent to our cookie usage. Please see <router-link to="legal-notes">DevOps Cookie Policy</router-link>.
+                DevOps's Web Appilication uses cookies. By proceeding, you consent to our cookie usage. Please see <router-link to="legal-notes">DevOps Cookie Policy</router-link>.
               </div>
             </cookie-law>
           </client-only>
           <footer class="footer">
             <div class="content text-center">
               <p>
-                <strong>{{ $store.state.appName }}</strong> {{ $store.state.version }} by <a href="https://mr.touno.io">Kananek T.</a> The source code is licensed
+                <strong>{{ appName }}</strong> {{ version }} by <a href="https://mr.touno.io">Kananek T.</a> The source code is licensed
                 <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. <br class="d-block d-sm-none">The website content is licensed.
               </p>
             </div>
@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import { display, version } from '../../package.json'
 import CookieLaw from 'vue-cookie-law'
 
 export default {
@@ -106,23 +107,23 @@ export default {
     }
   },
   components: { CookieLaw },
-  data () {
-    return {
-      sing_out: false,
-      enabled: true,
-      success: false,
-      account: {
-        signon: false,
-        error: '',
-        btn_sign: 'Sign-In',
-        name: 'Guest',
-        mail: '',
-        username: '',
-        password: '',
-        saved: false
-      }
+  data: () => ({
+    appName: display,
+    version: `v${version}`,
+    sing_out: false,
+    enabled: true,
+    success: false,
+    account: {
+      signon: false,
+      error: '',
+      btn_sign: 'Sign-In',
+      name: 'Guest',
+      mail: '',
+      username: '',
+      password: '',
+      saved: false
     }
-  },
+  }),
   async created () {
     if (!this.$auth.loggedIn) {
       const login = this.$auth.$storage.getLocalStorage('login.saved', true)
@@ -134,7 +135,7 @@ export default {
           this.account.mail = data.mail
           this.onReSignIn(data)
         }).catch(ex => {
-          this.$auth.$storage.setLocalStorage('login.saved', {}, true)
+          this.$auth.$storage.setLocalStorage('login.saved', null, true)
         })
       }
     } else {
@@ -184,8 +185,7 @@ export default {
         } else {
           this.account.signon = false
           this.account.btn_sign = 'Sign-In'
-          this.account.error = data.error
-          this.$auth.$storage.setLocalStorage('login.saved', {}, true)
+          this.$auth.$storage.setLocalStorage('login.saved', null, true)
         }
       }
     },
