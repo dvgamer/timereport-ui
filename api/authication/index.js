@@ -1,11 +1,29 @@
 const jsonwebtoken = require('jsonwebtoken')
 const detect = require('browser-detect')
 const mongo = require('@touno-io/db')()
-const logger = require('@touno-io/debuger')('Auth')
 const md5 = require('md5')
 const ldapAuth = require('./ldap')
-const findUserWithAuth = require('./find-user')
 const decodeBasic = require('./decode-basic')
+const decodeBearer = require('./decode-bearer')
+
+// Import API Routes
+const userData = [
+  'name',
+  'mail',
+  'title',
+  'company',
+  'department',
+  'office_name',
+  'description',
+  'display_name',
+  'telephone_no',
+  'user_name',
+  'user_type',
+  'user_level',
+  'lasted',
+  'enabled',
+  'activate'
+]
 
 const { Router } = require('express')
 const router = Router()
@@ -18,11 +36,22 @@ const getUser = (User, auth, param) => {
 
 router.get('/user', async (req, res) => {
   try {
-    const user = await findUserWithAuth(req)
+    await mongo.open()
+    const { User, UserSession } = mongo.get()
+    const decode = decodeBearer(req.headers.authorization)
+    if (!decode._id) throw new Error('Unknow decode bearer.')
+
+    const session = await UserSession.findOne({ _id: decode._id, expired: { $gte: new Date() } })
+    if (!session) throw new Error('UserSession session expire.')
+
+    const date = new Date()
+    await UserSession.updateOne({ _id: decode._id }, { expired: date.setDate(date.getDate() + 1) })
+    const user = await User.findOne({ _id: session.user_id }, userData.join(' '))
+    if (!user) throw new Error('User unknow expire.')
     return res.json({ user })
   } catch (ex) {
-    logger.warning(ex)
-    return res.json({})
+    console.log(ex.message || ex)
+    return res.status(404).json({ error: ex.message || ex })
   }
 })
 
@@ -34,7 +63,7 @@ router.post('/activate', async (req, res) => {
 
     const checkUser = await getUser(User, req.body, 'enabled activate mail display_name')
     if (!checkUser) throw new Error('Unauthorized 403')
-    return res.json({ mail: checkUser.mail, name: checkUser.display_name, enabled: checkUser.enabled, activate: checkUser.activate })
+    return res.json({ mail: checkUser.mail, name: checkUser.display_name, enabled: checkUser.enabled })
   } catch (ex) {
     return res.json({ error: ex.message || ex })
   }
@@ -81,29 +110,24 @@ router.post('/login', async (req, res) => {
     }
     if (!user.enabled) throw new Error('Unauthorized (403)')
 
+    const date = new Date()
     const browser = detect(req.headers['user-agent'])
-    const session = await UserSession.findOne({ _id: user._id, name: browser.name, os: browser.os })
-    if (!session) {
-      const token = encodeTokenWithId(user._id)
-      await new UserSession({ user_id: user._id, token, ...browser }).save()
-      res.json({ token })
-    } else {
-      res.json({ token: session.token })
-    }
+    const session = await new UserSession({ user_id: user._id, ...browser, expired: date.setDate(date.getDate() + 1) }).save()
+    const token = encodeTokenWithId(session._id)
+    res.json({ token })
   } catch (ex) {
+    console.log(ex.message || ex)
     res.status(404).json({ error: ex.message || ex })
   }
 })
 
 router.post('/logout', async (req, res) => {
-  const auth = decodeBasic(req.headers.authorization)
-  if (auth && auth.user) {
-    await mongo.open()
-    const { User, UserSession } = mongo.get()
-    const user = await getUser(User, auth)
-    const browser = detect(req.headers['user-agent'])
-    await UserSession.deleteMany({ _id: user._id, name: browser.name, os: browser.os })
-  }
+  const decode = decodeBearer(req.headers.authorization)
+  if (!decode._id) throw new Error('Unknow decode bearer.')
+
+  await mongo.open()
+  const { UserSession } = mongo.get()
+  await UserSession.deleteMany({ _id: decode._id })
   res.json({ ok: true })
 })
 

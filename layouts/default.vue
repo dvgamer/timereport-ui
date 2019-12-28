@@ -1,10 +1,10 @@
 <template>
   <div class="main-panel">
-    <b-navbar toggleable="md" type="dark" class="sticky-top bg-dark flex-md-nowrap p-0" :class="{ 'd-none': $store.state.menu === 'none' }">
-      <b-navbar-brand class="col-md-9 col-lg-7 d-md-block mr-0">
+    <b-navbar toggleable="md" type="dark" class="sticky-top bg-sticky flex-md-nowrap p-0" :class="{ 'd-none': $store.state.menu === 'none' }">
+      <b-navbar-brand class="col-md-10 col-lg-7 d-md-block mr-0">
         <img class="d-inline-block align-top" src="~assets/icon-devops-agile.png" alt="" width="32" height="32">
-        <span class="ml-2" v-text="appName">NAME</span><small class="version" v-text="version">v0.0</small>
-        <hamburger class="float-right d-block d-lg-none" :active="$store.state.expaned" @update:active="value => $store.commit('expaned', value)" />
+        <span class="ml-2" v-text="appName" /><small class="version" v-text="version" />
+        <hamburger class="float-right d-block d-lg-none" :active="expaned" @update:active="value => expaned = value" />
       </b-navbar-brand>
       <b-container fluid>
         <b-collapse id="nav_collapse" is-nav>
@@ -14,43 +14,50 @@
         </b-collapse>
       </b-container>
     </b-navbar>
-    <no-ssr>
-      <div class="container-fluid" :class="{ 'container-full': $store.state.menu === 'none' }">
-        <div class="row">
-          <navSidebar />
-          <scrolly class="col-md-36 ml-sm-auto pt-3 px-4" :class="{ 'col-lg-29': $auth.loggedIn && $store.state.menu !== 'none' }">
-            <scrolly-viewport class="scrolly-fixed pb-5">
-              <div :class="{ 'd-none': $store.state.menu === 'none' }">
-                <span v-if="isChecking" class="badge badge-socket badge-light float-right">
-                  <fa icon="circle-notch" spin /> Health Check
-                </span>
-                <span v-if="!isChecking && !isOnline" class="badge float-right badge-danger">
-                  <fa icon="close" /> Maintenance
-                </span>
-                <b-breadcrumb :items="breadcrumb" />
-              </div>
-              <nuxt />
-            </scrolly-viewport>
-            <scrolly-bar axis="y" />
-          </scrolly>
+    <div class="container-fluid" :class="{ 'container-full': $store.state.menu === 'none' }">
+      <div class="row">
+        <!-- <navSidebar /> -->
+        <div class="col-md-36 ml-sm-auto pt-3 px-4" :class="{ 'col-lg-29': $auth.loggedIn }"><!--  && $store.state.menu !== 'none' -->
+          <div>
+            <!-- <span class="badge badge-socket badge-light float-right">
+              <fa icon="circle-notch" spin /> Health Check
+            </span>
+            <span class="badge float-right badge-danger">
+              <fa icon="close" /> Maintenance
+            </span> -->
+            <b-breadcrumb :items="breadcrumb" />
+          </div>
+          <nuxt />
         </div>
       </div>
-    </no-ssr>
+    </div>
   </div>
 </template>
 <script>
+import { display, version } from '../package.json'
+// import MainMenu from '../model/mainmenu'
 // import navSidebar from '~/components/nav-sidebar.vue'
-// import navUser from '~/components/nav-user.vue'
-// import navSearch from '~/components/nav-search.vue'
-// import hamburger from "~/components/mainmenu/HamburgerButton.vue";
+import navUser from '~/components/nav-user.vue'
+import navSearch from '~/components/nav-search.vue'
+import hamburger from '~/components/mainmenu/HamburgerButton.vue'
 
 export default {
   components: {
     // navSidebar,
-    // navUser,
-    // navSearch
-    // hamburger
+    navUser,
+    navSearch,
+    hamburger
   },
+  data: () => ({
+    appName: display,
+    version: `v${version}`,
+    expaned: false,
+    breadcrumb: [
+      { text: 'Admin', href: '#' },
+      { text: 'Manage', href: '#' },
+      { text: 'Library', active: true }
+    ]
+  }),
   created () {
     // let vm = this
     // this.$store.commit('$page', false)
@@ -58,7 +65,15 @@ export default {
     // this.timeout.sock = setTimeout(() => vm.online.sock = 0, 5000)
     // this.updatedNetworkConnection()
   },
-  beforeMount () {
+  async beforeMount () {
+    try {
+      const { data } = await this.$axios({ method: 'GET', url: '/api/mainmenu' })
+      console.log('beforeMount', data)
+    } catch (ex) {
+      this.$auth.$storage.setLocalStorage('login.saved', null, true)
+      await this.$auth.logout()
+    }
+    // MainMenu.insert({ data })
     // window.addEventListener('keydown', (e) => {
     //   if (e.keyCode >= 112 && e.keyCode <= 123) return e.preventDefault()
     // })

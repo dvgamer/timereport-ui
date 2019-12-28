@@ -4,6 +4,7 @@ const logger = require('@touno-io/debuger')('Server')
 const { Nuxt, Builder } = require('nuxt')
 const app = require('express')()
 const bodyParser = require('body-parser')
+const decodeBearer = require('./authication/decode-bearer')
 
 const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
@@ -49,6 +50,21 @@ app.use((req, res, next) => {
 })
 
 app.use('/auth', require('./authication'))
+app.use('/api', async (req, res, next) => {
+  try {
+    await mongo.open()
+    const { UserSession } = mongo.get()
+    const decode = decodeBearer(req.headers.authorization)
+    if (!decode._id) throw new Error('Unknow decode bearer.')
+
+    const session = await UserSession.findOne({ _id: decode._id, expired: { $gte: new Date() } })
+    if (!session) throw new Error('Session user is expired.')
+    next()
+  } catch (ex) {
+    res.status(401).json({ error: ex.message || ex })
+  }
+})
+app.use('/api/mainmenu', require('./mainmenu'))
 
 if (config.dev) {
   // const api = require('./router')

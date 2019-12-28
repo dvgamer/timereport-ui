@@ -1,5 +1,5 @@
 <template>
-  <transition name="fade">
+  <transition v-if="$auth.loggedIn" name="fade">
     <div class="load-bar" :style="{ opacity: !loading ? 0 : 1 }">
       <div class="load-bar-container">
         <div class="load-bar-base base1" :style="{ background: col_1 }">
@@ -30,20 +30,27 @@ export default {
     col_3: '#3b78e7',
     col_4: '#fdba2c',
     display: 'none',
-    timeout: null
+    timeout: 3000,
+    proc: null,
+    show: false
   }),
   computed: {
     loading () {
-      return this.$store.state.loading
+      return this.show
     }
   },
   methods: {
     start () {
-      this.$store.commit('$page', true)
+      const vm = this
+      vm.proc = setTimeout(() => {
+        vm.show = true
+        vm.proc = null
+      }, 1000)
     },
     finish () {
-      const vm = this
-      vm.$store.commit('$page', false)
+      this.show = false
+      if (this.proc != null) clearTimeout(this.proc)
+      this.proc = null
     }
   }
 }

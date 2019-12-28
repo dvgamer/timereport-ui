@@ -35,7 +35,7 @@ module.exports = [
       version: String,
       versionNumber: Number,
       mobile: Boolean,
-      token: String
+      expired: Date
     }
   }
 ]

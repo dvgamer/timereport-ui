@@ -2,12 +2,12 @@
   <li v-if="item" class="nav-item pl-1">
     <nuxt-link v-if="!item.menu" class="nav-link" :to="item.route || '/'" active-class="active" :exact="item.exact" @click.native="onNuxtLink">
       <fa :icon="!item.loading ? item.icon : 'circle-o-notch'" :spin="item.loading" />
-      <span v-text="item.name" />  
+      <span v-text="item.name" />
     </nuxt-link>
     <a v-else href="#" class="nav-link" @click.prevent="onClick(item.menu, item.route)">
       <fa icon="chevron-left" class="mt-1 mr-1" :rotation="mainMenu === item.menu ? 270 : 180" />
-      <span v-text="item.name" />  
-    </a> 
+      <span v-text="item.name" />
+    </a>
   </li>
 </template>
 <script>
@@ -23,7 +23,7 @@ export default {
     },
     onClick: {
       type: Function,
-      default: () => (() => {})
+      default: () => {}
     }
   },
   created () {

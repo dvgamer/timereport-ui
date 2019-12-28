@@ -3,9 +3,9 @@
     <b-nav-item-dropdown right>
       <template slot="button-content">
         <span class="user-avatar">
-          <no-ssr>
+          <client-only>
             <v-gravatar class="rounded-circle" :email="$auth.user.mail" :size="32" default-img="retro" />
-          </no-ssr>
+          </client-only>
           <span class="user-info">
             <div class="name text-nowrap">{{ $auth.user.name }}</div>
             <div class="title text-nowrap">{{ $auth.user.title }}</div>
@@ -13,26 +13,46 @@
         </span>
       </template>
       <b-dropdown-item to="/profile">Profile</b-dropdown-item>
-      <b-dropdown-item @click="onLogout">Sign-Out</b-dropdown-item>
+      <b-dropdown-item @click="() => show = true">Sign-Out</b-dropdown-item>
     </b-nav-item-dropdown>
+    <b-modal v-model="show" title="Confirm Sign-Out" :cancel-disabled="wait" :ok-disabled="wait"
+      cancel-variant="danger" ok-variant="outline-secondary"
+      :centered="true" :no-stacking="true" :no-fade="true">
+      <p>Are you sure you want to sign-out of your account?</p>
+      <div slot="modal-cancel" style="padding: 0 1rem" @click="onSignOut">
+        <fa :icon="!wait?'sign-out-alt':'circle-notch'" :spin="wait" /> <b v-text="wait?'Sign-out ...':'Yes.'" />
+      </div>
+      <div slot="modal-ok" style="padding: 0 1rem">
+        <b>No, I Back.</b>
+      </div>
+    </b-modal>
   </b-navbar-nav>
 </template>
 <script>
 
 export default {
+  data: () => ({
+    show: false,
+    wait: false
+  }),
   methods: {
     onSearch () {
       console.log('search:')
     },
-    async onLogout () {
-      let { user, saved } = this.$auth.$storage.getLocalStorage('login.saved', true)
-      if (!saved) {
+    async onSignOut () {
+      this.wait = true
+      const login = this.$auth.$storage.getLocalStorage('login.saved', true)
+      if (!login.saved) {
         this.$auth.$storage.setLocalStorage('login.saved', null, true)
       } else {
-        this.$auth.$storage.setLocalStorage('login.saved', { user, pass: '', saved }, true)
+        this.$auth.$storage.setLocalStorage('login.saved', Object.assign(login, { pass: '' }), true)
       }
       await this.$auth.logout()
+      this.wait = false
     }
+  },
+  created () {
+    // console.log('$auth', this.$auth)
   }
 }
 </script>
@@ -44,8 +64,9 @@ export default {
 .user-avatar > img {
   display: inline-block;
   position: absolute;
-  top: 10px;
-  left: -30px;
+  top: 7px;
+  left: -35px;
+  border: 2px solid #ffffffbd;
 }
 .user-info {
   color: #CDCDCD;

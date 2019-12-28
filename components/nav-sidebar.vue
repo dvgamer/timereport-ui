@@ -36,12 +36,12 @@ export default {
   data () {
     return {
       mainToggle: false,
-      mainStack: [ ],
+      mainStack: [],
       mainMenu: 'default'
     }
   },
   created () {
-    let vm = this
+    const vm = this
     this.getterMenu().catch(ex => {
       console.log(ex)
       vm.mainToggle = true
@@ -54,15 +54,15 @@ export default {
     async getterMenu () {
       for (const key in this.$store.state.mainmenu) {
         for (const e of this.$store.state.mainmenu[key].filter(e => e.menu && e.api)) {
-          let { data } = await this.$axios.get(e.api)
+          const { data } = await this.$axios.get(e.api)
           for (const item of data) {
             this.$store.commit('mainmenu/add', {
               menu: e.menu,
               item: {
-                permission: item['nLevelPermission'],
-                name: item['sMenu'],
-                route: `/survey/task/${item['nTaskId']}`,
-                icon: item['sFaIcon'],
+                permission: item.nLevelPermission,
+                name: item.sMenu,
+                route: `/survey/task/${item.nTaskId}`,
+                icon: item.sFaIcon,
                 exact: true
               }
             })
@@ -97,11 +97,11 @@ export default {
 }
 .slide-leave-active, .slide-enter-active {
   transition: all .1s;
-} 
+}
 .slide-leave {
   transform: translate(0px, 0px);
   opacity: 1;
-} 
+}
 .slide-leave-to {
   transform: translate(0px, 5px);
   opacity: 0;
