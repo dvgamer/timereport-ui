@@ -103,7 +103,8 @@ const config = {
   fontawesome: {
     component: 'fa',
     imports: [
-      { icons: ['fas'], set: '@fortawesome/free-solid-svg-icons' }
+      { icons: ['fas'], set: '@fortawesome/free-solid-svg-icons' },
+      { icons: ['far'], set: '@fortawesome/free-regular-svg-icons' }
     ]
   },
   axios: { baseURL: process.env.AXIOS_BASE_URL || 'http://10.0.80.52:25081/' },

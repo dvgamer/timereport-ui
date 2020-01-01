@@ -30,6 +30,7 @@ const router = Router()
 
 const encodeTokenWithId = _id => jsonwebtoken.sign({ hash: md5(+(new Date())), _id }, process.env.JWT_KEYHASH)
 const getUser = (User, auth, param) => {
+  if (!auth.user) throw new Error('username is undefined.')
   const u = auth.user.trim().toLowerCase()
   return User.findOne({ $or: [{ mail: `${u}${!/@/g.test(u) ? '@central.co.th' : ''}` }, { user_name: u }], pwd: md5(auth.pass) }, param)
 }

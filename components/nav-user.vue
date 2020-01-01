@@ -15,10 +15,13 @@
       <b-dropdown-item to="/profile">Profile</b-dropdown-item>
       <b-dropdown-item @click="() => show = true">Sign-Out</b-dropdown-item>
     </b-nav-item-dropdown>
-    <b-modal v-model="show" title="Confirm Sign-Out" :cancel-disabled="wait" :ok-disabled="wait"
+    <b-modal v-model="show" title="" :cancel-disabled="wait" :ok-disabled="wait"
       cancel-variant="danger" ok-variant="outline-secondary"
       :centered="true" :no-stacking="true" :no-fade="true">
       <p>Are you sure you want to sign-out of your account?</p>
+      <span slot="modal-title">
+        <fa :icon="['far','question-circle']" /> Confirm Sign-Out
+      </span>
       <div slot="modal-cancel" style="padding: 0 1rem" @click="onSignOut">
         <fa :icon="!wait?'sign-out-alt':'circle-notch'" :spin="wait" /> <b v-text="wait?'Sign-out ...':'Yes.'" />
       </div>

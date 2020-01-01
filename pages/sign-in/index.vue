@@ -15,17 +15,6 @@
                   </div>
                 </div>
                 <div class="col-xl-13 col-lg-15 col-md-19 col-sm-36 mt-3 mb-3 panel-sign">
-                  <div class="d-none d-md-block" style="height: 24px;" />
-                  <transition name="fade">
-                    <client-only>
-                      <div slot="placeholder">
-                        <div class="dimmer-layout" />
-                        <div class="dimmer-content">
-                          <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw" />
-                        </div>
-                      </div>
-                    </client-only>
-                  </transition>
                   <div class="mb-3 mt-2">
                     <button v-if="!enabled" :disabled="sing_out" type="button" class="btn btn-warning btn-sm btn-logout pull-right" @click="onSignOut" v-text="'Sign-Out'" />
                     <h3 class="mb-0">Sign-In</h3>
@@ -307,7 +296,7 @@ export default {
   width: 100%;
   height: 100%;
   /* background-color: #efefe6; */
-  background-image: url('~assets/photo-1430165558479-de3cf8cf1478.jpg');
+  background-image: url('~assets/login-photo.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 0px;
