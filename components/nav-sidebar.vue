@@ -13,7 +13,7 @@
             <span class="ml-2" v-text="menu.header" />
             <fa icon="chevron-left" class="mt-1 mr-1 float-right" :rotation="180" />
           </a>
-          <div :ref="menu.group" v-if="!isMain(menu.group) && menu.header" class="group-drop pl-3" :class="{ 'd-none' : mainToggle !== menu.group }">
+          <div :ref="menu.group" v-if="!isMain(menu.group) && menu.header" class="group-drop pl-3" :class="{ 'd-none' : $store.state.menu !== menu.group }">
             <menu-item v-for="sub in getMenuPermission(menu.group)" :key="sub['$id']" :item="sub" />
           </div>
           <menu-item v-if="isMain(menu.group) && !menu.divider && !menu.header" :item="menu" />
@@ -32,7 +32,6 @@ export default {
   },
   data () {
     return {
-      mainToggle: 'main',
       mainStack: []
     }
   },
@@ -52,7 +51,7 @@ export default {
   },
   methods: {
     onExpand (name) {
-      this.mainToggle = this.mainToggle === name ? 'main' : name
+      this.$store.commit('menuToggle', this.$store.state.menu === name ? 'main' : name)
     },
     getMenuPermission (name = 'main') {
       return MainMenu.all().filter(e => e.permission <= this.$auth.user.user_level && (e.group === name || e.header))

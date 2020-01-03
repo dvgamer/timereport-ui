@@ -9,8 +9,8 @@ module.exports = {
       group: {
         name: 'inspect',
         item: [
-          { permission: 4, name: 'Coding', route: '/inspect/coding', icon: 'check-double' },
-          { permission: 4, name: 'Result', route: '/inspect/terminal', icon: 'check-double' },
+          { permission: 4, name: 'Coding', route: '/inspect/coding', icon: 'code' },
+          { permission: 4, name: 'Result', route: '/inspect/terminal', icon: 'file-alt' },
         ]
       }
     },

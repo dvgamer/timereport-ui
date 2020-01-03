@@ -14,7 +14,8 @@ export const plugins = [
 
 export const state = () => ({
   wait: true,
-  loading: false
+  loading: false,
+  menu: 'main'
 })
 
 export const mutations = {
@@ -23,5 +24,8 @@ export const mutations = {
   },
   loading (state, value) {
     state.wait = value || false
+  },
+  menuToggle (state, value) {
+    state.menu = value || 'main'
   }
 }
