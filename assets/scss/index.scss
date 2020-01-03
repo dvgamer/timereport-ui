@@ -45,6 +45,12 @@
       color: #2471bd;
     }
   }
+  .absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 .bg-sticky {
   background-color: #2a3f54;
@@ -290,6 +296,9 @@ textarea.reason {
 
   textarea.reason {
     width: 290px;
+  }
+  .col-login .card {
+    background-color: #F7F8FB;
   }
 }
 

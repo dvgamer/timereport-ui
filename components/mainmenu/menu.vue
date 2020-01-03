@@ -1,13 +1,9 @@
 <template>
-  <li v-if="item" class="nav-item pl-1">
-    <nuxt-link v-if="!item.menu" class="nav-link" :to="item.route || '/'" active-class="active" :exact="item.exact" @click.native="onNuxtLink">
-      <fa :icon="!item.loading ? item.icon : 'circle-o-notch'" :spin="item.loading" />
-      <span v-text="item.name" />
+  <li v-if="item && !item.header" class="nav-item pl-1">
+    <nuxt-link class="nav-link" :to="item.route || '/'" active-class="active" :exact="item.exact" @click.native="onNuxtLink">
+      <fa :icon="!item.loading ? item.icon : 'circle-o-notch'" :spin="item.loading" :style="item.size ? { width: item.size } : {}" />
+      <span class="ml-1" v-text="item.name" />
     </nuxt-link>
-    <a v-else href="#" class="nav-link" @click.prevent="onClick(item.menu, item.route)">
-      <fa icon="chevron-left" class="mt-1 mr-1" :rotation="270" />
-      <span v-text="item.name" />
-    </a>
   </li>
 </template>
 <script>

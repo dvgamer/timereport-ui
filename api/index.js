@@ -4,6 +4,7 @@ const { Nuxt, Builder } = require('nuxt')
 const app = require('express')()
 const bodyParser = require('body-parser')
 const decodeBearer = require('./authication/decode-bearer')
+const menu = require('./.data/mainmenu')
 
 const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
@@ -22,11 +23,17 @@ const InitializeExpress = async () => {
 
   if (config.dev) {
     logger.info('MongoDB Database...')
-    const menu = require('./.data/mainmenu')
     const { Config } = mongo.get()
     await Config.deleteMany(menu.segment)
     for (const value of menu.item) {
-      await new Config(Object.assign(menu.segment, { value })).save()
+      const group = value.group
+      value.group = !!group
+      await new Config(Object.assign(menu.segment, { value, segment: group ? group.name : 'main' })).save()
+      if (group) {
+        for (const sub of group.item) {
+          await new Config(Object.assign(menu.segment, { value: sub, segment: group.name })).save()
+        }
+      }
     }
   }
 

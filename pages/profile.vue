@@ -1,26 +1,32 @@
 <template>
-  <div>
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-      <h1 class="h2">Profile</h1>
-    </div>
-    <div class="row">
-      <div class="offset-sm-6 col-sm-24">
-        <b>name: </b> {{ $auth.user.name }}<br>
-        <b>mail: </b> {{ $auth.user.mail }}<br>
-        <b>title: </b> {{ $auth.user.title }}<br>
-        <b>company: </b> {{ $auth.user.company }}<br>
-        <b>department: </b> {{ $auth.user.department }}<br>
-        <b>office_name: </b> {{ $auth.user.office_name }}<br>
-        <b>description: </b> {{ $auth.user.description }}<br>
-        <b>display_name: </b> {{ $auth.user.display_name }}<br>
-        <b>telephone_no: </b> {{ $auth.user.telephone_no }}<br>
-        <b>user_name: </b> {{ $auth.user.user_name }}<br>
-        <b>user_type: </b> {{ $auth.user.user_type }}<br>
-        <b>lasted: </b> {{ $auth.user.lasted }}<br>
-        <b>created: </b> {{ $auth.user.created }}<br>
-      </div>
-    </div>
-  </div>
+<div>
+  <b-card class="mt-2 mb-3">
+    <b-card-title>
+      <h1 class="h2">{{ $auth.user.display_name }} <small>({{ $auth.user.title }})</small></h1>
+    </b-card-title>
+    <b-card-sub-title>
+      {{ $auth.user.company }}
+    </b-card-sub-title>
+    <b-card-body>
+      <b>E-Mail: </b> {{ $auth.user.mail }}<br>
+      <b>Department: </b> {{ $auth.user.department }}<br>
+      <b>Office Name: </b> {{ $auth.user.office_name }}<br>
+      <b>Tel. </b> {{ $auth.user.telephone_no }}<br>
+      <b>user_level: </b> {{ $auth.user.user_level }}<br>
+      <b>lasted: </b> {{ $auth.user.lasted }}<br>
+    </b-card-body>
+  </b-card>
+  <b-card class="mb-3" title="Account">
+    <b-card-body>
+
+    </b-card-body>
+  </b-card>
+  <b-card class="mb-3" title="Session">
+    <b-card-body>
+
+    </b-card-body>
+  </b-card>
+</div>
 </template>
 
 <script>

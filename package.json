@@ -1,7 +1,7 @@
 {
   "name": "devops-ui",
   "display": "DevOps",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "description": "DevOps project",
   "author": "Kananek T. <info.dvgamer@gmail.com>",
   "private": true,

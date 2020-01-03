@@ -31,24 +31,23 @@ export default {
     col_4: '#fdba2c',
     display: 'none',
     timeout: 3000,
-    proc: null,
-    show: false
+    proc: null
   }),
   computed: {
     loading () {
-      return this.show
+      return this.$store.state.loading
     }
   },
   methods: {
     start () {
       const vm = this
       vm.proc = setTimeout(() => {
-        vm.show = true
+        vm.$store.commit('loading', true)
         vm.proc = null
       }, 1000)
     },
     finish () {
-      this.show = false
+      this.$store.commit('loading', false)
       if (this.proc != null) clearTimeout(this.proc)
       this.proc = null
     }

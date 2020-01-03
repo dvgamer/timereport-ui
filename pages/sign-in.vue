@@ -9,7 +9,7 @@
                 <div class="col-xl-22 col-lg-20 col-md-16 d-none d-md-block">
                   <div class="bg-login">
                     <div class="sign-navbar navbar-brand d-none d-md-block" to="/sign-in">
-                      <img class="d-inline-block align-top" src="~assets/icon-devops-agile.png" alt="" width="32" height="32">
+                      <img class="d-inline-block align-top" src="~assets/icon-devops-agile.svg" alt="" width="32" height="32">
                       <span class="ml-2" v-text="appName" /><small class="version" v-text="version" />
                     </div>
                   </div>

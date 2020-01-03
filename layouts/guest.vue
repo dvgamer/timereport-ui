@@ -2,7 +2,7 @@
   <div class="main-panel">
     <b-navbar toggleable="md" type="dark" class="d-block d-md-none bg-sticky sticky-top flex-md-nowrap p-0">
       <b-navbar-brand class="col" to="/sign-in">
-        <img class="d-inline-block align-top" src="~assets/icon-devops-agile.png" alt="" width="32" height="32">
+        <img class="d-inline-block align-top" src="~assets/icon-devops-agile.svg" alt="" width="32" height="32">
         <span class="ml-2" v-text="appName || 'appName'" /><small class="version" v-text="version || 'v0.0'" />
       </b-navbar-brand>
     </b-navbar>

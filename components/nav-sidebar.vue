@@ -1,5 +1,5 @@
 <template>
-  <div class="col-lg-7 bg-light sidebar" :class="$store.state.menu !== 'none' ? (!$store.state.expaned ? 'd-none d-lg-block' : '') : 'd-none'">
+  <div class="col-lg-7 sidebar" :class="$store.state.menu !== 'none' ? 'd-none d-lg-block' : 'd-none'">
     <div class="sidebar-sticky">
       <div class="nav flex-column">
         <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
@@ -8,7 +8,15 @@
         </h5>
         <div v-for="menu in getMenuPermission()" :key="menu['$id']" class="sub-item">
           <h6 v-if="menu.divider" class="sidebar-heading pt-3 pb-1 text-muted border-bottom mx-3 mb-0" v-text="menu.divider" />
-          <menu-item v-else :item="menu" />
+          <a v-if="menu.header" href="#" class="nav-link" @click.prevent="onExpand(menu.group)">
+            <fa class="ml-2" icon="circle" style="width:.4em" />
+            <span class="ml-2" v-text="menu.header" />
+            <fa icon="chevron-left" class="mt-1 mr-1 float-right" :rotation="180" />
+          </a>
+          <div :ref="menu.group" v-if="!isMain(menu.group) && menu.header" class="group-drop pl-3" :class="{ 'd-none' : mainToggle !== menu.group }">
+            <menu-item v-for="sub in getMenuPermission(menu.group)" :key="sub['$id']" :item="sub" />
+          </div>
+          <menu-item v-if="isMain(menu.group) && !menu.divider && !menu.header" :item="menu" />
         </div>
       </div>
     </div>
@@ -24,9 +32,8 @@ export default {
   },
   data () {
     return {
-      mainToggle: false,
-      mainStack: [],
-      menu: 'default'
+      mainToggle: 'main',
+      mainStack: []
     }
   },
   async created () {
@@ -44,13 +51,22 @@ export default {
     // })
   },
   methods: {
-    getMenuPermission () {
-      return MainMenu.all().filter(e => e.permission <= this.$auth.user.user_level)
+    onExpand (name) {
+      this.mainToggle = this.mainToggle === name ? 'main' : name
+    },
+    getMenuPermission (name = 'main') {
+      return MainMenu.all().filter(e => e.permission <= this.$auth.user.user_level && (e.group === name || e.header))
+    },
+    isMain (name) {
+      return name === 'main'
     }
   }
 }
 </script>
 <style scoped>
+.sidebar {
+  background-color: #FFF;
+}
 .nav-item a {
   text-overflow: ellipsis;
   overflow: hidden;
@@ -85,4 +101,5 @@ export default {
 .sub-active {
   border-left-color: #007bff !important;
 }
+
 </style>

@@ -1,3 +1,3 @@
-export default ({ store, redirect }) => {
+export default async ({ store, redirect }) => {
   if (store.state.auth.loggedIn) return redirect('/')
 }
