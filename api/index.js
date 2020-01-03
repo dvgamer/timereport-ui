@@ -1,6 +1,5 @@
 
 const mongo = require('@touno-io/db')()
-const logger = require('@touno-io/debuger')('Server')
 const { Nuxt, Builder } = require('nuxt')
 const app = require('express')()
 const bodyParser = require('body-parser')
@@ -14,22 +13,36 @@ if (!process.env.JWT_KEYHASH) throw new Error('Environment `JWT_KEYHASH` is unde
 
 // Build only in dev mode
 const InitializeExpress = async () => {
+  const logger = require('@touno-io/debuger')('Init')
+  logger.info('MongoDB Connectiing...')
   await mongo.open()
   mongo.set(require('./mongo/schema/user'))
   mongo.set(require('./mongo/schema/config'))
   mongo.set(require('./mongo/schema/terminal'))
 
+  if (config.dev) {
+    logger.info('MongoDB Database...')
+    const menu = require('./.data/mainmenu')
+    const { Config } = mongo.get()
+    await Config.deleteMany(menu.segment)
+    for (const value of menu.item) {
+      await new Config(Object.assign(menu.segment, { value })).save()
+    }
+  }
+
+  const server = require('@touno-io/debuger')('Server')
   const nuxt = new Nuxt(config)
   if (!config.dev) {
     await nuxt.ready()
   } else {
+    server.info('NuxtJS Build...')
     const builder = new Builder(nuxt)
     await builder.build()
   }
   app.use(nuxt.render)
 
   app.listen(config.server.port)
-  logger.start(`Server initialize on http://${config.server.host}:${config.server.port}`)
+  server.start(`Server initialize on http://${config.server.host}:${config.server.port}`)
 }
 
 // support parsing of application/json type post data
@@ -64,7 +77,7 @@ app.use('/api', async (req, res, next) => {
     res.status(401).json({ error: ex.message || ex })
   }
 })
-app.use('/api/mainmenu', require('./mainmenu'))
+app.use('/api/main', require('./main'))
 
 if (config.dev) {
   // const api = require('./router')

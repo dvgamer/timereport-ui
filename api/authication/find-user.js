@@ -14,7 +14,6 @@ const userData = [
   'display_name',
   'telephone_no',
   'user_name',
-  'user_type',
   'user_level',
   'lasted',
   'enabled',
@@ -30,8 +29,6 @@ module.exports = async (req) => {
   const browser = detect(req.headers['user-agent'])
   const session = await UserSession.findOne({ _id: decode._id, name: browser.name, os: browser.os })
 
-  console.dir(browser)
-  console.dir(session)
   if (!session) return {}
   return User.findOne({ _id: decode._id }, userData.join(' '))
 }

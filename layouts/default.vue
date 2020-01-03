@@ -16,7 +16,7 @@
     </b-navbar>
     <div class="container-fluid" :class="{ 'container-full': $store.state.menu === 'none' }">
       <div class="row">
-        <!-- <navSidebar /> -->
+        <navSidebar />
         <div class="col-md-36 ml-sm-auto pt-3 px-4" :class="{ 'col-lg-29': $auth.loggedIn }"><!--  && $store.state.menu !== 'none' -->
           <div>
             <!-- <span class="badge badge-socket badge-light float-right">
@@ -35,15 +35,14 @@
 </template>
 <script>
 import { display, version } from '../package.json'
-// import MainMenu from '../model/mainmenu'
-// import navSidebar from '~/components/nav-sidebar.vue'
+import navSidebar from '~/components/nav-sidebar.vue'
 import navUser from '~/components/nav-user.vue'
 import navSearch from '~/components/nav-search.vue'
-import hamburger from '~/components/mainmenu/HamburgerButton.vue'
+import hamburger from '~/components/mainmenu/hamburger.vue'
 
 export default {
   components: {
-    // navSidebar,
+    navSidebar,
     navUser,
     navSearch,
     hamburger
@@ -58,7 +57,7 @@ export default {
       { text: 'Library', active: true }
     ]
   }),
-  created () {
+  async created () {
     // let vm = this
     // this.$store.commit('$page', false)
     // this.timeout.api = setTimeout(() => vm.online.api = 0, 5000)
@@ -66,14 +65,6 @@ export default {
     // this.updatedNetworkConnection()
   },
   async beforeMount () {
-    try {
-      const { data } = await this.$axios({ method: 'GET', url: '/api/mainmenu' })
-      console.log('beforeMount', data)
-    } catch (ex) {
-      this.$auth.$storage.setLocalStorage('login.saved', null, true)
-      await this.$auth.logout()
-    }
-    // MainMenu.insert({ data })
     // window.addEventListener('keydown', (e) => {
     //   if (e.keyCode >= 112 && e.keyCode <= 123) return e.preventDefault()
     // })

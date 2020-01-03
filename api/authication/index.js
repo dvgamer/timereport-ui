@@ -18,11 +18,9 @@ const userData = [
   'display_name',
   'telephone_no',
   'user_name',
-  'user_type',
   'user_level',
   'lasted',
-  'enabled',
-  'activate'
+  'enabled'
 ]
 
 const { Router } = require('express')
@@ -62,7 +60,7 @@ router.post('/activate', async (req, res) => {
   try {
     if (!req.body.user) throw new Error('Unauthorized 402')
 
-    const checkUser = await getUser(User, req.body, 'enabled activate mail display_name')
+    const checkUser = await getUser(User, req.body, 'enabled mail display_name')
     if (!checkUser) throw new Error('Unauthorized 403')
     return res.json({ mail: checkUser.mail, name: checkUser.display_name, enabled: checkUser.enabled })
   } catch (ex) {

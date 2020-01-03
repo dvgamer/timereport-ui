@@ -5,7 +5,7 @@
       <span v-text="item.name" />
     </nuxt-link>
     <a v-else href="#" class="nav-link" @click.prevent="onClick(item.menu, item.route)">
-      <fa icon="chevron-left" class="mt-1 mr-1" :rotation="mainMenu === item.menu ? 270 : 180" />
+      <fa icon="chevron-left" class="mt-1 mr-1" :rotation="270" />
       <span v-text="item.name" />
     </a>
   </li>

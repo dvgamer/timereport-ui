@@ -1,33 +1,22 @@
 <template>
-  <div v-if="$auth.loggedIn" class="col-lg-7 bg-light sidebar" :class="$store.state.menu !== 'none' ? (!$store.state.expaned ? 'd-none d-lg-block' : '') : 'd-none'">
+  <div class="col-lg-7 bg-light sidebar" :class="$store.state.menu !== 'none' ? (!$store.state.expaned ? 'd-none d-lg-block' : '') : 'd-none'">
     <div class="sidebar-sticky">
       <div class="nav flex-column">
         <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
           <span v-text="'mainmenu'" />
           <span class="d-flex align-items-center text-muted"><fa icon="circle-notch" /></span>
         </h5>
-        <transition name="slide">
-          <scrolly v-if="mainToggle" class="sidebar-scroll">
-            <scrolly-viewport>
-              <div v-for="(mainItem, i) in getMenuPermission('default')" :key="i" class="sub-item" :class="{ 'sub-active': mainMenu === mainItem.menu }">
-                <h6 v-if="mainItem.group" class="sidebar-heading pt-3 pb-1 text-muted border-bottom mx-3 mb-0" v-text="mainItem.group" />
-                <menu-item v-else :main-menu="mainMenu" :item="mainItem" :on-click="toggleMenu" />
-                <div v-if="mainMenu === mainItem.menu">
-                  <div v-for="(subItem, l) in getMenuPermission(mainMenu)" :key="i + '-' + l">
-                    <menu-item v-if="!subItem.group" class="pl-3" :main-menu="mainMenu" :item="subItem" :on-click="toggleMenu" />
-                  </div>
-                </div>
-              </div>
-            </scrolly-viewport>
-            <scrolly-bar axis="y" />
-          </scrolly>
-        </transition>
+        <div v-for="menu in getMenuPermission()" :key="menu['$id']" class="sub-item">
+          <h6 v-if="menu.divider" class="sidebar-heading pt-3 pb-1 text-muted border-bottom mx-3 mb-0" v-text="menu.divider" />
+          <menu-item v-else :item="menu" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import menuItem from './mainmenu/menu-item.vue'
+import MainMenu from '../model/mainmenu'
+import menuItem from './mainmenu/menu.vue'
 
 export default {
   components: {
@@ -37,54 +26,26 @@ export default {
     return {
       mainToggle: false,
       mainStack: [],
-      mainMenu: 'default'
+      menu: 'default'
     }
   },
-  created () {
-    const vm = this
-    this.getterMenu().catch(ex => {
-      console.log(ex)
-      vm.mainToggle = true
-    })
+  async created () {
+    // try {
+    //   const { data } = await this.$axios({ method: 'GET', url: '/api/main/menu' })
+    //   MainMenu.insert({ data })
+    // } catch (ex) {
+    //   this.$auth.$storage.setLocalStorage('login.saved', null, true)
+    //   await this.$auth.logout()
+    // }
+    // const vm = this
+    // this.getterMenu().catch(ex => {
+    //   console.log(ex)
+    //   vm.mainToggle = true
+    // })
   },
   methods: {
-    getMenuPermission (group) {
-      return this.$auth.loggedIn ? this.$store.state.mainmenu[group].filter(e => !e.permission || e.permission <= this.$auth.user.user_level) : []
-    },
-    async getterMenu () {
-      for (const key in this.$store.state.mainmenu) {
-        for (const e of this.$store.state.mainmenu[key].filter(e => e.menu && e.api)) {
-          const { data } = await this.$axios.get(e.api)
-          for (const item of data) {
-            this.$store.commit('mainmenu/add', {
-              menu: e.menu,
-              item: {
-                permission: item.nLevelPermission,
-                name: item.sMenu,
-                route: `/survey/task/${item.nTaskId}`,
-                icon: item.sFaIcon,
-                exact: true
-              }
-            })
-          }
-        }
-      }
-      this.mainMenu = this.$store.getters['mainmenu/getMainMenu'](this.$route.path)
-      this.mainToggle = true
-      this.$forceUpdate()
-    },
-    toggleMenu (name) {
-      if (this.mainMenu === name) {
-        this.backMenu()
-      } else {
-        this.nextMenu(name)
-      }
-    },
-    nextMenu (name) {
-      this.mainMenu = name
-    },
-    backMenu () {
-      this.mainMenu = 'default'
+    getMenuPermission () {
+      return MainMenu.all().filter(e => e.permission <= this.$auth.user.user_level)
     }
   }
 }
