@@ -1,15 +1,14 @@
 <template>
   <b-navbar-nav v-if="$auth.loggedIn" class="ml-auto">
-    <b-nav-item-dropdown right>
+    <b-nav-item-dropdown no-caret class="user-dropdown">
       <template slot="button-content">
-        <span class="user-avatar">
-          <client-only>
-            <v-gravatar class="rounded-circle" :email="$auth.user.mail" :size="32" default-img="retro" />
-          </client-only>
+        <span class="user-avatar pr-3">
+          <img class="rounded-circle" :src="gravatar($auth.user.mail, 32)" />
           <span class="user-info">
             <div class="name text-nowrap">{{ $auth.user.name }}</div>
             <div class="title text-nowrap">{{ $auth.user.title }}</div>
           </span>
+          <fa icon="chevron-left" class="user-caret float-right" :rotation="270" />
         </span>
       </template>
       <b-dropdown-item to="/profile">Profile</b-dropdown-item>
@@ -32,6 +31,7 @@
   </b-navbar-nav>
 </template>
 <script>
+import md5 from 'md5'
 
 export default {
   data: () => ({
@@ -39,6 +39,9 @@ export default {
     wait: false
   }),
   methods: {
+    gravatar (email, size = 80, defaultImg = 'retro', rating = 'g') {
+      return (['//www.gravatar.com/avatar/', md5(email.trim().toLowerCase()), `?s=${size}`, `&d=${defaultImg}`, `&r=${rating}`]).join('')
+    },
     onSearch () {
       console.log('search:')
     },
@@ -61,6 +64,11 @@ export default {
 </script>
 
 <style>
+.user-caret {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+}
 .user-avatar {
   display: inline-block;
 }
@@ -70,6 +78,8 @@ export default {
   top: 7px;
   left: -35px;
   border: 2px solid #ffffffbd;
+  width: 36px;
+  height: 36px;
 }
 .user-info {
   color: #CDCDCD;

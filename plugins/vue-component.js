@@ -1,9 +1,7 @@
 import Vue from 'vue'
-import Gravatar from 'vue-gravatar'
 import VueElementLoading from 'vue-element-loading'
 
 Vue.component('VueElementLoading', VueElementLoading)
-Vue.component('v-gravatar', Gravatar)
 
 // Vue.component('scrolly', Scrolly)
 // Vue.component('scrolly-viewport', ScrollyViewport)

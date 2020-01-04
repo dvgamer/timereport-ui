@@ -11,9 +11,9 @@
           <a v-if="menu.header" href="#" class="nav-link" @click.prevent="onExpand(menu.group)">
             <fa class="ml-2" icon="circle" style="width:.4em" />
             <span class="ml-2" v-text="menu.header" />
-            <fa icon="chevron-left" class="mt-1 mr-1 float-right" :rotation="180" />
+            <fa icon="chevron-left" class="mt-1 mr-1 float-right" :rotation="!isExpandGroup(menu.group) ? 270 : 180" />
           </a>
-          <div :ref="menu.group" v-if="!isMain(menu.group) && menu.header" class="group-drop pl-3" :class="{ 'd-none' : $store.state.menu !== menu.group }">
+          <div :ref="menu.group" v-if="!isMain(menu.group) && menu.header" class="group-drop pl-3" :class="{ 'd-none' : isExpandGroup(menu.group) }">
             <menu-item v-for="sub in getMenuPermission(menu.group)" :key="sub['$id']" :item="sub" />
           </div>
           <menu-item v-if="isMain(menu.group) && !menu.divider && !menu.header" :item="menu" />
@@ -58,6 +58,9 @@ export default {
     },
     isMain (name) {
       return name === 'main'
+    },
+    isExpandGroup (name) {
+      return this.$store.state.menu !== name
     }
   }
 }

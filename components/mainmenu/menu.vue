@@ -26,7 +26,6 @@ export default {
   },
   methods: {
     onNuxtLink () {
-      this.$store.commit('expaned')
     }
   }
 }
