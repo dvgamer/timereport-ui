@@ -51,6 +51,11 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
+  .card-body {
+    ul {
+      padding: 0px;
+    }
+  }
 }
 .bg-sticky {
   background-color: #2a3f54;
