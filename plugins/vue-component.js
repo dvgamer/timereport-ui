@@ -67,3 +67,9 @@ Vue.directive('tabindex', {
     }
   }
 })
+
+Vue.directive('focus', {
+  inserted (el) {
+    el.focus()
+  }
+})

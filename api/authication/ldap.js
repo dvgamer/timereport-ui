@@ -1,10 +1,11 @@
 const { createClient } = require('ldapjs')
+const logger = require('@touno-io/debuger')('LDAP')
 
 // LDAP Connection Settings
 const name = process.env.LDAP_NAME || 'central'
 const server = process.env.LDAP_SERVER_NAME || `${name}.co.th`
 const adSuffix = process.env.LDAP_SUFFIX || `OU=RIS,OU=UsersAccount,DC=${name},DC=co,DC=th`
-const timeout = process.env.LDAP_TIMEOUT || 30000
+const timeout = process.env.LDAP_TIMEOUT || 10000
 
 if (!server || !adSuffix) throw new Error('LDAP connection settings not found!')
 
@@ -19,15 +20,14 @@ module.exports = async (usr, pwd, filter) => {
   let data = null
   try {
     const asyncClient = () => new Promise((resolve, reject) => {
+      const timeLdap = setTimeout(() => reject(new Error(`client server ldap ldap://${server} timeout.`)), timeout)
       const client = createClient({
         url: `ldap://${server}`,
-        baseDN: adSuffix,
-        timeout: timeout,
-        connectTimeout: timeout,
-        idleTimeout: timeout
+        baseDN: adSuffix
       })
 
       client.on('error', (err, res) => {
+        clearTimeout(timeLdap)
         if (err) return reject(err)
         return resolve(client)
       })
@@ -98,7 +98,7 @@ module.exports = async (usr, pwd, filter) => {
 
         if (filter) {
           res.on('search-end', () => {
-            // logger.success(' - search-end:', !!entry)
+            // logger.success(' - search-end:')
             return resolveBind()
           })
         }
@@ -116,9 +116,9 @@ module.exports = async (usr, pwd, filter) => {
     try {
       await asyncBind(account, password)
       data = await asyncSearch(adSuffix, searchOptions(username))
-      // logger.success('search entry: pass.')
+      logger.success('search entry: pass.')
     } catch (ex) {
-      // logger.error('bind: fail, ', ex.message || ex)
+      logger.error('bind: fail, ', ex.message || ex)
       data = ex.message || ex
     }
     if (isADUser) {

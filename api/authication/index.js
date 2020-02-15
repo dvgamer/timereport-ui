@@ -1,6 +1,7 @@
 const jsonwebtoken = require('jsonwebtoken')
 const detect = require('browser-detect')
 const mongo = require('@touno-io/db')()
+const logger = require('@touno-io/debuger')('Auth')
 const md5 = require('md5')
 const ldapAuth = require('./ldap')
 const decodeBasic = require('./decode-basic')
@@ -49,7 +50,7 @@ router.get('/user', async (req, res) => {
     if (!user) throw new Error('User unknow expire.')
     return res.json({ user })
   } catch (ex) {
-    console.log(ex.message || ex)
+    logger.error(ex)
     return res.status(404).json({ error: ex.message || ex })
   }
 })
@@ -76,15 +77,17 @@ router.post('/login', async (req, res) => {
       if (!auth || !auth.user) throw new Error('Unauthorized (401)')
     }
     auth.user = auth.user.trim().toLowerCase()
-
+    logger.log('open mongodb')
     await mongo.open()
     const { User, UserSession } = mongo.get()
 
     let user = await getUser(User, auth)
-    let data = {}
+    logger.log('getUser', user)
+    let data = null
     try {
       data = await ldapAuth(auth.user, auth.pass)
     } finally { }
+    logger.log('ldapAuth')
 
     if ((!data || !data.user_name) && !user) throw new Error('LDAP auth unsuccessful.')
     if (data.user_name) {
@@ -115,7 +118,7 @@ router.post('/login', async (req, res) => {
     const token = encodeTokenWithId(session._id)
     res.json({ token })
   } catch (ex) {
-    console.log(ex.message || ex)
+    logger.error(ex)
     res.status(404).json({ error: ex.message || ex })
   }
 })
