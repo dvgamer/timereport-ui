@@ -7,7 +7,7 @@
   "private": true,
   "main": "api/index.js",
   "scripts": {
-    "dev": "env-cmd nodemon --watch api api/index.js",
+    "dev": "env-cmd nodemon --watch server server/index.js",
     "eslint": "eslint --ext .js,.vue --ignore-path .gitignore ."
   },
   "nodemonConfig": {
