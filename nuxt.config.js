@@ -65,6 +65,9 @@ const config = {
     // { src: '~/plugins/socket.io.js', ssr: false }
   ],
   // vendor: ['moment', '~/node_modules/vue-socket.io'],
+  buildModules: [
+    '@nuxtjs/eslint-module'
+  ],
   build: {
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {
