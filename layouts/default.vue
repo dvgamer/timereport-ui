@@ -68,7 +68,6 @@ export default {
     ]
   }),
   async created () {
-    console.log(this.$db())
     try {
       const { data } = await this.$axios({ method: 'GET', url: '/api/main/menu' })
       MainMenu.insert({ data })
