@@ -5,7 +5,7 @@ const logger = require('@touno-io/debuger')('LDAP')
 const name = process.env.LDAP_NAME || 'central'
 const server = process.env.LDAP_SERVER_NAME || `${name}.co.th`
 const adSuffix = process.env.LDAP_SUFFIX || `OU=RIS,OU=UsersAccount,DC=${name},DC=co,DC=th`
-const timeout = process.env.LDAP_TIMEOUT || 10000
+const timeout = process.env.LDAP_TIMEOUT || 20000
 
 if (!server || !adSuffix) throw new Error('LDAP connection settings not found!')
 
@@ -19,19 +19,25 @@ module.exports = async (usr, pwd, filter) => {
   // Create client and bind to AD
   let data = null
   try {
-    const asyncClient = () => new Promise((resolve, reject) => {
-      const timeLdap = setTimeout(() => reject(new Error(`client server ldap ldap://${server} timeout.`)), timeout)
-      const client = createClient({
-        url: `ldap://${server}`,
-        baseDN: adSuffix
-      })
-
-      client.on('error', (err, res) => {
-        clearTimeout(timeLdap)
-        if (err) return reject(err)
-        return resolve(client)
-      })
-    })
+    // const asyncClient = () => new Promise((resolve, reject) => {
+    //   const timeLdap = setTimeout(() => reject(new Error(`client server ldap ldap://${server} timeout.`)), timeout)
+    //   const client = createClient({
+    //     url: `ldap://${server}`,
+    //     baseDN: adSuffix
+    //   })
+    //   console.dir({
+    //     url: `ldap://${server}`,
+    //     baseDN: adSuffix
+    //   })
+    //   client.on('error', (err, res) => {
+    //     clearTimeout(timeLdap)
+    //     if (err) {
+    //       logger.error(err)
+    //       return reject(err)
+    //     }
+    //     return resolve(client)
+    //   })
+    // })
 
     const asyncBind = (usr, pwd) => new Promise((resolve, reject) => {
       const rejectBind = ex => {
@@ -110,15 +116,21 @@ module.exports = async (usr, pwd, filter) => {
       })
     })
 
-    const client = await asyncClient()
+    // const client = await asyncClient()
+    // const timeLdap = setTimeout(() => reject(new Error(`client server ldap ldap://${server} timeout.`)), timeout)
+    const client = createClient({
+      url: `ldap://${server}`,
+      baseDN: adSuffix
+    })
+
     const isADUser = !/@/g.test(username)
     let account = isADUser ? `${name}\\${username}` : username
     try {
       await asyncBind(account, password)
       data = await asyncSearch(adSuffix, searchOptions(username))
-      logger.success('search entry: pass.')
+      logger.success('auth successful.')
     } catch (ex) {
-      logger.error('bind: fail, ', ex.message || ex)
+      logger.error('auth fail, ', ex.message || ex)
       data = ex.message || ex
     }
     if (isADUser) {
@@ -127,7 +139,8 @@ module.exports = async (usr, pwd, filter) => {
       data = await asyncSearch(adSuffix, searchOptions(account))
     }
   } catch (ex) {
-    data = ex.message || ex
+    logger.error('auth fail, ', ex.message || ex)
+    data = ex.message || ex || 'Unknow exception'
   }
   return data
 }

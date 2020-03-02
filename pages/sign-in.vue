@@ -47,7 +47,7 @@
                   </div>
                   <div v-else class="text-center">
                     <div class="avatar-thumbnail">
-                      <v-gravatar class="rounded-circle" :email="account.mail" :size="160" default-img="retro" />
+                      <img class="rounded-circle" :src="gravatar(account.mail, 160)" />
                     </div>
                     <h5 class="pt-3">Walcome, {{ account.name }}</h5>
                     <div v-if="success"><b class="text-success">Hi, Your access token generated. </b><br>and I will take you to dashboard.</div>
@@ -85,6 +85,7 @@
 <script>
 import { display, version } from '../package.json'
 import CookieLaw from 'vue-cookie-law'
+import md5 from 'md5'
 
 export default {
   auth: false,
@@ -131,6 +132,9 @@ export default {
     this.updatedInputFocus()
   },
   methods: {
+    gravatar (email, size = 80, defaultImg = 'retro', rating = 'g') {
+      return (['//www.gravatar.com/avatar/', md5(email.trim().toLowerCase()), `?s=${size}`, `&d=${defaultImg}`, `&r=${rating}`]).join('')
+    },
     async onAuth (user, pass, saved, noerr = false) {
       if (!this.onAgreeCookie()) {
         this.account.error = 'Please allow cookie policy.'

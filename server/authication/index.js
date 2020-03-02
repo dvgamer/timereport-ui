@@ -77,17 +77,14 @@ router.post('/login', async (req, res) => {
       if (!auth || !auth.user) throw new Error('Unauthorized (401)')
     }
     auth.user = auth.user.trim().toLowerCase()
-    logger.log('open mongodb')
     await mongo.open()
     const { User, UserSession } = mongo.get()
 
     let user = await getUser(User, auth)
-    logger.log('getUser', user)
     let data = null
     try {
       data = await ldapAuth(auth.user, auth.pass)
     } finally { }
-    logger.log('ldapAuth')
 
     if ((!data || !data.user_name) && !user) throw new Error('LDAP auth unsuccessful.')
     if (data.user_name) {
