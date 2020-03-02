@@ -1,5 +1,10 @@
-$grid-columns:                36;
-$border-radius:               .0rem;
-$border-radius-lg:            .0rem;
-$border-radius-sm:            .0rem;
-$font-size-base:              .78rem;
+@import "bootstrap/scss/_functions.scss";
+@import "bootstrap/scss/_variables.scss";
+
+// Import spacing variables
+@import "./variables/spacing.scss";
+
+// Import navigation variables
+@import "./variables/navigation.scss";
+
+$grid-columns: 36;
