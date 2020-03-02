@@ -120,8 +120,10 @@ module.exports = async (usr, pwd, filter) => {
     // const timeLdap = setTimeout(() => reject(new Error(`client server ldap ldap://${server} timeout.`)), timeout)
     const client = createClient({
       url: `ldap://${server}`,
+      reconnect: true,
       baseDN: adSuffix
     })
+    client.on('error', logger.error)
 
     const isADUser = !/@/g.test(username)
     let account = isADUser ? `${name}\\${username}` : username

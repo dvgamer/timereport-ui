@@ -45,8 +45,8 @@
   </div>
 </template>
 <script>
-import { display, version } from '../package.json'
-import MainMenu from '../model/mainmenu'
+import { display, version } from '~/package.json'
+import MainMenu from '~/models/mainmenu'
 import navSidebar from '~/components/nav-sidebar.vue'
 import navUser from '~/components/nav-user.vue'
 import navSearch from '~/components/nav-search.vue'
@@ -68,6 +68,7 @@ export default {
     ]
   }),
   async created () {
+    console.log(this.$db())
     try {
       const { data } = await this.$axios({ method: 'GET', url: '/api/main/menu' })
       MainMenu.insert({ data })

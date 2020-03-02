@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { display, version } from '../package.json'
+import { display, version } from '~/package.json'
 import CookieLaw from 'vue-cookie-law'
 import md5 from 'md5'
 

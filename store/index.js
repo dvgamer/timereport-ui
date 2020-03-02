@@ -1,5 +1,5 @@
 import VuexORM from '@vuex-orm/core'
-import MainMenu from '../model/mainmenu'
+import MainMenu from '~/models/mainmenu'
 // import Post from './Post'
 
 // Create a new database instance.

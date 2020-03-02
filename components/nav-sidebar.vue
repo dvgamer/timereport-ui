@@ -23,7 +23,7 @@
   </div>
 </template>
 <script>
-import MainMenu from '../model/mainmenu'
+import MainMenu from '~/models/mainmenu'
 import menuItem from './mainmenu/menu.vue'
 
 export default {
